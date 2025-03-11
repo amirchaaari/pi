@@ -13,10 +13,11 @@ public class UserInfoDetails implements UserDetails {
 
     private String username; // Changed from 'name' to 'username' for clarity
     private String password;
+
     private List<GrantedAuthority> authorities;
 
     public UserInfoDetails(UserInfo userInfo) {
-        this.username = userInfo.getEmail(); // Assuming 'name' is used as 'username'
+        this.username = userInfo.getEmail();
         this.password = userInfo.getPassword();
         this.authorities = List.of(userInfo.getRoles().split(","))
                 .stream()

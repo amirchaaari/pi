@@ -1,6 +1,8 @@
 package com.example.pi.controller;
 
 import com.example.pi.entity.AuthRequest;
+import com.example.pi.entity.Coach;
+import com.example.pi.entity.Nutritionist;
 import com.example.pi.entity.UserInfo;
 import com.example.pi.service.JwtService;
 import com.example.pi.service.UserInfoService;
@@ -34,6 +36,13 @@ public class UserController {
     public String addNewUser(@RequestBody UserInfo userInfo) {
         return service.addUser(userInfo);
     }
+
+
+
+
+
+
+
 
     @GetMapping("/user/userProfile")
     @PreAuthorize("hasAuthority('ROLE_USER')")
