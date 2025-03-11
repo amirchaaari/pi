@@ -39,9 +39,10 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless APIs
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken").permitAll()
+                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken","/**").permitAll()
                         .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
                         .requestMatchers("/auth/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/training-sessions/**").hasAuthority("ROLE_USER")
                         .anyRequest().authenticated() // Protect all other endpoints
                 )
                 .sessionManagement(sess -> sess
@@ -52,7 +53,7 @@ public class SecurityConfig {
 
         return http.build();
     }
-
+// bch te5dem bel securite lezem  ta3mlou kolkom  url  nafsou
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(); // Password encoding

@@ -1,11 +1,11 @@
 package com.example.pi.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.List;
 
 @Entity
 @Getter
@@ -24,4 +24,8 @@ public class UserInfo {
     private String password;
     private String roles;
 
+
+    @OneToMany(mappedBy = "coach", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<TrainingSession> trainingSessions;
 }
