@@ -6,6 +6,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import jakarta.persistence.*;
+
+import java.util.Set;
+
 
 @Entity
 @Getter
@@ -24,4 +28,9 @@ public class UserInfo {
     private String password;
     private String roles;
 
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Set<Club> clubs; // Un user peut créer plusieurs clubs
+
+    @OneToMany(mappedBy = "gymGoer", cascade = CascadeType.ALL)
+    private Set<Abonnement> abonnements; // Un user peut souscrire à plusieurs abonnement
 }
