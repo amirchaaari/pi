@@ -48,7 +48,8 @@ public class UserController {
     @GetMapping("/user/userProfile")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public String userProfile() {
-        return "Welcome to User Profile";
+        return service.getUserProfile();
+
     }
 
     @GetMapping("/coach/coachProfile")
