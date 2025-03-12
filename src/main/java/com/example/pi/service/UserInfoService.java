@@ -29,6 +29,11 @@ public class UserInfoService implements UserDetailsService {
         return userDetail.map(UserInfoDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
+    /*delete a user by id*/
+
+    public void deleteUserById(int id) {
+        repository.deleteById(id);
+    }
 
     public String addUser(UserInfo userInfo) {
         // Encode password before saving the user

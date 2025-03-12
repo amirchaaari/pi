@@ -44,12 +44,32 @@ public class UserController {
 
 
 
+
     @GetMapping("/user/userProfile")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public String userProfile() {
         return "Welcome to User Profile";
     }
 
+    @GetMapping("/coach/coachProfile")
+    @PreAuthorize("hasAuthority('ROLE_COACH')")
+    public String coachProfile() {
+        return "Welcome to Coach Profile";
+    }
+
+    /*delete a user*/
+    @DeleteMapping("/deleteUser/{id}")
+    public String deleteUser(@PathVariable int id) {
+        service.deleteUserById(id);
+        return "User Deleted Successfully";
+    }
+
+
+    @GetMapping("/nutritionist/nutritionistProfile")
+    @PreAuthorize("hasAuthority('ROLE_NUTRITIONIST')")
+    public String nutritionistProfile() {
+        return "Welcome to Nutritionist Profile";
+    }
     @GetMapping("/admin/adminProfile")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String adminProfile() {
