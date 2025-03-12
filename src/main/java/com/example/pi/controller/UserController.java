@@ -1,6 +1,8 @@
 package com.example.pi.controller;
 
 import com.example.pi.entity.AuthRequest;
+import com.example.pi.entity.Coach;
+import com.example.pi.entity.Nutritionist;
 import com.example.pi.entity.UserInfo;
 import com.example.pi.service.JwtService;
 import com.example.pi.service.UserInfoService;
@@ -35,12 +37,40 @@ public class UserController {
         return service.addUser(userInfo);
     }
 
+
+
+
+
+
+
+
+
     @GetMapping("/user/userProfile")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public String userProfile() {
-        return "Welcome to User Profile";
+        return service.getUserProfile();
+
     }
 
+    @GetMapping("/coach/coachProfile")
+    @PreAuthorize("hasAuthority('ROLE_COACH')")
+    public String coachProfile() {
+        return "Welcome to Coach Profile";
+    }
+
+    /*delete a user*/
+    @DeleteMapping("/deleteUser/{id}")
+    public String deleteUser(@PathVariable int id) {
+        service.deleteUserById(id);
+        return "User Deleted Successfully";
+    }
+
+
+    @GetMapping("/nutritionist/nutritionistProfile")
+    @PreAuthorize("hasAuthority('ROLE_NUTRITIONIST')")
+    public String nutritionistProfile() {
+        return "Welcome to Nutritionist Profile";
+    }
     @GetMapping("/admin/adminProfile")
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String adminProfile() {
