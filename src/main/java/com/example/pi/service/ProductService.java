@@ -1,32 +1,12 @@
 package com.example.pi.service;
 
 import com.example.pi.entity.Product;
-import com.example.pi.repository.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import java.util.List;
-import java.util.Optional;
 
-@Service
-public class ProductService {
-
-    @Autowired
-    private ProductRepository productRepository;
-
-    public List<Product> findAll() {
-        return productRepository.findAll();
-    }
-
-    public Optional<Product> findById(Long id) {
-        return productRepository.findById(id);
-    }
-
-    public Product save(Product product) {
-        return productRepository.save(product);
-    }
-
-    public void deleteById(Long id) {
-        productRepository.deleteById(id);
-    }
+public interface ProductService {
+    Product createProduct(Product product);
+    Product getProductById(Long id);
+    List<Product> getAllProducts(); // Matches with the controller
+    Product updateProduct(Long id, Product product); // Should be called in the controller
+    void deleteProduct(Long id);
 }

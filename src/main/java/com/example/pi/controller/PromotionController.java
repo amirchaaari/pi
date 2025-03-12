@@ -1,14 +1,13 @@
 package com.example.pi.controller;
 
 import com.example.pi.entity.Promotion;
-import com.example.pi.service.PromotionService;
+import com.example.pi.service.PromotionService; // Ensure correct import
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/promotions")
@@ -17,46 +16,45 @@ public class PromotionController {
     @Autowired
     private PromotionService promotionService;
 
-    // Get all promotions
     @GetMapping
-    public ResponseEntity<List<Promotion>> getAllPromotions() {
-        List<Promotion> promotions = promotionService.findAll();
-        return new ResponseEntity<>(promotions, HttpStatus.OK);
+    public List<Promotion> getAllPromotions() {
+        return promotionService.getAllPromotions(); // Retrieve all promotions
     }
 
-    // Get a promotion by ID
     @GetMapping("/{id}")
     public ResponseEntity<Promotion> getPromotionById(@PathVariable Long id) {
-        Optional<Promotion> promotion = promotionService.findById(id);
-        return promotion.map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        Promotion promotion = promotionService.getPromotionById(id);
+        if (promotion != null) {
+            return ResponseEntity.ok(promotion); // Return promotion if found
+        } else {
+            return ResponseEntity.notFound().build(); // Return 404 if not found
+        }
     }
 
-    // Create a new promotion
     @PostMapping
     public ResponseEntity<Promotion> createPromotion(@RequestBody Promotion promotion) {
-        Promotion savedPromotion = promotionService.save(promotion);
-        return new ResponseEntity<>(savedPromotion, HttpStatus.CREATED);
+        Promotion createdPromotion = promotionService.createPromotion(promotion); // Save new promotion
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdPromotion); // Return 201 status
     }
 
-    // Update an existing promotion
     @PutMapping("/{id}")
-    public ResponseEntity<Promotion> updatePromotion(@PathVariable Long id, @RequestBody Promotion promotion) {
-        if (!promotionService.findById(id).isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    public ResponseEntity<Promotion> updatePromotion(@PathVariable Long id, @RequestBody Promotion promotionDetails) {
+        Promotion updatedPromotion = promotionService.updatePromotion(id, promotionDetails);
+        if (updatedPromotion != null) {
+            return ResponseEntity.ok(updatedPromotion); // Return updated promotion
+        } else {
+            return ResponseEntity.notFound().build(); // Return 404 if not found
         }
-        promotion.setId(id); // Set the ID to ensure correct update
-        Promotion updatedPromotion = promotionService.save(promotion);
-        return ResponseEntity.ok(updatedPromotion);
     }
 
-    // Delete a promotion
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePromotion(@PathVariable Long id) {
-        if (!promotionService.findById(id).isPresent()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
-        promotionService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        promotionService.deleteById(id); // Delete promotion by ID
+        return ResponseEntity.noContent().build(); // Return 204 status
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception e) {
+        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR); // Handle exceptions
     }
 }

@@ -1,7 +1,7 @@
 package com.example.pi.controller;
 
 import com.example.pi.entity.Product;
-import com.example.pi.service.ProductService;
+import com.example.pi.service.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,21 +14,21 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
-    private ProductService productService;
+    private ProductServiceImpl productServiceImpl; // Fix variable name to follow naming conventions
 
     @GetMapping
     public List<Product> getAllProducts() {
-        return productService.findAll();
+        return productServiceImpl.getAllProducts(); // Call the correct method
     }
 
     @PostMapping
     public Product createProduct(@RequestBody Product product) {
-        return productService.save(product);
+        return productServiceImpl.createProduct(product); // Call the correct method
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
-        productService.deleteById(id);
+        productServiceImpl.deleteProduct(id); // Call the correct method
         return ResponseEntity.noContent().build();
     }
 
