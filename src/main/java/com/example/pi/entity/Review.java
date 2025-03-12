@@ -1,27 +1,27 @@
-package com.example.pi.entity;
+    package com.example.pi.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+    import jakarta.persistence.*;
+    import lombok.*;
+    import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
+    import java.time.LocalDate;
 
-@Entity
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public class Review {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private int rating;
-    private LocalDate reviewDate;
+    @Entity
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public class Review {
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
+        private int rating;
+        private LocalDate reviewDate;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserInfo user;
+        @ManyToOne
+        private UserInfo user;
 
-    @ManyToOne
-    @JoinColumn(name = "session_id")
-    private TrainingSession trainingSession;
-}
+        @ManyToOne
+        private TrainingSession trainingSession;
+    }

@@ -18,14 +18,24 @@ public class UserInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    private String name;
-    private String email;
-    private String password;
-    private String roles;
+    int id;
+    String name;
+    String email;
+    String password;
+    String roles;
 
 
     @OneToMany(mappedBy = "coach", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<TrainingSession> trainingSessions;
+    List<TrainingSession> trainingSessions;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<Booking> bookings;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<Review> reviews;
+
+
 }

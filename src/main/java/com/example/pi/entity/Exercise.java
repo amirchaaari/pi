@@ -1,24 +1,23 @@
 package com.example.pi.entity;
 
-import jakarta.persistence.Id;
-import lombok.*;
 import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Entity
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Booking {
+public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-    String status;
 
-    @ManyToOne
-    UserInfo user;
+    String name;
+    String description;
+    Integer duration;
 
     @ManyToOne
     TrainingSession trainingSession;

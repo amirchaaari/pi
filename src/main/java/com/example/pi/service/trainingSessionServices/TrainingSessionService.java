@@ -20,13 +20,12 @@ public class TrainingSessionService implements ITrainingSessionService {
     public TrainingSession createSession(TrainingSession trainingSession) {
         UserInfo coach = userInfoRepository.findById(trainingSession.getCoach().getId()).orElse(null);
         trainingSession.setCoach(coach);
-        TrainingSession session = trainingSessionRepository.save(trainingSession);
-        return session;
+        return trainingSessionRepository.save(trainingSession);
     }
 
     @Override
     public TrainingSession updateSession(Long id, TrainingSession trainingSession) {
-        trainingSession.setId(id); // Set the ID explicitly
+        trainingSession.setId(id);
         return trainingSessionRepository.save(trainingSession);
     }
 
