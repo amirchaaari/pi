@@ -22,8 +22,8 @@ public class Category {
 
     private String description;
 
-    @OneToMany(mappedBy = "category")
-    private Set<Promotion> promotions;
+    @ManyToOne
+    Promotion promotion;
 
     @OneToMany(mappedBy = "category")
     private Set<Product> products;

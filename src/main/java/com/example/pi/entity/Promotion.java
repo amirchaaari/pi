@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @Entity
 @Table(name = "promotions")
@@ -25,7 +26,6 @@ public class Promotion {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category; // New field for category
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="promotion")
+    private Set<Category> categories;
 }

@@ -27,4 +27,6 @@ public class Command {
 
 
     private Integer quantity;
+    @ManyToOne
+    Livraison livraison;
 }

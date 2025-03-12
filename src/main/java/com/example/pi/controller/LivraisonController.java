@@ -9,7 +9,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/Livraison")
+@RequestMapping("/api/Livraison")
 public class LivraisonController {
         ILivraisonInterface livraisonService;
     @GetMapping("/retrieve-all-livraison")
