@@ -13,11 +13,16 @@ public class UserInfoDetails implements UserDetails {
 
     private String username; // Changed from 'name' to 'username' for clarity
     private String password;
+
+     private int id;  // Add user ID
+
+
     private List<GrantedAuthority> authorities;
 
     public UserInfoDetails(UserInfo userInfo) {
-        this.username = userInfo.getEmail(); // Assuming 'name' is used as 'username'
+        this.username = userInfo.getEmail();
         this.password = userInfo.getPassword();
+        this.id = userInfo.getId();
         this.authorities = List.of(userInfo.getRoles().split(","))
                 .stream()
                 .map(SimpleGrantedAuthority::new)
@@ -29,10 +34,15 @@ public class UserInfoDetails implements UserDetails {
         return authorities;
     }
 
+    public int getId() {
+        return id;
+    }
     @Override
     public String getPassword() {
         return password;
     }
+
+
 
     @Override
     public String getUsername() {

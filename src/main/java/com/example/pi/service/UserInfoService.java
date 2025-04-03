@@ -4,6 +4,8 @@ package com.example.pi.service;
 import com.example.pi.entity.UserInfo;
 import com.example.pi.repository.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -29,11 +31,32 @@ public class UserInfoService implements UserDetailsService {
         return userDetail.map(UserInfoDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     }
+    /*delete a user by id*/
+
+    public void deleteUserById(int id) {
+        repository.deleteById(id);
+    }
 
     public String addUser(UserInfo userInfo) {
         // Encode password before saving the user
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));
         repository.save(userInfo);
         return "User Added Successfully";
+    }
+
+
+
+
+
+    public String getUserProfile() {
+        // Get authentication from SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication != null && authentication.getPrincipal() instanceof UserInfoDetails) {
+            UserInfoDetails userDetails = (UserInfoDetails) authentication.getPrincipal();
+            return "Welcome " + userDetails.getUsername() + "your id is " + userDetails.getId();
+        }
+
+        return "User not authenticated";
     }
 }
