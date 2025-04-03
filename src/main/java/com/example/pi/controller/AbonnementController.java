@@ -3,6 +3,7 @@ package com.example.pi.controller;
 import com.example.pi.entity.Abonnement;
 import com.example.pi.service.AbonnementService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

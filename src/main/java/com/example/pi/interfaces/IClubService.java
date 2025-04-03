@@ -8,6 +8,8 @@ public interface IClubService {
     void deleteClub(Long id);
     List<Club> getAllClubs();
     Club getClubById(Long id);
+
+    Club affecterSportToClub(Long clubId, Long sportId);
 }
 
 

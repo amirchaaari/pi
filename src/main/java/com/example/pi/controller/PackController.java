@@ -1,8 +1,10 @@
 package com.example.pi.controller;
 
+import com.example.pi.entity.Club;
 import com.example.pi.entity.Pack;
 import com.example.pi.service.PackService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,4 +40,10 @@ public class PackController {
     public void removePack(@PathVariable Long id) {
         packService.deletePack(id);
     }
+
+    @PutMapping("/affect-pack/{packId}/to-club/{clubId}")
+    public Club affecterPackToClub(@PathVariable Long clubId, @PathVariable Long packId) {
+        return packService.affecterPackToClub(clubId, packId);
+    }
+
 }

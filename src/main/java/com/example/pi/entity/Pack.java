@@ -1,4 +1,8 @@
 package com.example.pi.entity;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Set;
@@ -14,26 +18,21 @@ public class Pack {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private double price;
 
-    @Column(nullable = false)
+    @Column
     private int duration; // en mois
 
     @ManyToOne
+    @JsonIgnore
     private Club club;
 
-    @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    //@JsonManagedReference("pack-abonnement")  // Nom explicite de la managed-reference
     private Set<Abonnement> abonnements;
 }
-
-
-
-
-
-
-
-

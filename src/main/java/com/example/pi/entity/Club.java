@@ -1,4 +1,7 @@
 package com.example.pi.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Set;
@@ -16,28 +19,32 @@ public class Club {
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
-        @Column(nullable = false, unique = true)
+        @Column
         private String name;
 
-        @Column(length = 500)
+        @Column
         private String description;
 
-        @Column(nullable = false)
+        @Column
         private int capacity;
 
 
 
-        @Column(nullable = false)
+        @Column
         private String status; // validé, non validé
 
         @ManyToMany(cascade = CascadeType.ALL)
+        @JsonIgnore
         private Set<Sport> sports;
 
         @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
+        @JsonIgnore
+        //@JsonManagedReference("club-pack")
         private Set<Pack> packs;
 
-        @ManyToOne
-        private UserInfo owner; // Lien avec UserInfo
+        @OneToOne
+        @JsonIgnore
+        private UserInfo owner;
 
 
 }

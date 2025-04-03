@@ -1,4 +1,6 @@
 package com.example.pi.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -15,21 +17,25 @@ public class Abonnement {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column
     private LocalDate startDate;
 
-    @Column(nullable = false)
+    @Column
     private LocalDate endDate;
 
-    @Column(nullable = false)
+    @Column
     private String status; // actif, expiré, annulé
 
     @ManyToOne
+    @JsonIgnore
+    //@JsonBackReference("abonnement-pack")
     private Pack pack;
 
 
     @ManyToOne
-    private UserInfo gymGoer; // Lien avec UserInfo
+    @JsonIgnore
+   // @JsonBackReference("abonnement-gymgoer")
+    private UserInfo gymGoer;
 }
 
 

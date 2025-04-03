@@ -24,14 +24,21 @@ public class AbonnementService implements IAbonnementService {
 
     @Override
     public Abonnement updateAbonnement(Long id, Abonnement abonnement) {
-        Optional<Abonnement> existingAbonnement = abonnementRepository.findById(id);
-        if (existingAbonnement.isPresent()) {
-            Abonnement updatedAbonnement = existingAbonnement.get();
-            updatedAbonnement.setStartDate(abonnement.getStartDate());
-            updatedAbonnement.setStatus(abonnement.getStatus());
-            return abonnementRepository.save(updatedAbonnement);
+        Optional<Abonnement> existingAbonnementOpt = abonnementRepository.findById(id);
+        if (existingAbonnementOpt.isPresent()) {
+            Abonnement existingAbonnement = existingAbonnementOpt.get();
+
+            // Mettre à jour les champs de l'abonnement
+            existingAbonnement.setStartDate(abonnement.getStartDate());
+            existingAbonnement.setEndDate(abonnement.getEndDate());  // Ajout de la mise à jour de la date de fin
+            existingAbonnement.setStatus(abonnement.getStatus());
+            existingAbonnement.setPack(abonnement.getPack());  // Mise à jour du pack
+            existingAbonnement.setGymGoer(abonnement.getGymGoer());  // Mise à jour du GymGoer
+
+            // Sauvegarder et retourner l'abonnement mis à jour
+            return abonnementRepository.save(existingAbonnement);
         }
-        return null;
+        return null;  // Si l'abonnement n'existe pas
     }
 
     @Override

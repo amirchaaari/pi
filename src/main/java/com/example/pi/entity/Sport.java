@@ -1,4 +1,6 @@
 package com.example.pi.entity;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.Set;
@@ -15,13 +17,15 @@ public class Sport {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column
     private String name;
 
-    @Column(length = 500)
+    @Column
     private String description;
 
     @ManyToMany(mappedBy = "sports", cascade = CascadeType.ALL)
+    @JsonIgnore
+    //@JsonBackReference("sport-club")
     private Set<Club> clubs;
 }
 

@@ -3,6 +3,7 @@ package com.example.pi.controller;
 import com.example.pi.entity.Club;
 import com.example.pi.service.ClubService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,5 +38,10 @@ public class ClubController {
     @DeleteMapping("/remove-club/{id}")
     public void removeClub(@PathVariable Long id) {
         clubService.deleteClub(id);
+    }
+
+    @PostMapping("/{clubId}/sports/{sportId}")
+    public Club affecterSportToClub(@PathVariable Long clubId, @PathVariable Long sportId) {
+        return clubService.affecterSportToClub(clubId, sportId);
     }
 }
