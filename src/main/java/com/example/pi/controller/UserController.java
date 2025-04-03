@@ -46,7 +46,8 @@ public class UserController {
     @GetMapping("/coach/coachProfile")
     @PreAuthorize("hasAuthority('ROLE_COACH')")
     public String coachProfile() {
-        return "Welcome to Coach Profile";
+        return service.getUserProfile();
+
     }
 
     /*delete a user*/

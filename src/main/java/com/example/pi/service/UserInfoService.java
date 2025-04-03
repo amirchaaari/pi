@@ -37,8 +37,23 @@ public class UserInfoService implements UserDetailsService {
         repository.deleteById(id);
     }
 
+//    public String addUser(UserInfo userInfo) {
+//        // Encode password before saving the user
+//        userInfo.setPassword(encoder.encode(userInfo.getPassword()));
+//        repository.save(userInfo);
+//        return "User Added Successfully";
+//    }
+
     public String addUser(UserInfo userInfo) {
-        // Encode password before saving the user
+        Optional<UserInfo> existingUser = repository.findByEmail(userInfo.getEmail());
+        if (existingUser.isPresent()) {
+            return "User already  exists";
+
+
+        }
+
+
+
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));
         repository.save(userInfo);
         return "User Added Successfully";
