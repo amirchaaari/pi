@@ -42,8 +42,8 @@ public class Club {
         //@JsonManagedReference("club-pack")
         private Set<Pack> packs;
 
-        @OneToOne
-        @JsonIgnore
+        @ManyToOne
+       @JsonIgnore
         private UserInfo owner;
 
 
