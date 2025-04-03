@@ -5,6 +5,7 @@
     import lombok.experimental.FieldDefaults;
 
     import java.time.LocalDate;
+    import java.time.LocalDateTime;
 
     @Entity
     @NoArgsConstructor
@@ -16,8 +17,13 @@
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
-        private int rating;
-        private LocalDate reviewDate;
+
+        @Column(nullable = false)
+        private Integer rating;
+
+        private String description;
+
+        private LocalDateTime createdAt = LocalDateTime.now();
 
         @ManyToOne
         private UserInfo user;

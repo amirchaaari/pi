@@ -1,10 +1,15 @@
 package com.example.pi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Id;
 import lombok.*;
 import jakarta.persistence.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+@Builder
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -12,14 +17,25 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Booking {
+    public enum Status { PENDING, APPROVED, REJECTED }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
-    String status;
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Builder.Default
+    private Status status = Status.PENDING;
 
     @ManyToOne
-    UserInfo user;
+    @JsonIgnore
+    private UserInfo user;
 
     @ManyToOne
-    TrainingSession trainingSession;
+    private TrainingSession trainingSession;
+
+    @Builder.Default
+    private LocalDateTime bookedAt = LocalDateTime.now();
+
+    private LocalDateTime resolvedAt;
 }

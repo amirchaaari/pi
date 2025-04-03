@@ -6,20 +6,38 @@ import com.example.pi.interfaces.trainingSession.ITrainingSessionService;
 import com.example.pi.repository.UserInfoRepository;
 import com.example.pi.repository.trainignSessionRepo.TrainingSessionRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class TrainingSessionService implements ITrainingSessionService {
-
+    @Autowired
     private final TrainingSessionRepository trainingSessionRepository;
+    @Autowired
     private final UserInfoRepository userInfoRepository;
 
     @Override
     public TrainingSession createSession(TrainingSession trainingSession) {
-        UserInfo coach = userInfoRepository.findById(trainingSession.getCoach().getId()).orElse(null);
+        //jib l email mtaa l user l connecté b token mteouu
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+
+
+        // njybou l coach m database
+        UserInfo coach = userInfoRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new RuntimeException("Coach not found with email: " + currentUserEmail));
+
+        // naffectiwah l trainingsession
         trainingSession.setCoach(coach);
+        if (trainingSession.getStartTime().isAfter(trainingSession.getEndTime())) {
+            throw new RuntimeException("Start time must be before end time");
+        }
+
         return trainingSessionRepository.save(trainingSession);
     }
 
