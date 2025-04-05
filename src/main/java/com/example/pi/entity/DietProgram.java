@@ -1,9 +1,13 @@
 package com.example.pi.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "DietProgram")
+@Getter
+@Setter
 public class DietProgram {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -53,6 +53,15 @@ public class RecipeController {
     public List<Recipe> addManyRecipes(@RequestBody List<Recipe> recipes) {
         return recipeService.addManyRecipes(recipes);
     }
+    // Recherche des recettes selon les ingrédients
+    @GetMapping("/findByIngredient")
+    public List<Recipe> findAIRecipesByIngredient(@RequestParam String ingredient) {
+        return recipeService.findAIRecipesByIngredient(ingredient);
+    }
+    @GetMapping("/findByMultipleIngredients")//akther men ingredient
+    public List<Recipe> findRecipesByIngredients(@RequestParam List<String> ingredients) {
+        return recipeService.findRecipesByIngredients(ingredients);
+    }
 
 
 }

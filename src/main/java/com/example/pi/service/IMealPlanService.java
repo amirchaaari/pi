@@ -18,4 +18,12 @@ public interface IMealPlanService {
     List<MealPlan> generatePersonalizedMealPlan(Long userId, int durationInDays);
 
     List<MealPlan> addManyMealPlans(List<MealPlan> MealPlans);
+
+    List<MealPlan> findMealPlansByUserIds(List<Long> userIds);
+
+    List<MealPlan> findMealPlansByDaysOfWeek(List<String> daysOfWeek);
+
+    List<MealPlan> findMealPlansByUserIdAndDayOfWeek(Long userId, String dayOfWeek);
+
+    List<MealPlan> findMealPlansByUserIdsAndDaysOfWeek(List<Long> userIds, List<String> daysOfWeek);
 }

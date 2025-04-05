@@ -18,4 +18,6 @@ public interface IRecipeService {
     List<Recipe> findAIRecipesByIngredient(String ingredient);
 
     List<Recipe> addManyRecipes(List<Recipe> Recipes);
+
+    List<Recipe> findRecipesByIngredients(List<String> ingredients);
 }

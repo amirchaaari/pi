@@ -54,4 +54,29 @@ public class MealPlanController {
     public List<MealPlan> addManyMealPlans(@RequestBody List<MealPlan> mealPlanList) {
         return mealPlanService.addManyMealPlans(mealPlanList);
     }
+    //advanced chwaya
+    // ycherchy mealplan par plusieurs userIds
+    @GetMapping("/findByMultipleUserIds")
+    public List<MealPlan> findMealPlansByUserIds(@RequestParam List<Long> userIds) {
+        return mealPlanService.findMealPlansByUserIds(userIds);
+    }
+
+    // ycherchy mealplan    par plusieurs jours de la semaine
+    @GetMapping("/findByMultipleDaysOfWeek")
+    public List<MealPlan> findMealPlansByDaysOfWeek(@RequestParam List<String> daysOfWeek) {
+        return mealPlanService.findMealPlansByDaysOfWeek(daysOfWeek);
+    }
+
+    // ycherchy mealplan bel  userId we jour de la semaine
+    @GetMapping("/findByUserIdAndDayOfWeek")
+    public List<MealPlan> findMealPlansByUserIdAndDayOfWeek(@RequestParam Long userId, @RequestParam String dayOfWeek) {
+        return mealPlanService.findMealPlansByUserIdAndDayOfWeek(userId, dayOfWeek);
+    }
+
+    // ycherchy mealplan  par plusieurs userIds et jours de la semaine
+    @GetMapping("/findByUserIdsAndDaysOfWeek")
+    public List<MealPlan> findMealPlansByUserIdsAndDaysOfWeek(@RequestParam List<Long> userIds, @RequestParam List<String> daysOfWeek) {
+        return mealPlanService.findMealPlansByUserIdsAndDaysOfWeek(userIds, daysOfWeek);
+    }
 }
+
