@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/auth/coach/**").hasAuthority("ROLE_COACH")
                         .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
+                        .requestMatchers("/clubs/**").hasAuthority("ROLE_CLUB_OWNER")
 
                         .anyRequest().authenticated() // Protect all other endpoints
                 )

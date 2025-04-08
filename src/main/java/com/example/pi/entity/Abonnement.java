@@ -1,10 +1,9 @@
 package com.example.pi.entity;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
-
 
 @Entity
 @Getter
@@ -28,20 +27,9 @@ public class Abonnement {
 
     @ManyToOne
     @JsonIgnore
-    //@JsonBackReference("abonnement-pack")
-    private Pack pack;
-
+    private Pack pack;  // L'abonnement est lié à un Pack
 
     @ManyToOne
     @JsonIgnore
-   // @JsonBackReference("abonnement-gymgoer")
-    private UserInfo gymGoer;
+    private UserInfo user; // L'abonnement est lié à un Utilisateur (Client)
 }
-
-
-
-
-
-
-
-

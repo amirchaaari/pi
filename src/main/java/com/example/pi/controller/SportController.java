@@ -26,17 +26,22 @@ public class SportController {
     }
 
     @PostMapping("/add-sport")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Sport addSport(@RequestBody Sport sport) {
         return sportService.createSport(sport);
     }
 
     @PutMapping("/update-sport/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public Sport updateSport(@PathVariable Long id, @RequestBody Sport sport) {
         return sportService.updateSport(id, sport);
     }
 
     @DeleteMapping("/remove-sport/{id}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void removeSport(@PathVariable Long id) {
         sportService.deleteSport(id);
     }
+
+
 }

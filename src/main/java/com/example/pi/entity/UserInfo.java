@@ -17,7 +17,7 @@ import java.util.Set;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Coach.class, name = "COACH"),
         @JsonSubTypes.Type(value = Nutritionist.class, name = "NUTRITIONIST"),
-        @JsonSubTypes.Type(value = Nutritionist.class, name = "USER"),
+        @JsonSubTypes.Type(value = UserInfo.class, name = "USER"),
         @JsonSubTypes.Type(value = ClubOwner.class, name = "ClubOwner")
 })
 @Entity
@@ -48,6 +48,7 @@ public class UserInfo {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<Club> clubs; // Un user peut créer plusieurs clubs
 
-    @OneToMany(mappedBy = "gymGoer", cascade = CascadeType.ALL)
-    private Set<Abonnement> abonnements; // Un user peut souscrire à plusieurs abonnement
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Abonnement> abonnements;
 }

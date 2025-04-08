@@ -4,7 +4,8 @@ import com.example.pi.entity.Abonnement;
 import java.util.List;
 
 public interface IAbonnementService {
-    Abonnement createAbonnement(Abonnement abonnement);
+    // Méthode pour créer un abonnement après validation du Club Owner
+    Abonnement createAbonnement(Long packId);
     Abonnement updateAbonnement(Long id, Abonnement abonnement);
     void deleteAbonnement(Long id);
     List<Abonnement> getAllAbonnements();
