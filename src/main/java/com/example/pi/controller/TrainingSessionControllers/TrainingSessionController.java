@@ -45,4 +45,6 @@ public class TrainingSessionController {
         trainingSessionService.deleteSession(id);
     }
 
+
+
 }

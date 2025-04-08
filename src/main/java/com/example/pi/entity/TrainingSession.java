@@ -29,6 +29,9 @@ public class TrainingSession {
     private LocalTime endTime;
     private int maxParticipants;
     private int sport;
+    private String hmsRoomId;
+    private String hmsRoomCode;
+    private String hmsRoomLink;
 
     @ManyToOne
     @JsonIgnore
