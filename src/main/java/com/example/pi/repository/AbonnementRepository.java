@@ -11,4 +11,5 @@ import java.util.List;
 public interface AbonnementRepository extends JpaRepository<Abonnement, Long> {
     List<Abonnement> findByUserId(int userId);
 
+    List<Abonnement> findByPack_Club_Owner_Id(int id);
 }
