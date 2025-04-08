@@ -11,4 +11,6 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
     Optional<UserInfo> findByEmail(String email); // Use 'email' if that is the correct field for login
 
     void deleteByEmail(String email);
+
+    Optional<Object> findByUsername(String username);
 }

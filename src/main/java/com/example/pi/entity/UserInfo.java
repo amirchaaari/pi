@@ -45,4 +45,11 @@ public class UserInfo {
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     @JsonIgnore
     private Set<Review> reviews;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Set<Club> clubs; // Un user peut créer plusieurs clubs
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Abonnement> abonnements;
 }
