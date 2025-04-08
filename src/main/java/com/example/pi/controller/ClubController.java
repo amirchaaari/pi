@@ -60,11 +60,11 @@ public class ClubController {
     @PostMapping("/submit-creation-request")
     @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
     public Club submitClubCreationRequest(@RequestBody ClubCreationRequest request) {
-        // Soumettre la demande de création de club et récupérer le Club créé
         ClubCreationRequest creationRequest = clubService.submitClubCreationRequest(request);
-
-        // Approuver la demande et créer un Club
-        return clubService.approveClubCreationRequest(creationRequest.getId());
+        if (creationRequest != null) {
+            return clubService.approveClubCreationRequest(creationRequest.getId());
+        }
+        return null;  // Retourne null si la demande n'a pas été soumise correctement
     }
 
     // Afficher les demandes en attente (accessible uniquement par un administrateur)

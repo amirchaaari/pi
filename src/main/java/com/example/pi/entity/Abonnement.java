@@ -23,7 +23,7 @@ public class Abonnement {
     private LocalDate endDate;
 
     @Column
-    private String status; // actif, expiré, annulé
+    private String status;
 
     @ManyToOne
     @JsonIgnore
