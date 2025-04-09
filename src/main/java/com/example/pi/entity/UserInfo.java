@@ -17,8 +17,9 @@ import java.util.Set;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Coach.class, name = "COACH"),
         @JsonSubTypes.Type(value = Nutritionist.class, name = "NUTRITIONIST"),
-        @JsonSubTypes.Type(value = Nutritionist.class, name = "USER"),
-        @JsonSubTypes.Type(value = ClubOwner.class, name = "ClubOwner")
+        @JsonSubTypes.Type(value = UserInfo.class, name = "USER"),
+        @JsonSubTypes.Type(value = ClubOwner.class, name = "ClubOwner"),
+        @JsonSubTypes.Type(value = UserInfo.class, name = "ADMIN")
 })
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
