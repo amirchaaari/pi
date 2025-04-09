@@ -45,11 +45,11 @@ public class TrainingSessionService implements ITrainingSessionService {
 
         // naffectiwah l trainingsession
         trainingSession.setCoach(coach);
-        String roomId = hmsService.createRoom(trainingSession);
+      /*  String roomId = hmsService.createRoom(trainingSession);
         System.out.println(roomId);
         String meetLink = hmsService.generateMeetingLink(roomId);
         trainingSession.setHmsRoomId(roomId);
-        trainingSession.setHmsRoomLink(meetLink);
+        trainingSession.setHmsRoomLink(meetLink); */
         if (trainingSession.getStartTime().isAfter(trainingSession.getEndTime())) {
             throw new RuntimeException("Start time must be before end time");
         }
