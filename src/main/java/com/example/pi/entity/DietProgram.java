@@ -3,11 +3,13 @@ package com.example.pi.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name = "DietProgram")
 @Getter
 @Setter
+@Component
 public class DietProgram {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

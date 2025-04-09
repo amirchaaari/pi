@@ -1,8 +1,10 @@
 package com.example.pi.entity;
 
 import jakarta.persistence.*;
+import org.springframework.stereotype.Component;
 
 @Entity
+@Component
 public class MealPlan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
