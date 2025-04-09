@@ -46,13 +46,12 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken","/auth/deleteUser/{id}").permitAll()
                         .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
-                        .requestMatchers("/bookings").hasAuthority("ROLE_USER")
+                        .requestMatchers("/bookings","/abonnement-requests/**").hasAuthority("ROLE_USER")
                         .requestMatchers("/bookings/*/approve", "/bookings/*/reject").hasAuthority("ROLE_COACH")
-                        .requestMatchers("/auth/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/auth/admin/**","/clubs/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/auth/coach/**").hasAuthority("ROLE_COACH")
                         .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
                         .requestMatchers("/clubs/**").hasAuthority("ROLE_CLUB_OWNER")
-
                         .anyRequest().authenticated() // Protect all other endpoints
                 )
                 .sessionManagement(sess -> sess

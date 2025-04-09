@@ -30,8 +30,12 @@ public class Club {
 
 
 
-        @Column
-        private String status; // validé, non validé
+        @Enumerated(EnumType.STRING)
+        private Club.RequestStatus status; // Status de la demande (APPROVED, PENDING, REJECTED)
+
+        public enum RequestStatus {
+                PENDING, APPROVED, REJECTED
+        }
 
         @ManyToMany(cascade = CascadeType.ALL)
         @JsonIgnore
