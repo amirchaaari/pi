@@ -68,6 +68,7 @@ public class ClubService {
         club.setDescription(request.getDescription());
         club.setCapacity(request.getCapacity());
         club.setOwner(request.getClubOwner());
+        club.setStatus(Club.RequestStatus.APPROVED);
         return clubRepository.save(club);
     }
 

@@ -3,26 +3,30 @@ package com.example.pi.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Entity
 @Getter
 @Setter
-public class ClubCreationRequest {
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "abonnement_requests")
+public class AbonnementRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
-    private UserInfo clubOwner;
+    private UserInfo user;
 
-    private String name;
-    private String description;
-    private int capacity;
+    @ManyToOne
+    private Pack pack;
 
     @Enumerated(EnumType.STRING)
-    private RequestStatus status; // Status de la demande (APPROVED, PENDING, REJECTED)
+    private RequestStatus status; // PENDING, APPROVED, REJECTED
+
+    private LocalDate requestedDate;
 
     public enum RequestStatus {
         PENDING, APPROVED, REJECTED
