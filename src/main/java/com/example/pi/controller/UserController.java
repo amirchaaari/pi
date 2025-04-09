@@ -80,4 +80,11 @@ public class UserController {
             throw new UsernameNotFoundException("Invalid user request!");
         }
     }
+
+    @GetMapping("/verify")
+    public String verifyUser(@RequestParam("token") String token) {
+        return service.verifyUser(token);
+    }
+
+
 }
