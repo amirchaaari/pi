@@ -42,6 +42,13 @@ public class UserInfo {
     @Column(nullable = false)
     private String roles;
 
+    @Column
+    private boolean enabled = false;
+
+    @Column(unique = true)
+    private String verificationToken;
+
+    private LocalDateTime verificationTokenExpiry;
 
     @Column(unique = true)
     private String resetToken;

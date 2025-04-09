@@ -12,5 +12,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
 
     void deleteByEmail(String email);
     Optional<UserInfo> findByResetToken(String resetToken);
+    Optional<UserInfo> findByVerificationToken(String verificationToken);
+
 
 }
