@@ -58,18 +58,18 @@ public class HmsService {
                 String.class
         );
 
-        if (response.getStatusCode() == HttpStatus.OK) {
-            JSONObject json = new JSONObject(response.getBody());
-            JSONArray dataArray = json.getJSONArray("data");
-
-            for (int i = 0; i < dataArray.length(); i++) {
-                JSONObject obj = dataArray.getJSONObject(i);
-                if ("host".equalsIgnoreCase(obj.getString("role"))) {
-                    String code = obj.getString("code");
-                    return BASE_MEETING_URL + code;
-                }
-            }
-        }
+//        if (response.getStatusCode() == HttpStatus.OK) {
+//            JSONObject json = new JSONObject(response.getBody());
+//            JSONArray dataArray = json.getJSONArray("data");
+//
+//            for (int i = 0; i < dataArray.length(); i++) {
+//                JSONObject obj = dataArray.getJSONObject(i);
+//                if ("host".equalsIgnoreCase(obj.getString("role"))) {
+//                    String code = obj.getString("code");
+//                    return BASE_MEETING_URL + code;
+//                }
+//            }
+//        }
 
         return null; // or throw an error/exception
     }

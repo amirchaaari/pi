@@ -60,8 +60,27 @@ public class TrainingSessionService implements ITrainingSessionService {
 
     @Override
     public TrainingSession updateSession(Long id, TrainingSession trainingSession) {
-        trainingSession.setId(id);
-        return trainingSessionRepository.save(trainingSession);
+        // Check if the session exists
+        TrainingSession existingSession = trainingSessionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Training session not found with id: " + id));
+
+        // Update the fields of the existing session
+        if(!id.equals(existingSession.getId())) { return existingSession; }
+        existingSession.setId(id);
+        existingSession.setDate(trainingSession.getDate());
+        existingSession.setDescription(trainingSession.getDescription());
+        existingSession.setStartTime(trainingSession.getStartTime());
+        existingSession.setEndTime(trainingSession.getEndTime());
+        existingSession.setMaxParticipants(trainingSession.getMaxParticipants());
+        existingSession.setSport(trainingSession.getSport());
+        existingSession.setCoach(trainingSession.getCoach());
+        existingSession.setReviews(trainingSession.getReviews());
+        existingSession.setExercices(trainingSession.getExercices());
+        existingSession.setBookings(trainingSession.getBookings());
+        // Add other fields to update as needed
+
+        // Save the updated session
+        return trainingSessionRepository.save(existingSession);
     }
 
     @Override

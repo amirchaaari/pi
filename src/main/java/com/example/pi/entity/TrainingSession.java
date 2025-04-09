@@ -27,7 +27,7 @@ public class TrainingSession {
     private LocalDate date;
     private LocalTime startTime;
     private LocalTime endTime;
-  //  private int maxParticipants;
+    private int maxParticipants = 10;
     private int sport;
     private String hmsRoomId;
     private String hmsRoomCode;
