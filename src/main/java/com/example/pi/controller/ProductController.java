@@ -1,7 +1,7 @@
 package com.example.pi.controller;
 
 import com.example.pi.entity.Product;
-import com.example.pi.service.ProductServiceImpl;
+import com.example.pi.serviceimp.ProductServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

@@ -1,5 +1,6 @@
 package com.example.pi.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,9 +22,10 @@ public class Command {
     @JoinColumn(name = "user_id")
     private UserInfo user;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
-   @JoinColumn(name = "product_id")
-   private Product product;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    @JsonBackReference // This prevents circular serialization
+    private Product product;
 
 
     private Integer quantity;

@@ -1,6 +1,7 @@
 package com.example.pi.service;
 
 import com.example.pi.entity.Promotion;
+
 import java.util.List;
 
 public interface PromotionService {

@@ -1,7 +1,7 @@
 package com.example.pi.controller;
 
 import com.example.pi.entity.Promotion;
-import com.example.pi.service.PromotionService; // Ensure correct import
+import com.example.pi.service.PromotionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

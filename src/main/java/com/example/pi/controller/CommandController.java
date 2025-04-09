@@ -1,10 +1,11 @@
 package com.example.pi.controller;
 
 import com.example.pi.entity.Command;
-import com.example.pi.service.CommandService; // Ensure correct import
+import com.example.pi.service.CommandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,9 +33,10 @@ public class CommandController {
     }
 
     @PostMapping
-    public ResponseEntity<Command> createCommand(@RequestBody Command command) {
-        Command createdCommand = commandService.createCommand(command); // Save new command
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdCommand); // Return 201 status
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Command> createCommand(@RequestParam Long productId, @RequestParam Integer quantity) {
+        Command createdCommand = commandService.createCommand(productId, quantity);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCommand);
     }
 
     @PutMapping("/{id}")
@@ -46,11 +48,18 @@ public class CommandController {
             return ResponseEntity.notFound().build(); // Return 404 if not found
         }
     }
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Command>> getCommandsByUser(@PathVariable Long userId) {
+        List<Command> commands = commandService.getCommandsByUser(userId);
+        return ResponseEntity.ok(commands);
+    }
+
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Void> deleteCommand(@PathVariable Long id) {
-        commandService.deleteById(id); // Delete command by ID
-        return ResponseEntity.noContent().build(); // Return 204 status
+        commandService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(Exception.class)
