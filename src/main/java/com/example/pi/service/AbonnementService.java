@@ -6,6 +6,7 @@ import com.example.pi.entity.UserInfo;
 import com.example.pi.interfaces.IAbonnementService;
 import com.example.pi.repository.AbonnementRepository;
 import com.example.pi.repository.PackRepository;
+import com.example.pi.repository.UserInfoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -21,11 +22,12 @@ public class AbonnementService implements IAbonnementService {
 
     private final AbonnementRepository abonnementRepository;
     private final PackRepository packRepository;
+    private final UserInfoRepository userInfoRepository;
 
     // Méthode pour récupérer l'utilisateur connecté
     private UserInfo getCurrentUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return (principal instanceof UserInfo) ? (UserInfo) principal : null;
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userInfoRepository.findByEmail(username).orElse(null);
     }
 
     // Un utilisateur fait une demande d’abonnement (statut par défaut : en_attente)
