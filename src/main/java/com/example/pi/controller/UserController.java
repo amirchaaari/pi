@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/auth")
 public class UserController {
@@ -78,6 +80,13 @@ public class UserController {
         } else {
             throw new UsernameNotFoundException("Invalid user request!");
         }
+    }
+
+
+    // add a function that  fetches all user
+    @GetMapping("/users")
+    public List<UserInfo> getAllUsers() {
+        return service.getAllUsers();
     }
 
 
