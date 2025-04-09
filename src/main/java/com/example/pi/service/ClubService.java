@@ -122,35 +122,76 @@ public class ClubService {
     // Supprimer un club
     public boolean deleteClub(Long id) {
         Optional<Club> clubOpt = clubRepository.findById(id);
+        UserInfo currentUser = getAuthenticatedUser();
+
         if (clubOpt.isEmpty()) {
-            return false;  // Retourne false si le club n'est pas trouvé
+            throw new RuntimeException("Club not found with id: " + id);
         }
-        clubRepository.delete(clubOpt.get());  // Supprime le club
+
+        Club club = clubOpt.get();
+
+        // Check if user is owner or admin
+        if (!club.getOwner().equals(currentUser) && 
+            !currentUser.getRoles().contains("ROLE_ADMIN")) {
+            throw new RuntimeException("Not authorized to delete this club");
+        }
+
+        clubRepository.delete(club);
         return true;
     }
 
     public Club getClubById(Long id) {
-        return clubRepository.findById(id).orElse(null);  // Retourne null si le club n'est pas trouvé
+        return clubRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Club not found with id: " + id));
     }
 
     public List<Club> getAllClubs() {
-        return clubRepository.findAll();
+        UserInfo currentUser = getAuthenticatedUser();
+        
+        // If user is admin, return all clubs
+        if (currentUser.getRoles().contains("ROLE_ADMIN")) {
+            return clubRepository.findAll();
+        }
+        
+        // If user is club owner, return only their clubs
+        if (currentUser.getRoles().contains("ROLE_CLUB_OWNER")) {
+            return clubRepository.findByOwner(currentUser);
+        }
+        
+        // For regular users, return only approved clubs
+        return clubRepository.findByStatus(Club.RequestStatus.APPROVED);
     }
 
     public Club createClub(Club club) {
+        UserInfo owner = getAuthenticatedUser();
+        if (owner == null) {
+            throw new RuntimeException("User not authenticated");
+        }
+        club.setOwner(owner);
+        club.setStatus(Club.RequestStatus.PENDING); // New clubs start as pending
         return clubRepository.save(club);
     }
 
-    public Club updateClub(Long id, Club club) {
+    public Club updateClub(Long id, Club updatedClub) {
         Optional<Club> existingClubOpt = clubRepository.findById(id);
+        UserInfo currentUser = getAuthenticatedUser();
+
         if (existingClubOpt.isEmpty()) {
-            return null;  // Retourne null si le club n'est pas trouvé
+            throw new RuntimeException("Club not found with id: " + id);
         }
 
         Club existingClub = existingClubOpt.get();
-        existingClub.setName(club.getName());
-        existingClub.setDescription(club.getDescription());
-        existingClub.setCapacity(club.getCapacity());
+        
+        // Check if user is owner or admin
+        if (!existingClub.getOwner().equals(currentUser) && 
+            !currentUser.getRoles().contains("ROLE_ADMIN")) {
+            throw new RuntimeException("Not authorized to update this club");
+        }
+
+        existingClub.setName(updatedClub.getName());
+        existingClub.setDescription(updatedClub.getDescription());
+        existingClub.setCapacity(updatedClub.getCapacity());
+        
         return clubRepository.save(existingClub);
     }
 }

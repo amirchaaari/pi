@@ -7,8 +7,11 @@ import com.example.pi.entity.UserInfo;
 import com.example.pi.repository.AbonnementRepository;
 import com.example.pi.repository.AbonnementRequestRepository;
 import com.example.pi.repository.PackRepository;
+import com.example.pi.repository.UserInfoRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -16,31 +19,52 @@ import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 @Transactional
 public class AbonnementRequestService {
 
+    private static final Logger logger = LoggerFactory.getLogger(AbonnementRequestService.class);
     private final AbonnementRequestRepository requestRepository;
     private final AbonnementRepository abonnementRepository;
     private final PackRepository packRepository;
+    private final UserInfoRepository userRepository;
 
+//    private UserInfo getCurrentUser() {
+//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//        return (principal instanceof UserInfo) ? (UserInfo) principal : null;
+//    }
     private UserInfo getCurrentUser() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return (principal instanceof UserInfo) ? (UserInfo) principal : null;
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findByEmail(username).orElse(null);
+
     }
+
 
     // Demande d’abonnement par GymGoer
     public AbonnementRequest createRequest(Long packId) {
         UserInfo currentUser = getCurrentUser();
         Optional<Pack> optionalPack = packRepository.findById(packId);
-        if (currentUser == null || optionalPack.isEmpty()) return null;
+
+        System.out.println("Creating request for pack " + packId + " by user " + (currentUser != null ? currentUser.getEmail() : "null"));
+
+
+        if (currentUser == null || optionalPack.isEmpty()) {
+            logger.error("Failed to create request: user={}, pack exists={}", 
+                currentUser != null, optionalPack.isPresent());
+            return null;
+        }
+
         AbonnementRequest request = new AbonnementRequest();
         request.setUser(currentUser);
         request.setPack(optionalPack.get());
         request.setRequestedDate(LocalDate.now());
         request.setStatus(AbonnementRequest.RequestStatus.PENDING);
-        return requestRepository.save(request);
+
+        AbonnementRequest saved = requestRepository.save(request);
+        logger.debug("Created request with id: {}", saved.getId());
+        return saved;
     }
 
     // Validation par Club Owner
