@@ -6,7 +6,10 @@ import com.example.pi.entity.Livraison;
 import com.example.pi.repository.LivraisonRepository;
 import com.example.pi.serviceInterface.ILivraisonInterface;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -41,6 +44,30 @@ public class LivraisonService implements ILivraisonInterface {
     public void removeLivraison(int IdLivraison) {
         livraisonRepository.deleteById((long) IdLivraison);
 
+    }
+
+
+    public Livraison scheduleDelivery(Long livraisonId, Date scheduledDate) {
+        Optional<Livraison> livraisonOpt = livraisonRepository.findById(livraisonId);
+
+        if (livraisonOpt.isPresent()) {
+            Livraison livraison = livraisonOpt.get();
+            livraison.setScheduleddate(scheduledDate);
+            livraisonRepository.save(livraison);
+        }
+
+        return livraisonOpt.orElse(null);
+    }
+
+
+    public void confirmLivraison(Long livraisonId) {
+        Optional<Livraison> livraisonOpt = livraisonRepository.findById(livraisonId);
+
+        if (livraisonOpt.isPresent()) {
+            Livraison livraison = livraisonOpt.get();
+            livraison.setStatus(Livraison.DeliveryStatus.DELIVERED);
+            livraisonRepository.save(livraison);
+        }
     }
 
 

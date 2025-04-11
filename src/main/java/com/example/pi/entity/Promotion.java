@@ -1,5 +1,6 @@
 package com.example.pi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,7 +26,9 @@ public class Promotion {
 
     private LocalDate startDate;
     private LocalDate endDate;
+    private LocalDate expiryDate;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="promotion")
-    private Set<Category> categories;
+    /*@OneToMany(cascade = CascadeType.ALL, mappedBy="promotion")
+    @JsonIgnore
+    private Set<Category> categories;*/
 }

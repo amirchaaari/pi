@@ -30,10 +30,23 @@ public class Livraison {
     @Temporal(TemporalType.DATE)
     private Date duration;
 
-    private String status;
+    @Temporal(TemporalType.DATE)
+    private Date scheduleddate;
+
+
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy="livraison")
     private Set<Command> commands;
+
+    @Enumerated(EnumType.STRING)
+    private DeliveryStatus status;
+
+
+
+
+    public enum DeliveryStatus {
+        PENDING, DISPATCHED, DELIVERED
+    }
 }
 
 

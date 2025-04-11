@@ -33,7 +33,7 @@ public class PromotionController {
     }
 
     // Create a new promotion
-    @PostMapping
+    @PostMapping("/add-promotion")
     public ResponseEntity<Promotion> createPromotion(@RequestBody Promotion promotion) {
         Promotion savedPromotion = promotionService.save(promotion);
         return new ResponseEntity<>(savedPromotion, HttpStatus.CREATED);
