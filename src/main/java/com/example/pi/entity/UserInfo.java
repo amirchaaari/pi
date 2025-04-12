@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @JsonTypeInfo(
@@ -33,10 +34,27 @@ public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(nullable = false)
     private String name;
+    @Column(unique = true, nullable = false)
     private String email;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
     private String roles;
+
+    @Column
+    private boolean enabled = false;
+
+    @Column(unique = true)
+    private String verificationToken;
+
+    private LocalDateTime verificationTokenExpiry;
+
+    @Column(unique = true)
+    private String resetToken;
+
+    private LocalDateTime tokenExpiryTime;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="coach")
     @JsonIgnore
@@ -45,4 +63,10 @@ public class UserInfo {
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     @JsonIgnore
     private Set<Review> reviews;
+
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Set<Club> clubs; // Un user peut créer plusieurs clubs
+
+    @OneToMany(mappedBy = "gymGoer", cascade = CascadeType.ALL)
+    private Set<Abonnement> abonnements; // Un user peut souscrire à plusieurs abonnement
 }
