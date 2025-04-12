@@ -131,14 +131,21 @@ public class ClubService {
         Club club = clubOpt.get();
 
         // Check if user is owner or admin
-        if (!club.getOwner().equals(currentUser) && 
-            !currentUser.getRoles().contains("ROLE_ADMIN")) {
+        if (!club.getOwner().equals(currentUser) &&
+                !currentUser.getRoles().contains("ROLE_ADMIN")) {
             throw new RuntimeException("Not authorized to delete this club");
         }
+
+        // 🔄 Dissocier les sports avant suppression
+        for (Sport sport : club.getSports()) {
+            sport.getClubs().remove(club);
+        }
+        club.getSports().clear();
 
         clubRepository.delete(club);
         return true;
     }
+
 
     public Club getClubById(Long id) {
         return clubRepository.findById(id)

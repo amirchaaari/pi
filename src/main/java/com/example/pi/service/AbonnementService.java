@@ -30,45 +30,6 @@ public class AbonnementService implements IAbonnementService {
         return userInfoRepository.findByEmail(username).orElse(null);
     }
 
-    // Un utilisateur fait une demande d’abonnement (statut par défaut : en_attente)
-    @Override
-    public Abonnement createAbonnement(Long packId) {
-        UserInfo currentUser = getCurrentUser();
-        if (currentUser == null) return null;
-
-        Optional<Pack> optionalPack = packRepository.findById(packId);
-        if (optionalPack.isEmpty()) return null;
-
-        Pack pack = optionalPack.get();
-        int duration = (pack.getDuration() > 0) ? pack.getDuration() : 1;
-
-        Abonnement abonnement = new Abonnement();
-        abonnement.setPack(pack);
-        abonnement.setUser(currentUser);
-        abonnement.setStartDate(LocalDate.now());
-        abonnement.setEndDate(LocalDate.now().plusMonths(duration));
-        abonnement.setStatus("en_attente");
-
-        return abonnementRepository.save(abonnement);
-    }
-
-    // Le Club Owner valide la demande d'abonnement
-    public Abonnement validerAbonnement(Long abonnementId) {
-        Optional<Abonnement> optional = abonnementRepository.findById(abonnementId);
-        if (optional.isEmpty()) return null;
-
-        Abonnement abonnement = optional.get();
-        UserInfo currentUser = getCurrentUser();
-        if (currentUser == null) return null;
-
-        int ownerId = abonnement.getPack().getClub().getOwner().getId();
-        if (currentUser.getId() == ownerId) {
-            abonnement.setStatus("actif");
-            return abonnementRepository.save(abonnement);
-        }
-
-        return null;
-    }
 
     // Le Club Owner peut modifier les informations d’un abonnement
     @Override
@@ -112,10 +73,9 @@ public class AbonnementService implements IAbonnementService {
     // Accès à un abonnement : utilisateur concerné ou owner du club
     @Override
     public Abonnement getAbonnementById(Long id) {
-        Optional<Abonnement> optional = abonnementRepository.findById(id);
-        if (optional.isEmpty()) return null;
+        Abonnement abonnement = updateAbonnementStatusIfExpired(id); // vérification automatique du statut
+        if (abonnement == null) return null;
 
-        Abonnement abonnement = optional.get();
         UserInfo currentUser = getCurrentUser();
         if (currentUser == null) return null;
 
@@ -129,13 +89,27 @@ public class AbonnementService implements IAbonnementService {
         return null;
     }
 
+
     // Liste des abonnements de l’utilisateur connecté
     @Override
     public List<Abonnement> getAllAbonnements() {
         UserInfo currentUser = getCurrentUser();
         if (currentUser == null) return Collections.emptyList();
-        return abonnementRepository.findByUserId(currentUser.getId());
+
+        List<Abonnement> abonnements = abonnementRepository.findByUserId(currentUser.getId());
+
+        abonnements.forEach(abonnement -> {
+            if (abonnement.getEndDate().isBefore(LocalDate.now()) && !"expiré".equalsIgnoreCase(abonnement.getStatus())) {
+                abonnement.setStatus("expiré");
+                abonnementRepository.save(abonnement);
+            }
+        });
+
+        return abonnementRepository.findAll();
     }
+
+
+
 
     // Le Club Owner voit toutes les demandes d’abonnements sur ses packs
     public List<Abonnement> getAbonnementsForClubOwner() {
@@ -143,4 +117,19 @@ public class AbonnementService implements IAbonnementService {
         if (currentUser == null) return Collections.emptyList();
         return abonnementRepository.findByPack_Club_Owner_Id(currentUser.getId());
     }
+
+    public Abonnement updateAbonnementStatusIfExpired(Long abonnementId) {
+        Optional<Abonnement> optional = abonnementRepository.findById(abonnementId);
+        if (optional.isEmpty()) return null;
+
+        Abonnement abonnement = optional.get();
+        LocalDate today = LocalDate.now();
+
+        if (abonnement.getEndDate().isBefore(today)) {
+            abonnement.setStatus("expiré");
+        }
+
+        return abonnementRepository.save(abonnement);
+    }
+
 }

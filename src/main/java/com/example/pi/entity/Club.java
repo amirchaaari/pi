@@ -37,7 +37,7 @@ public class Club {
                 PENDING, APPROVED, REJECTED
         }
 
-        @ManyToMany(cascade = CascadeType.ALL)
+        @ManyToMany
         @JsonIgnore
         private Set<Sport> sports;
 

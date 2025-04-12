@@ -29,6 +29,12 @@ public class AbonnementRequestController {
         return requestService.validateRequest(requestId);
     }
 
+    // Le Club Owner rejette une demande
+    @PutMapping("/reject/{requestId}")
+    @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
+    public AbonnementRequest rejectRequest(@PathVariable Long requestId) {
+        return requestService.rejectRequest(requestId);  // Appel à la méthode de rejet dans le service
+    }
     // Le Club Owner récupère les demandes
     @GetMapping("/club-owner/requests")
     @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
