@@ -42,9 +42,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) //  This line enables CORS with your bean
-
-                .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless APIs
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
+                .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken","/auth/deleteUser/{id}").permitAll()
                         .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
@@ -54,8 +53,6 @@ public class SecurityConfig {
                         .requestMatchers("/auth/coach/**").hasAuthority("ROLE_COACH")
                         .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
                         .requestMatchers("/clubs/**").hasAuthority("ROLE_CLUB_OWNER")
-                        .requestMatchers("/auth/**").permitAll() // this line is key
-
                         .anyRequest().authenticated() // Protect all other endpoints
                 )
                 .sessionManagement(sess -> sess

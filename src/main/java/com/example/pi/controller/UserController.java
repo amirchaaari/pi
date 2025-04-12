@@ -46,8 +46,7 @@ public class UserController {
     @GetMapping("/coach/coachProfile")
     @PreAuthorize("hasAuthority('ROLE_COACH')")
     public String coachProfile() {
-        return service.getUserProfile();
-
+        return "Welcome to Coach Profile";
     }
 
     /*delete a user*/
@@ -80,11 +79,4 @@ public class UserController {
             throw new UsernameNotFoundException("Invalid user request!");
         }
     }
-
-    @GetMapping("/verify")
-    public String verifyUser(@RequestParam("token") String token) {
-        return service.verifyUser(token);
-    }
-
-
 }
