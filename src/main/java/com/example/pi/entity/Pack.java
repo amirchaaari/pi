@@ -35,4 +35,9 @@ public class Pack {
     @JsonIgnore
     //@JsonManagedReference("pack-abonnement")  // Nom explicite de la managed-reference
     private Set<Abonnement> abonnements;
+
+    @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    //@JsonManagedReference("pack-abonnement")  // Nom explicite de la managed-reference
+    private Set<AbonnementRequest> abonnementsrequests;
 }

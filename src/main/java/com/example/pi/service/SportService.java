@@ -1,5 +1,6 @@
 package com.example.pi.service;
 
+import com.example.pi.entity.Club;
 import com.example.pi.entity.Sport;
 import com.example.pi.interfaces.ISportService;
 import com.example.pi.repository.SportRepository;
@@ -37,8 +38,22 @@ public class SportService implements ISportService {
 
     @Override
     public void deleteSport(Long id) {
-        sportRepository.deleteById(id);
+        Optional<Sport> sportOpt = sportRepository.findById(id);
+        if (sportOpt.isEmpty()) {
+            throw new RuntimeException("Sport not found with id: " + id);
+        }
+
+        Sport sport = sportOpt.get();
+
+        // 🔄 Dissocier les clubs avant suppression
+        for (Club club : sport.getClubs()) {
+            club.getSports().remove(sport);
+        }
+        sport.getClubs().clear();
+
+        sportRepository.delete(sport);
     }
+
 
     @Override
     public Sport getSportById(Long id) {

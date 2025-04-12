@@ -17,9 +17,9 @@ public class AbonnementController {
 
     // Récupérer tous les abonnements de l'utilisateur authentifié (Club Owner)
     @GetMapping("/retrieve-all-abonnements")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
+    @PreAuthorize("hasRole('ROLE_CLUB_OWNER') or hasRole('ROLE_ADMIN')")
     public List<Abonnement> getAllAbonnements() {
-        // Récupère tous les abonnements pour le Club Owner authentifié
+        // Récupère tous les abonnements pour le Club Owner authentifié et le admin
         return abonnementService.getAllAbonnements();
     }
 
@@ -31,13 +31,6 @@ public class AbonnementController {
         return abonnementService.getAbonnementById(id);
     }
 
-    // Ajouter un abonnement - réservé aux Club Owners ou Admins
-    @PostMapping("/add-abonnement")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER') or hasRole('ROLE_ADMIN')")
-    public Abonnement addAbonnement(@RequestBody Long packId) {
-        // Crée un abonnement pour le Club Owner avec le Pack spécifié
-        return abonnementService.createAbonnement(packId);
-    }
 
     // Mettre à jour un abonnement par Club Owners ou Admins
     @PutMapping("/update-abonnement/{id}")
@@ -55,10 +48,4 @@ public class AbonnementController {
         abonnementService.deleteAbonnement(id);
     }
 
-    // Valider un abonnement par Club Owner
-    @PutMapping("/validate-abonnement/{id}")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
-    public Abonnement validateAbonnement(@PathVariable Long id) {
-        return abonnementService.validerAbonnement(id);
-    }
 }

@@ -90,6 +90,14 @@ public class AbonnementRequestService {
         return abonnementRepository.save(abonnement);
     }
 
+    // Rejeter une demande
+    public AbonnementRequest rejectRequest(Long requestId) {
+        AbonnementRequest request = requestRepository.findById(requestId)
+                .orElseThrow(() -> new IllegalArgumentException("Demande non trouvée"));
+        request.setStatus(AbonnementRequest.RequestStatus.REJECTED);  // Changer le statut à "rejeté"
+        return requestRepository.save(request);  // Sauvegarder la demande rejetée dans le repository
+    }
+
     // Liste des demandes pour un Club Owner
     public List<AbonnementRequest> getRequestsForOwner() {
         UserInfo currentUser = getCurrentUser();

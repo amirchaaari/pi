@@ -5,7 +5,6 @@ import java.util.List;
 
 public interface IAbonnementService {
     // Méthode pour créer un abonnement après validation du Club Owner
-    Abonnement createAbonnement(Long packId);
     Abonnement updateAbonnement(Long id, Abonnement abonnement);
     void deleteAbonnement(Long id);
     List<Abonnement> getAllAbonnements();
