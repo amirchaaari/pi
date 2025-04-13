@@ -25,6 +25,9 @@ public class Abonnement {
     @Column
     private String status;
 
+    @Column
+    private LocalDate endDateOfRenewal;  // Nouvelle date de fin pour le renouvellement
+
     @ManyToOne
     @JsonIgnore
     private Pack pack;  // L'abonnement est lié à un Pack
