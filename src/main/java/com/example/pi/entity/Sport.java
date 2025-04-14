@@ -23,15 +23,8 @@ public class Sport {
     @Column
     private String description;
 
-    @ManyToMany(mappedBy = "sports")
+    @ManyToMany(mappedBy = "sports", cascade = CascadeType.ALL)
     @JsonIgnore
     //@JsonBackReference("sport-club")
     private Set<Club> clubs;
 }
-
-
-
-
-
-
-
