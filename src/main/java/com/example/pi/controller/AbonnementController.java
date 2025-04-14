@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -47,20 +46,6 @@ public class AbonnementController {
     public void removeAbonnement(@PathVariable Long id) {
         // Supprime l'abonnement spécifié
         abonnementService.deleteAbonnement(id);
-    }
-
-    @PutMapping("/renew-abonnement/{id}")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public Abonnement renewAbonnement(@PathVariable Long id, @RequestParam("newEndDate") LocalDate newEndDate) {
-        return abonnementService.renewAbonnement(id, newEndDate);
-    }
-
-
-    // Récupérer l'historique des abonnements pour l'utilisateur connecté
-    @GetMapping("/user-history")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public List<Abonnement> getUserAbonnementsHistory() {
-        return abonnementService.getUserAbonnementsHistory();
     }
 
 }

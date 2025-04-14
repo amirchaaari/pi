@@ -49,7 +49,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
                         .requestMatchers("/bookings","/abonnement-requests/**").hasAnyAuthority("ROLE_USER", "ROLE_CLUB_OWNER")
                         .requestMatchers("/bookings/*/approve", "/bookings/*/reject").hasAuthority("ROLE_COACH")
-                        .requestMatchers("/auth/admin/**","/clubs/admin/**","/trophies/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/auth/admin/**","/clubs/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/auth/coach/**").hasAuthority("ROLE_COACH")
                         .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
                         .requestMatchers("/clubs/**").hasAuthority("ROLE_CLUB_OWNER")
