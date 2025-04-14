@@ -1,5 +1,6 @@
 package com.example.pi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +22,7 @@ public class AbonnementRequest {
     private UserInfo user;
 
     @ManyToOne
+    @JsonIgnore
     private Pack pack;
 
     @Enumerated(EnumType.STRING)

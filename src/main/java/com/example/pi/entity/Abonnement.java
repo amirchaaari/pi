@@ -36,6 +36,5 @@ public class Abonnement {
 
 
     @ManyToOne
-    @JsonIgnore
     private UserInfo user; // L'abonnement est lié à un Utilisateur (Client)
 }
