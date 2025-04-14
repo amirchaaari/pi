@@ -38,7 +38,6 @@ public class Club {
         }
 
         @ManyToMany(cascade = CascadeType.ALL)
-        @JsonIgnore
         private Set<Sport> sports;
 
         @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
