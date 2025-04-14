@@ -14,4 +14,3 @@ public interface IPackService {
     Club affecterPackToClub(Long clubId, Long packId);
 }
 
-

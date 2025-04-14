@@ -28,10 +28,3 @@ public class Sport {
     //@JsonBackReference("sport-club")
     private Set<Club> clubs;
 }
-
-
-
-
-
-
-

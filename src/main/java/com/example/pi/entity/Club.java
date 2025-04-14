@@ -37,21 +37,16 @@ public class Club {
                 PENDING, APPROVED, REJECTED
         }
 
-        @ManyToMany
-        @JsonIgnore
+        @ManyToMany(cascade = CascadeType.ALL)
         private Set<Sport> sports;
 
         @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
-        @JsonIgnore
         //@JsonManagedReference("club-pack")
         private Set<Pack> packs;
 
         @ManyToOne
-       @JsonIgnore
+        @JsonIgnore
         private UserInfo owner;
 
 
 }
-
-
-

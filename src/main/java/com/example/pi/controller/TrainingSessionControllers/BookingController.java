@@ -1,7 +1,6 @@
 package com.example.pi.controller.TrainingSessionControllers;
 
 import com.example.pi.entity.Booking;
-import com.example.pi.entity.TrainingSession;
 import com.example.pi.service.trainingSessionServices.BookingService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/bookings")
+@RequestMapping("training-sessions/{sessionId}/bookings")
 @AllArgsConstructor
 public class BookingController {
 
@@ -20,12 +19,12 @@ public class BookingController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
-    public Booking createBooking(@RequestParam Long sessionId) {
+    public Booking createBooking(@PathVariable Long sessionId) {
         return bookingService.createBooking(sessionId);
     }
 
     @GetMapping("/retrieve-Bookings")
-    public List<Booking> getTrainingSessions() {
+    public List<Booking> getBookings() {
         return bookingService.getBookingsByUserId();
     }
 
