@@ -38,6 +38,7 @@ public class UserInfo {
     private String email;
     private String password;
     private String roles;
+    private int points;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="coach")
     @JsonIgnore
@@ -53,4 +54,8 @@ public class UserInfo {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Abonnement> abonnements;
+
+    @ManyToMany
+    private Set<Trophy> trophies;
+
 }
