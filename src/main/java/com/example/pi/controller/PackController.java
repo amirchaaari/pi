@@ -4,6 +4,7 @@ import com.example.pi.entity.Club;
 import com.example.pi.entity.Pack;
 import com.example.pi.service.PackService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,5 +50,12 @@ public class PackController {
     public Club affecterPackToClub(@PathVariable Long clubId, @PathVariable Long packId) {
         return packService.affecterPackToClub(clubId, packId);
     }
+
+    @GetMapping("/popularity")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public List<Pack> getPopularPacks() {
+        return packService.getPacksByPopularity();
+    }
+
 
 }

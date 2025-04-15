@@ -28,6 +28,16 @@ public class Club {
         @Column
         private int capacity;
 
+        @Transient
+        private int totalSubscriptions;
+
+        @Transient
+        private int totalPacks;
+
+        @Transient
+        private double averageSubscriptionsPerPack;
+
+
 
 
         @Enumerated(EnumType.STRING)
@@ -37,7 +47,7 @@ public class Club {
                 PENDING, APPROVED, REJECTED
         }
 
-        @ManyToMany(cascade = CascadeType.ALL)
+        @ManyToMany
         private Set<Sport> sports;
 
         @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)

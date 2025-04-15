@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -31,11 +33,14 @@ public class Pack {
     @JsonIgnore
     private Club club;
 
+    @Transient
+    private int subscriptionCount;
+
+
     @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@JsonManagedReference("pack-abonnement")  // Nom explicite de la managed-reference
     private Set<Abonnement> abonnements;
 
     @OneToMany(mappedBy = "pack", cascade = CascadeType.ALL, orphanRemoval = true)
-    //@JsonManagedReference("pack-abonnement")  // Nom explicite de la managed-reference
     private Set<AbonnementRequest> abonnementsrequests;
+
 }

@@ -2,8 +2,11 @@ package com.example.pi.controller;
 
 import com.example.pi.entity.Club;
 import com.example.pi.entity.ClubCreationRequest;
+import com.example.pi.service.AbonnementService;
 import com.example.pi.service.ClubService;
+import com.example.pi.service.PackService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,10 +18,11 @@ import java.util.Map;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/clubs")
-@CrossOrigin(origins = "*")
 public class ClubController {
 
+    @Autowired
     private final ClubService clubService;
+    private final AbonnementService abonnementService;
 
     @GetMapping("/retrieve-all-clubs")
     public ResponseEntity<?> getAllClubs() {
@@ -173,4 +177,20 @@ public class ClubController {
                 .body(Map.of("error", e.getMessage()));
         }
     }
+
+    @GetMapping("/admin/{clubId}/performance")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Map<String, Object>> analyzePerformance(@PathVariable Long clubId) {
+        Map<String, Object> performanceResponse = abonnementService.analyzeClubPerformance(clubId);
+        return ResponseEntity.ok(performanceResponse);
+    }
+
+    @GetMapping("/recommander/{userId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<List<Club>> recommanderClubs(@PathVariable int userId) {
+        return ResponseEntity.ok(clubService.recommanderClubsPourUtilisateur(userId));
+    }
+
+
+
 }

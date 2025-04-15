@@ -47,12 +47,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken","/auth/deleteUser/{id}").permitAll()
                         .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
-                        .requestMatchers("/bookings","/abonnement-requests/**").hasAnyAuthority("ROLE_USER", "ROLE_CLUB_OWNER")
+                        .requestMatchers("/bookings","/abonnement-requests/**","/packs/**","/clubs/**","/trophies/**").hasAnyAuthority("ROLE_USER", "ROLE_CLUB_OWNER")
                         .requestMatchers("/bookings/*/approve", "/bookings/*/reject").hasAuthority("ROLE_COACH")
                         .requestMatchers("/auth/admin/**","/clubs/admin/**","/trophies/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/auth/coach/**").hasAuthority("ROLE_COACH")
                         .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
-                        .requestMatchers("/clubs/**").hasAuthority("ROLE_CLUB_OWNER")
+                        .requestMatchers("/clubs/**","/packs/**").hasAuthority("ROLE_CLUB_OWNER")
+                        .requestMatchers("/clubs/admin/{clubId}/performance").hasAuthority("ROLE_ADMIN")
                         .anyRequest().authenticated() // Protect all other endpoints
                 )
                 .sessionManagement(sess -> sess

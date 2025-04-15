@@ -24,6 +24,12 @@ public class AbonnementRequest {
     @ManyToOne
     @JsonIgnore
     private Pack pack;
+    @Column
+    private LocalDate startDate;
+
+    @Column
+    private LocalDate endDate;
+
 
     @Enumerated(EnumType.STRING)
     private RequestStatus status; // PENDING, APPROVED, REJECTED

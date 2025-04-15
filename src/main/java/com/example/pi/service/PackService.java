@@ -2,27 +2,24 @@ package com.example.pi.service;
 
 import com.example.pi.entity.Pack;
 import com.example.pi.interfaces.IPackService;
+import com.example.pi.repository.AbonnementRepository;
 import com.example.pi.repository.PackRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import lombok.AllArgsConstructor;
 import com.example.pi.entity.Club;
 import com.example.pi.repository.ClubRepository;
-import java.util.HashSet;
-import java.util.Set;
 
-
-
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
 public class PackService implements IPackService {
 
-    @Autowired
+
     private PackRepository packRepository;
     private ClubRepository clubRepository;
+    private AbonnementRepository abonnementRepository;
+
 
     @Override
     public Pack createPack(Pack pack) {
@@ -85,5 +82,36 @@ public class PackService implements IPackService {
         // Sauvegarder le club avec la liste mise à jour
         return clubRepository.save(club);
     }
+
+
+
+    @Override
+    public List<Pack> getPacksByPopularity() {
+        List<Pack> packs = packRepository.findAll();
+
+        // Récupérer les comptes d'abonnements
+        List<Object[]> counts = abonnementRepository.countAbonnementsByPack();
+
+        // Créer une map pour un accès rapide
+        Map<Long, Integer> countMap = new HashMap<>();
+        for (Object[] obj : counts) {
+            Long packId = (Long) obj[0];
+            Long count = (Long) obj[1];
+            countMap.put(packId, count.intValue());
+        }
+
+        // Mettre à jour chaque pack avec le nombre de souscriptions
+        for (Pack pack : packs) {
+            int count = countMap.getOrDefault(pack.getId(), 0);
+            pack.setSubscriptionCount(count);
+        }
+
+        // Trier les packs par popularité (croissant ou décroissant selon ton besoin)
+        packs.sort(Comparator.comparingInt(Pack::getSubscriptionCount).reversed()); // décroissant
+
+        return packs;
+    }
+
+
 
 }

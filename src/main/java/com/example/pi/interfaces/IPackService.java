@@ -11,6 +11,11 @@ public interface IPackService {
     List<Pack> getAllPacks();
     Pack getPackById(Long id);
 
+    List<Pack> getPacksByPopularity() ;
+
+
     Club affecterPackToClub(Long clubId, Long packId);
+
+
 }
 

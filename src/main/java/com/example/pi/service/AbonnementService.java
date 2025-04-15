@@ -14,9 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -97,7 +95,7 @@ public class AbonnementService implements IAbonnementService {
             updateAbonnementStatusIfExpired(abonnement.getId(), LocalDate.now()); // Met à jour le statut
         });
 
-        return abonnements; // Retourne tous les abonnements après avoir mis à jour leur statut
+        return abonnements;
     }
 
 
@@ -116,13 +114,7 @@ public class AbonnementService implements IAbonnementService {
 
             // Vérifier si la date de fin de renouvellement est null ou dépassée
             if (abonnement.getEndDateOfRenewal() == null || abonnement.getEndDateOfRenewal().isBefore(today)) {
-                abonnement.setStatus("expiré"); // Mettre le statut à "expiré"
-            }
-
-            // Si la date de fin de renouvellement est fournie, mettre à jour l'abonnement
-            if (newEndDate != null) {
-                abonnement.setEndDate(newEndDate); // Mettre à jour la date de fin de l'abonnement
-                abonnement.setEndDateOfRenewal(newEndDate); // Mettre à jour la date de fin de renouvellement si nécessaire
+                abonnement.setStatus("expiré");
             }
         }
 
@@ -165,13 +157,65 @@ public class AbonnementService implements IAbonnementService {
 
         // Mise à jour de l'abonnement
         abonnement.setEndDate(newEndDate);
-        abonnement.setEndDateOfRenewal(newEndDate); // tu peux supprimer cette ligne si elle est redondante
+        abonnement.setEndDateOfRenewal(newEndDate);
         abonnement.setStatus("actif");
 
         // Mise à jour des trophées
         trophyService.updateUserTrophies(currentUser);
 
         return abonnementRepository.save(abonnement);
+    }
+
+    public double calculateRenewalRateForClub(Long clubId) {
+        List<Abonnement> abonnements = abonnementRepository.findByPackClubId(clubId);
+
+        if (abonnements.isEmpty()) return 0.0;
+
+        long totalAbonnements = abonnements.size();
+        long renouvellements = abonnements.stream()
+                .filter(a -> a.getEndDateOfRenewal() != null)
+                .count();
+
+        return (double) renouvellements / totalAbonnements * 100;
+    }
+
+    @Override
+    public Map<String, Object> analyzeClubPerformance(Long clubId) {
+        Map<String, Object> response = new HashMap<>();
+
+        // Popularité des packs
+        List<Pack> packs = packRepository.findByClubId(clubId);
+        List<Map<String, Object>> packPerformanceList = new ArrayList<>();
+
+        if (packs.isEmpty()) {
+            response.put("message", "❌ Aucun pack trouvé pour ce club.");
+        } else {
+            packs.forEach(pack -> {
+                Map<String, Object> packDTO = new HashMap<>();
+                packDTO.put("packName", pack.getName());
+                packDTO.put("subscriptionCount", pack.getSubscriptionCount());
+                packPerformanceList.add(packDTO);
+            });
+            response.put("packPerformance", packPerformanceList);
+            response.put("message", "✅ Analyse de performance du club réussie.");
+        }
+
+        // Taux de renouvellement
+        double taux = calculateRenewalRateForClub(clubId);
+        response.put("renewalRate", taux);
+
+        // Interprétation
+        String interpretation;
+        if (taux >= 70) {
+            interpretation = "🔥 Très bon taux de fidélisation !";
+        } else if (taux >= 40) {
+            interpretation = "⚠️ Taux de fidélisation moyen.";
+        } else {
+            interpretation = "❌ Faible fidélisation, à améliorer.";
+        }
+        response.put("interpretation", interpretation);
+
+        return response;
     }
 
 

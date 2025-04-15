@@ -1,9 +1,6 @@
 package com.example.pi.service;
 
-import com.example.pi.entity.Club;
-import com.example.pi.entity.ClubCreationRequest;
-import com.example.pi.entity.Sport;
-import com.example.pi.entity.UserInfo;
+import com.example.pi.entity.*;
 import com.example.pi.repository.ClubRepository;
 import com.example.pi.repository.ClubCreationRequestRepository;
 import com.example.pi.repository.SportRepository;
@@ -16,6 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -201,4 +199,56 @@ public class ClubService {
         
         return clubRepository.save(existingClub);
     }
+
+
+    public void calculateStatistics(Long clubId) {
+        Club club = clubRepository.findById(clubId).orElseThrow(() -> new RuntimeException("Club non trouvé"));
+
+        Set<Pack> packs = club.getPacks();
+        int totalSubscriptions = 0;
+        int totalPacks = packs.size();
+        for (Pack pack : packs) {
+            totalSubscriptions += pack.getAbonnements().size();  // Compte les abonnements pour chaque pack
+        }
+
+        double averageSubscriptionsPerPack = totalPacks > 0 ? (double) totalSubscriptions / totalPacks : 0;
+
+        club.setTotalSubscriptions(totalSubscriptions);
+        club.setTotalPacks(totalPacks);
+        club.setAverageSubscriptionsPerPack(averageSubscriptionsPerPack);
+
+        clubRepository.save(club);  // Sauvegarde les modifications
+    }
+
+
+    public List<Club> recommanderClubsPourUtilisateur(int userId) {
+        // Étape 1 : Récupérer les abonnements de l'utilisateur
+        UserInfo user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        Set<Abonnement> abonnements = user.getAbonnements();
+
+        // Étape 2 : Récupérer les packs abonnés
+        Set<Pack> packs = abonnements.stream()
+                .map(Abonnement::getPack)
+                .collect(Collectors.toSet());
+
+        // Étape 3 : Récupérer les clubs abonnés
+        Set<Club> clubsAbonnes = packs.stream()
+                .map(Pack::getClub)
+                .collect(Collectors.toSet());
+
+        // Étape 4 : Extraire les sports de ces clubs
+        Set<Sport> sportsPreferes = clubsAbonnes.stream()
+                .flatMap(club -> club.getSports().stream())
+                .collect(Collectors.toSet());
+
+        // Étape 5 : Rechercher d'autres clubs proposant ces sports (mais pas déjà abonnés)
+        List<Club> clubsSimilaires = clubRepository.findAll().stream()
+                .filter(club -> !clubsAbonnes.contains(club))
+                .filter(club -> club.getSports().stream().anyMatch(sportsPreferes::contains))
+                .collect(Collectors.toList());
+
+        return clubsSimilaires;
+    }
+
+
 }

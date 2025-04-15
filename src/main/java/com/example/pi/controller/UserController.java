@@ -1,9 +1,6 @@
 package com.example.pi.controller;
 
-import com.example.pi.entity.AuthRequest;
-import com.example.pi.entity.Coach;
-import com.example.pi.entity.Nutritionist;
-import com.example.pi.entity.UserInfo;
+import com.example.pi.entity.*;
 import com.example.pi.service.JwtService;
 import com.example.pi.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,6 +85,12 @@ public class UserController {
     public List<UserInfo> getAllUsers() {
         return service.getAllUsers();
     }
+
+    @GetMapping("/user/{userId}/recommended-clubs")
+    public List<Club> getRecommendedClubs(@PathVariable int userId) {
+        return service.getRecommendedClubs(userId);
+    }
+
 
 
 }

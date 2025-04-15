@@ -31,10 +31,7 @@ public class AbonnementRequestService {
     private final PackRepository packRepository;
     private final UserInfoRepository userRepository;
 
-//    private UserInfo getCurrentUser() {
-//        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        return (principal instanceof UserInfo) ? (UserInfo) principal : null;
-//    }
+
     private UserInfo getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userRepository.findByEmail(username).orElse(null);
@@ -43,16 +40,11 @@ public class AbonnementRequestService {
 
 
     // Demande d’abonnement par GymGoer
-    public AbonnementRequest createRequest(Long packId) {
+    public AbonnementRequest createRequest(Long packId, LocalDate startDate, LocalDate endDate) {
         UserInfo currentUser = getCurrentUser();
         Optional<Pack> optionalPack = packRepository.findById(packId);
 
-        System.out.println("Creating request for pack " + packId + " by user " + (currentUser != null ? currentUser.getEmail() : "null"));
-
-
         if (currentUser == null || optionalPack.isEmpty()) {
-            logger.error("Failed to create request: user={}, pack exists={}", 
-                currentUser != null, optionalPack.isPresent());
             return null;
         }
 
@@ -61,34 +53,43 @@ public class AbonnementRequestService {
         request.setPack(optionalPack.get());
         request.setRequestedDate(LocalDate.now());
         request.setStatus(AbonnementRequest.RequestStatus.PENDING);
+        request.setStartDate(startDate);
+        request.setEndDate(endDate);
 
-        AbonnementRequest saved = requestRepository.save(request);
-        logger.debug("Created request with id: {}", saved.getId());
-        return saved;
+        return requestRepository.save(request);
     }
+
+
 
     // Validation par Club Owner
     public Abonnement validateRequest(Long requestId) {
-        Optional<AbonnementRequest> optional = requestRepository.findById(requestId);
-        if (optional.isEmpty()) return null;
+        Optional<AbonnementRequest> optionalRequest = requestRepository.findById(requestId);
+        if (optionalRequest.isEmpty()) return null;
 
-        AbonnementRequest request = optional.get();
+        AbonnementRequest request = optionalRequest.get();
         UserInfo currentUser = getCurrentUser();
 
-        if (currentUser.getId() != request.getPack().getClub().getOwner().getId()) return null;
+        // Vérification que l'utilisateur connecté est bien le propriétaire du club
+        if (request.getPack().getClub().getOwner().getId() != currentUser.getId()) {
+            return null; // Non autorisé
+        }
 
+        // Mettre à jour le statut de la requête
         request.setStatus(AbonnementRequest.RequestStatus.APPROVED);
         requestRepository.save(request);
 
+        // Créer un nouvel abonnement à partir de la requête
         Abonnement abonnement = new Abonnement();
         abonnement.setUser(request.getUser());
         abonnement.setPack(request.getPack());
-        abonnement.setStartDate(LocalDate.now());
-        abonnement.setEndDate(LocalDate.now().plusMonths(request.getPack().getDuration()));
+        abonnement.setStartDate(request.getStartDate());
+        abonnement.setEndDate(request.getEndDate());
         abonnement.setStatus("actif");
+        abonnement.setEndDateOfRenewal(null);
 
         return abonnementRepository.save(abonnement);
     }
+
 
     // Rejeter une demande
     public AbonnementRequest rejectRequest(Long requestId) {

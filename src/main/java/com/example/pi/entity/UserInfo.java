@@ -56,6 +56,7 @@ public class UserInfo {
     private Set<Abonnement> abonnements;
 
     @ManyToMany
+    @JsonIgnore
     private Set<Trophy> trophies;
 
 }
