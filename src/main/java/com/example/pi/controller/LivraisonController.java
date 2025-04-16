@@ -27,4 +27,8 @@ public class LivraisonController {
     public void removeLivraison(@PathVariable("IdLivraison") int IdLivraison ){
         livraisonService.removeLivraison(IdLivraison);
     }
+   @GetMapping("/statistics")
+public List<Object[]> getLivraisonStatistics() {
+    return livraisonService.getLivraisonStatisticsByStatus();
+}
 }

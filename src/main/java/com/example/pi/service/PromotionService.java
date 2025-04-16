@@ -37,7 +37,7 @@ public class PromotionService {
         promotionRepository.deleteById(id);
     }
 
-    public Command applyPromotion(Long commandId, String promoCode) {
+   /* public Command applyPromotion(Long commandId, String promoCode) {
         Optional<Command> commandOpt = commandRepository.findById(commandId);
         Optional<Promotion> promotionOpt = promotionRepository.findByCode(promoCode);
 
@@ -54,13 +54,13 @@ public class PromotionService {
         }
 
         return commandOpt.orElse(null);
-    }
+    }*/
 
 
-    @Scheduled(cron = "0 0 9 * * ?") // Runs every day at 9 AM
+    @Scheduled(cron = "0 0 9 * * ?")
     public void checkForAlmostExpiredPromotions() {
         LocalDate today = LocalDate.now();
-        LocalDate alertDate = today.plusDays(3); // Alert for promotions expiring in 3 days
+        LocalDate alertDate = today.plusDays(2);
 
         List<Promotion> almostExpiredPromotions = promotionRepository.findAll().stream()
                 .filter(promotion -> promotion.getExpiryDate() != null &&
@@ -69,8 +69,9 @@ public class PromotionService {
                 .toList();
 
         for (Promotion promotion : almostExpiredPromotions) {
-            System.out.println("ALERT: Promotion \"" + promotion.getTitle() + "\" is expiring soon on " + promotion.getExpiryDate());
-            // You can replace this with actual notification logic (e.g., email or SMS)
+            System.out.println("ALERT: Promotion \"" + promotion.getTitle() + "\" is expiring soon on "
+                    + promotion.getExpiryDate());
+
         }
     }
 

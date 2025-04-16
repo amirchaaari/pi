@@ -1,12 +1,14 @@
 package com.example.pi.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.example.pi.entity.Livraison;
 import com.example.pi.repository.LivraisonRepository;
 import com.example.pi.serviceInterface.ILivraisonInterface;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +70,31 @@ public class LivraisonService implements ILivraisonInterface {
             livraison.setStatus(Livraison.DeliveryStatus.DELIVERED);
             livraisonRepository.save(livraison);
         }
+    }
+
+
+    @Scheduled(cron = "0 0 * * * ?")
+    public void alertForArrivingLivraisons() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime alertTime = now.plusHours(2);
+        Date alertDate = Date.from(alertTime.atZone(ZoneId.systemDefault()).toInstant());
+
+        List<Livraison> arrivingSoonLivraisons = livraisonRepository.findAll().stream()
+                .filter(livraison -> livraison.getScheduleddate() != null &&
+                        livraison.getScheduleddate().after(new Date()) &&
+                        livraison.getScheduleddate().before(alertDate))
+                .toList();
+
+        for (Livraison livraison : arrivingSoonLivraisons) {
+            System.out.println("ALERT: Livraison with ID " + livraison.getIdLivraison() +
+                    " is arriving soon at " + livraison.getScheduleddate());
+
+        }
+    }
+
+
+    public List<Object[]> getLivraisonStatisticsByStatus() {
+        return livraisonRepository.countLivraisonsByStatus();
     }
 
 

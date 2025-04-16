@@ -31,4 +31,6 @@ public class Promotion {
     /*@OneToMany(cascade = CascadeType.ALL, mappedBy="promotion")
     @JsonIgnore
     private Set<Category> categories;*/
+
+    private int usageCount;
 }

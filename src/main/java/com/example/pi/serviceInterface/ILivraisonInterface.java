@@ -12,5 +12,8 @@ public interface ILivraisonInterface {
 
     Livraison retrieveLivraison(int idLivraison);
 
+
     void removeLivraison(int IdLivraison);
+    List<Object[]> getLivraisonStatisticsByStatus();
+
 }
