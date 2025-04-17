@@ -45,7 +45,8 @@ public class UserController {
     @GetMapping("/coach/coachProfile")
     @PreAuthorize("hasAuthority('ROLE_COACH')")
     public String coachProfile() {
-        return "Welcome to Coach Profile";
+        return service.getUserProfile();
+
     }
 
     /*delete a user*/
@@ -79,18 +80,10 @@ public class UserController {
         }
     }
 
-
-    // add a function that  fetches all user
-    @GetMapping("/users")
-    public List<UserInfo> getAllUsers() {
-        return service.getAllUsers();
+    @GetMapping("/verify")
+    public String verifyUser(@RequestParam("token") String token) {
+        return service.verifyUser(token);
     }
-
-    @GetMapping("/user/{userId}/recommended-clubs")
-    public List<Club> getRecommendedClubs(@PathVariable int userId) {
-        return service.getRecommendedClubs(userId);
-    }
-
 
 
 }

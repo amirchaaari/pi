@@ -14,11 +14,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class UserInfoService implements UserDetailsService {
+    @Autowired
+    private EmailService emailService;
+
 
     @Autowired
     private UserInfoRepository repository;
@@ -40,12 +44,77 @@ public class UserInfoService implements UserDetailsService {
         repository.deleteById(id);
     }
 
+//    public String addUser(UserInfo userInfo) {
+//        // Encode password before saving the user
+//        userInfo.setPassword(encoder.encode(userInfo.getPassword()));
+//        repository.save(userInfo);
+//        return "User Added Successfully";
+//    }
+
+//    public String addUser(UserInfo userInfo) {
+//        Optional<UserInfo> existingUser = repository.findByEmail(userInfo.getEmail());
+//        if (existingUser.isPresent()) {
+//            return "User already  exists";
+//
+//
+//        }
+//
+//
+//
+//        userInfo.setPassword(encoder.encode(userInfo.getPassword()));
+//        repository.save(userInfo);
+//        return "User Added Successfully";
+//    }
+
+
     public String addUser(UserInfo userInfo) {
-        // Encode password before saving the user
+        Optional<UserInfo> existingUser = repository.findByEmail(userInfo.getEmail());
+        if (existingUser.isPresent()) {
+            return "User already exists";
+        }
+
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));
+        userInfo.setEnabled(false); // Mark not enabled
+
+        // Generate token
+        String token = UUID.randomUUID().toString();
+        userInfo.setVerificationToken(token);
+        userInfo.setVerificationTokenExpiry(LocalDateTime.now().plusHours(24));
+
         repository.save(userInfo);
-        return "User Added Successfully";
+
+        String verificationLink = "http://localhost:8089/auth/verify?token=" + token;
+        emailService.sendVerificationEmail(userInfo.getEmail(), verificationLink);
+
+        return "Verification email sent. Please check your inbox.";
     }
+
+
+
+    public String verifyUser(String token) {
+        Optional<UserInfo> optionalUser = repository.findByVerificationToken(token);
+
+        if (optionalUser.isEmpty()) {
+            return "Invalid verification token";
+        }
+
+        UserInfo user = optionalUser.get();
+
+        if (user.getVerificationTokenExpiry() != null &&
+                user.getVerificationTokenExpiry().isBefore(LocalDateTime.now())) {
+            return "Verification token expired";
+        }
+
+        user.setEnabled(true);
+        user.setVerificationToken(null); // Invalidate token
+        user.setVerificationTokenExpiry(null);
+        repository.save(user);
+
+        return "Email verified successfully. You can now log in.";
+    }
+
+
+
 
 
 
@@ -63,50 +132,6 @@ public class UserInfoService implements UserDetailsService {
         return "User not authenticated";
     }
 
-    public List<UserInfo> getAllUsers() {
-        return repository.findAll();
-    }
-
-    public Set<Long> getUserPreferredSportIds(int userId) {
-        Optional<UserInfo> optionalUser = repository.findById(userId);
-        if (optionalUser.isEmpty()) return new HashSet<>();
-
-        UserInfo user = optionalUser.get();
-
-        // On extrait les sports associés à chaque club auquel l'utilisateur est abonné
-        return user.getAbonnements().stream()
-                .map(abonnement -> abonnement.getPack().getClub().getSports())  // On obtient les sports du club
-                .flatMap(Collection::stream)  // On aplatit la collection de Set<Sport> en Stream<Sport>
-                .map(sport -> sport.getId())  // On récupère l'identifiant du sport
-                .collect(Collectors.toSet());  // On retourne un Set des identifiants des sports
-    }
-
-
-    @Autowired
-    private ClubRepository clubRepository;
-
-    public List<Club> getRecommendedClubs(int userId) {
-        Set<Long> preferredSportIds = getUserPreferredSportIds(userId);
-        if (preferredSportIds.isEmpty()) return new ArrayList<>();
-
-        // Récupérer l'utilisateur
-        Optional<UserInfo> userOpt = repository.findById(userId);
-        if (userOpt.isEmpty()) return new ArrayList<>();
-
-        UserInfo user = userOpt.get();
-
-        // Récupérer les IDs des clubs auxquels l'utilisateur est déjà abonné
-        Set<Long> clubIdsAlreadySubscribed = user.getAbonnements().stream()
-                .map(ab -> ab.getPack().getClub().getId())  // On récupère l'ID du club lié à chaque abonnement
-                .collect(Collectors.toSet());
-
-        // Rechercher des clubs qui offrent les sports préférés et qui ne sont pas déjà abonnés
-        return clubRepository.findAll().stream()
-                .filter(club -> club.getSports().stream()  // Pour chaque club, on parcourt ses sports
-                        .anyMatch(sport -> preferredSportIds.contains(sport.getId())))  // On vérifie si un sport du club est préféré
-                .filter(club -> !clubIdsAlreadySubscribed.contains(club.getId()))  // On exclut les clubs déjà abonnés
-                .collect(Collectors.toList());  // On retourne la liste des clubs recommandés
-    }
 
 
 

@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @JsonTypeInfo(
@@ -17,10 +18,8 @@ import java.util.Set;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Coach.class, name = "COACH"),
         @JsonSubTypes.Type(value = Nutritionist.class, name = "NUTRITIONIST"),
-        @JsonSubTypes.Type(value = UserInfo.class, name = "USER"),
-        @JsonSubTypes.Type(value = ClubOwner.class, name = "CLUB_OWNER"),
-        @JsonSubTypes.Type(value = UserInfo.class, name = "ADMIN")
-
+        @JsonSubTypes.Type(value = Nutritionist.class, name = "USER"),
+        @JsonSubTypes.Type(value = ClubOwner.class, name = "ClubOwner")
 })
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -34,11 +33,27 @@ public class UserInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+    @Column(nullable = false)
     private String name;
+    @Column(unique = true, nullable = false)
     private String email;
+    @Column(nullable = false)
     private String password;
+    @Column(nullable = false)
     private String roles;
-    private int points;
+
+    @Column
+    private boolean enabled = false;
+
+    @Column(unique = true)
+    private String verificationToken;
+
+    private LocalDateTime verificationTokenExpiry;
+
+    @Column(unique = true)
+    private String resetToken;
+
+    private LocalDateTime tokenExpiryTime;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="coach")
     @JsonIgnore
@@ -51,12 +66,6 @@ public class UserInfo {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<Club> clubs; // Un user peut créer plusieurs clubs
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private Set<Abonnement> abonnements;
-
-    @ManyToMany
-    @JsonIgnore
-    private Set<Trophy> trophies;
-
+    @OneToMany(mappedBy = "gymGoer", cascade = CascadeType.ALL)
+    private Set<Abonnement> abonnements; // Un user peut souscrire à plusieurs abonnement
 }
