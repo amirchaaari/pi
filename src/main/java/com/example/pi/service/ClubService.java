@@ -1,6 +1,7 @@
 package com.example.pi.service;
 
 import com.example.pi.entity.*;
+import com.example.pi.interfaces.IClubService;
 import com.example.pi.repository.ClubRepository;
 import com.example.pi.repository.ClubCreationRequestRepository;
 import com.example.pi.repository.SportRepository;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class ClubService {
+public class ClubService  implements IClubService {
 
     private final ClubRepository clubRepository;
     private final ClubCreationRequestRepository clubCreationRequestRepository;
@@ -118,7 +119,7 @@ public class ClubService {
     }
 
     // Supprimer un club
-    public boolean deleteClub(Long id) {
+    public void deleteClub(Long id) {
         Optional<Club> clubOpt = clubRepository.findById(id);
         UserInfo currentUser = getAuthenticatedUser();
 
@@ -141,7 +142,7 @@ public class ClubService {
         club.getSports().clear();
 
         clubRepository.delete(club);
-        return true;
+
     }
 
 
