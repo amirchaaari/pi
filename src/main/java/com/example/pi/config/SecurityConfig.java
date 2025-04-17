@@ -52,8 +52,10 @@ public class SecurityConfig {
                         .requestMatchers("/auth/admin/**","/clubs/admin/**","/trophies/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/auth/coach/**").hasAuthority("ROLE_COACH")
                         .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
+                        .requestMatchers("/auth/**").permitAll() // this line is key
                         .requestMatchers("/clubs/**","/packs/**").hasAuthority("ROLE_CLUB_OWNER")
                         .requestMatchers("/clubs/admin/{clubId}/performance").hasAuthority("ROLE_ADMIN")
+
                         .anyRequest().authenticated() // Protect all other endpoints
                 )
                 .sessionManagement(sess -> sess
