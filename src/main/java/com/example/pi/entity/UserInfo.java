@@ -19,7 +19,9 @@ import java.util.Set;
         @JsonSubTypes.Type(value = Coach.class, name = "COACH"),
         @JsonSubTypes.Type(value = Nutritionist.class, name = "NUTRITIONIST"),
         @JsonSubTypes.Type(value = Nutritionist.class, name = "USER"),
-        @JsonSubTypes.Type(value = ClubOwner.class, name = "ClubOwner")
+        @JsonSubTypes.Type(value = ClubOwner.class, name = "CLUB_OWNER"),
+        @JsonSubTypes.Type(value = UserInfo.class, name = "ADMIN")
+
 })
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -41,6 +43,7 @@ public class UserInfo {
     private String password;
     @Column(nullable = false)
     private String roles;
+    private int points;
 
     @Column
     private boolean enabled = false;
@@ -66,6 +69,12 @@ public class UserInfo {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<Club> clubs; // Un user peut créer plusieurs clubs
 
-    @OneToMany(mappedBy = "gymGoer", cascade = CascadeType.ALL)
-    private Set<Abonnement> abonnements; // Un user peut souscrire à plusieurs abonnement
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private Set<Abonnement> abonnements;
+
+    @ManyToMany
+    @JsonIgnore
+    private Set<Trophy> trophies;
+
 }

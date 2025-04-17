@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class EmailService implements IEmailService {
 
-    @Autowired
     private JavaMailSender mailSender;
 
     public void sendVerificationEmail(String to, String verificationLink) {
