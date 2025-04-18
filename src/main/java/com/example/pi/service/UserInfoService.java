@@ -1,9 +1,7 @@
 package com.example.pi.service;
 
 
-import com.example.pi.entity.Club;
 import com.example.pi.entity.UserInfo;
-import com.example.pi.repository.ClubRepository;
 import com.example.pi.repository.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -15,8 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserInfoService implements UserDetailsService {

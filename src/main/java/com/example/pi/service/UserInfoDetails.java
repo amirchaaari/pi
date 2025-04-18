@@ -13,8 +13,8 @@ public class UserInfoDetails implements UserDetails {
 
     private String username; // Changed from 'name' to 'username' for clarity
     private String password;
-
      private int id;  // Add user ID
+    private boolean enabled;
 
 
     private List<GrantedAuthority> authorities;
@@ -23,6 +23,7 @@ public class UserInfoDetails implements UserDetails {
         this.username = userInfo.getEmail();
         this.password = userInfo.getPassword();
         this.id = userInfo.getId();
+        this.enabled = userInfo.isEnabled();
         this.authorities = List.of(userInfo.getRoles().split(","))
                 .stream()
                 .map(SimpleGrantedAuthority::new)
@@ -37,12 +38,11 @@ public class UserInfoDetails implements UserDetails {
     public int getId() {
         return id;
     }
+
     @Override
     public String getPassword() {
         return password;
     }
-
-
 
     @Override
     public String getUsername() {
@@ -66,6 +66,6 @@ public class UserInfoDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true; // Implement your logic if you need this
+        return enabled; // Implement your logic if you need this
     }
 }
