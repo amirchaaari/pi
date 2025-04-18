@@ -59,7 +59,7 @@ public class SecurityConfig {
                         .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
                         .requestMatchers("/bookings/*/approve", "/bookings/*/reject").hasAuthority("ROLE_COACH")
                         .requestMatchers("/clubs/**", "/packs/**").hasAuthority("ROLE_CLUB_OWNER")
-                        .requestMatchers("/bookings", "/abonnement-requests/**", "/packs/**", "/clubs/**", "/trophies/**")
+                        .requestMatchers("/abonnements/**","/bookings", "/abonnement-requests/**", "/packs/**", "/clubs/**", "/trophies/**")
                             .hasAnyAuthority("ROLE_USER", "ROLE_CLUB_OWNER")
                         .anyRequest().authenticated() // Protect all other endpoints
                 )

@@ -9,6 +9,8 @@ import com.example.pi.repository.PackRepository;
 import com.example.pi.repository.UserInfoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -217,6 +219,26 @@ public class AbonnementService implements IAbonnementService {
 
         return response;
     }
+
+
+     @Scheduled( cron = "0 0 0 * * ?")
+    public void checkAndExpireAbonnements() {
+         List<Abonnement> abonnements = abonnementRepository.findAll();
+         LocalDate today = LocalDate.now();
+
+         for (Abonnement abonnement : abonnements) {
+             if (abonnement.getEndDate().isBefore(today)) {
+                 abonnement.setStatus("expired");
+                 abonnementRepository.save(abonnement);
+             }
+         }
+     }
+
+
+
+
+
+
 
 
 
