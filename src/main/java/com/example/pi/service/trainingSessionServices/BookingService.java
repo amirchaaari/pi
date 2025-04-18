@@ -45,17 +45,17 @@ public class BookingService implements IBookingService {
     @Transactional
     public Booking createBooking(Long sessionId) {
         UserInfo user = getCurrentUser();
-        Optional<TrainingSession> session = trainingSessionRepository.findById(sessionId);
-//                .filter(s -> s.getEndTime().isAfter(LocalTime.now()))
-//                .orElseThrow(() -> new RuntimeException("Invalid session"));
-        TrainingSession trainingSession = session.orElseThrow(() -> new RuntimeException("Invalid session"));
-        if (bookingRepository.existsByUserAndTrainingSession(user, trainingSession)) {
+        TrainingSession session = trainingSessionRepository.findById(sessionId)
+                .filter(s -> s.getEndTime().isAfter(LocalTime.now()))
+                .orElseThrow(() -> new RuntimeException("Invalid session"));
+
+        if (bookingRepository.existsByUserAndTrainingSession(user, session)) {
             throw new IllegalStateException("Already booked");
         }
 
         Booking booking = new Booking();
         booking.setUser(user);
-        booking.setTrainingSession(trainingSession);
+        booking.setTrainingSession(session);
         return bookingRepository.save(booking);
     }
 
