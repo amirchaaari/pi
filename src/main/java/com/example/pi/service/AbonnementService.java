@@ -89,36 +89,12 @@ public class AbonnementService implements IAbonnementService {
             System.out.println("Aucun abonnement trouvé");
         }
 
-        abonnements.forEach(abonnement -> {
-            System.out.println("Mise à jour du statut de l'abonnement " + abonnement.getId());
-            updateAbonnementStatusIfExpired(abonnement.getId()); // Met à jour le statut
-        });
-
         return abonnements;
     }
 
 
 
 
-
-    public Abonnement updateAbonnementStatusIfExpired(Long abonnementId) {
-        Optional<Abonnement> optional = abonnementRepository.findById(abonnementId);
-        if (optional.isEmpty()) return null;
-
-        Abonnement abonnement = optional.get();
-        LocalDate today = LocalDate.now();
-
-        // Vérifier si la date de fin est dépassée
-        if (abonnement.getEndDate().isBefore(today)) {
-
-            // Vérifier si la date de fin de renouvellement est null ou dépassée
-            if (abonnement.getEndDateOfRenewal() == null || abonnement.getEndDateOfRenewal().isBefore(today)) {
-                abonnement.setStatus("expiré");
-            }
-        }
-
-        return abonnementRepository.save(abonnement);
-    }
 
     public List<Abonnement> getUserAbonnementsHistory() {
         UserInfo currentUser = getCurrentUser();
