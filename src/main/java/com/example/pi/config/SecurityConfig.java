@@ -45,17 +45,22 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .csrf(csrf -> csrf.disable()) 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken","/auth/deleteUser/{id}").permitAll()
+                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken", "/auth/deleteUser/{id}").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
+                        // Admin endpoints should come before more general patterns
+                        .requestMatchers("/auth/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/clubs/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/clubs/admin/pending-requests").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/clubs/admin/{clubId}/performance").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/trophies/**").hasAuthority("ROLE_ADMIN")
+                        // Other role-based patterns
                         .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
-                        .requestMatchers("/bookings","/abonnement-requests/**","/packs/**","/clubs/**","/trophies/**").hasAnyAuthority("ROLE_USER", "ROLE_CLUB_OWNER")
-                        .requestMatchers("/bookings/*/approve", "/bookings/*/reject").hasAuthority("ROLE_COACH")
-                        .requestMatchers("/auth/admin/**","/clubs/admin/**","/trophies/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/auth/coach/**").hasAuthority("ROLE_COACH")
                         .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
-                        .requestMatchers("/auth/**").permitAll() // this line is key
-                        .requestMatchers("/clubs/**","/packs/**").hasAuthority("ROLE_CLUB_OWNER")
-                        .requestMatchers("/clubs/admin/{clubId}/performance").hasAuthority("ROLE_ADMIN")
-
+                        .requestMatchers("/bookings/*/approve", "/bookings/*/reject").hasAuthority("ROLE_COACH")
+                        .requestMatchers("/clubs/**", "/packs/**").hasAuthority("ROLE_CLUB_OWNER")
+                        .requestMatchers("/bookings", "/abonnement-requests/**", "/packs/**", "/clubs/**", "/trophies/**")
+                            .hasAnyAuthority("ROLE_USER", "ROLE_CLUB_OWNER")
                         .anyRequest().authenticated() // Protect all other endpoints
                 )
                 .sessionManagement(sess -> sess
