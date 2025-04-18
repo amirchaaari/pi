@@ -1,6 +1,5 @@
 package com.example.pi.service.trainingSessionServices;
 
-
 import com.example.pi.entity.TrainingSession;
 import com.example.pi.entity.UserInfo;
 import com.example.pi.interfaces.trainingSession.ITrainingSessionService;
@@ -22,8 +21,6 @@ public class TrainingSessionService implements ITrainingSessionService {
     @Autowired
     private final UserInfoRepository userInfoRepository;
 
-
-
     @Override
     public TrainingSession createSession(TrainingSession trainingSession) {
         //jib l email mtaa l user l connecté b token mteouu
@@ -34,7 +31,6 @@ public class TrainingSessionService implements ITrainingSessionService {
         // njybou l coach m database
         UserInfo coach = userInfoRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new RuntimeException("Coach not found with email: " + currentUserEmail));
-
         // naffectiwah l trainingsession
         trainingSession.setCoach(coach);
 
@@ -45,10 +41,8 @@ public class TrainingSessionService implements ITrainingSessionService {
         return trainingSessionRepository.save(trainingSession);
     }
 
-
     @Override
     public TrainingSession updateSession(Long id, TrainingSession trainingSession) {
-        // Check if the session exists
         trainingSession.setId(id);
         return trainingSessionRepository.save(trainingSession);
     }
