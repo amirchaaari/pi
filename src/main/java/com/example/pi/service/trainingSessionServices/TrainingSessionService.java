@@ -31,9 +31,9 @@ public class TrainingSessionService implements ITrainingSessionService {
         // njybou l coach m database
         UserInfo coach = userInfoRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new RuntimeException("Coach not found with email: " + currentUserEmail));
+
         // naffectiwah l trainingsession
         trainingSession.setCoach(coach);
-
         if (trainingSession.getStartTime().isAfter(trainingSession.getEndTime())) {
             throw new RuntimeException("Start time must be before end time");
         }
