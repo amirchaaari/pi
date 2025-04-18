@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService implements IEmailService {
-
     private JavaMailSender mailSender;
 
     public void sendVerificationEmail(String to, String verificationLink) {
