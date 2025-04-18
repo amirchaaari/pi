@@ -127,8 +127,8 @@ public class ClubController {
         }
     }
 
+   // @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/pending-requests")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<?> getPendingRequests() {
         try {
             List<ClubCreationRequest> requests = clubService.getPendingClubCreationRequests();
