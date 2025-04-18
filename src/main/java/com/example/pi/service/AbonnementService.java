@@ -9,6 +9,7 @@ import com.example.pi.repository.PackRepository;
 import com.example.pi.repository.UserInfoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -106,39 +107,53 @@ public class AbonnementService implements IAbonnementService {
 
 
     public Abonnement renewAbonnement(Long abonnementId, LocalDate newEndDate) {
-        Optional<Abonnement> optional = abonnementRepository.findById(abonnementId);
-        if (optional.isEmpty()) return null;
+        // Validate input
+        if (newEndDate.isBefore(LocalDate.now())) {
+            throw new IllegalArgumentException("La nouvelle date ne peut pas être dans le passé.");
+        }
 
-        Abonnement abonnement = optional.get();
+        // Get subscription
+        Abonnement abonnement = abonnementRepository.findById(abonnementId)
+                .orElseThrow(() -> new IllegalArgumentException("Abonnement non trouvé."));
+
         UserInfo currentUser = getCurrentUser();
 
-        // Vérifie que l'utilisateur courant est bien le propriétaire de l'abonnement
-        if (!abonnement.getUser().equals(currentUser)) return null;
+        // Verify ownership
+        if (!abonnement.getUser().equals(currentUser)) {
+
+        }
 
         LocalDate currentEndDate = abonnement.getEndDate();
 
-        // Empêche un renouvellement vers une date antérieure
+        // Prevent renewal to an earlier date
         if (newEndDate.isBefore(currentEndDate)) {
             throw new IllegalArgumentException("La nouvelle date doit être après la date de fin actuelle.");
         }
 
-        // Calcul des points gagnés
-        long days = ChronoUnit.DAYS.between(currentEndDate, newEndDate);
-        int gainedPoints = (int) days * 2;
+        try {
+            // Calculate points
+            long days = ChronoUnit.DAYS.between(currentEndDate, newEndDate);
+            int gainedPoints = (int) days * 2;
 
-        // Mise à jour des points de l'utilisateur
-        currentUser.setPoints(currentUser.getPoints() + gainedPoints);
-        userInfoRepository.save(currentUser);
+            // Update user points
+            currentUser.setPoints(currentUser.getPoints() + gainedPoints);
+            userInfoRepository.save(currentUser);
 
-        // Mise à jour de l'abonnement
-        abonnement.setEndDate(newEndDate);
-        abonnement.setEndDateOfRenewal(newEndDate);
-        abonnement.setStatus("actif");
+            // Update subscription
+            abonnement.setEndDate(newEndDate);
+            abonnement.setEndDateOfRenewal(newEndDate);
+            abonnement.setStatus("actif");
+            abonnement = abonnementRepository.save(abonnement);
 
-        // Mise à jour des trophées
-        trophyService.updateUserTrophies(currentUser);
+            // Update trophies
+            trophyService.updateUserTrophies(currentUser);
 
-        return abonnementRepository.save(abonnement);
+            return abonnement;
+
+        } catch (Exception e) {
+            // Log the error
+            throw new RuntimeException("Erreur lors du renouvellement de l'abonnement");
+        }
     }
 
     public double calculateRenewalRateForClub(Long clubId) {

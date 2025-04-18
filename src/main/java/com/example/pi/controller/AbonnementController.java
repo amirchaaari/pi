@@ -51,7 +51,7 @@ public class AbonnementController {
     }
 
     @PutMapping("/renew-abonnement/{id}")
-    @PreAuthorize("hasRole('ROLE_USER')")
+ //   @PreAuthorize("hasRole('ROLE_USER')")
     public Abonnement renewAbonnement(@PathVariable Long id, @RequestParam("newEndDate") LocalDate newEndDate) {
         return abonnementService.renewAbonnement(id, newEndDate);
     }
