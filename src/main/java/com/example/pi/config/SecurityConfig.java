@@ -45,7 +45,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .csrf(csrf -> csrf.disable()) 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken", "/auth/deleteUser/{id}").permitAll()
+                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken", "/auth/deleteUser/{id}" , "/**").permitAll()
                         .requestMatchers("/auth/**").permitAll()
                         // Admin endpoints should come before more general patterns
                         .requestMatchers("/auth/admin/**").hasAuthority("ROLE_ADMIN")

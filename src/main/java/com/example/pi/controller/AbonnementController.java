@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -61,6 +62,17 @@ public class AbonnementController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public List<Abonnement> getUserAbonnementsHistory() {
         return abonnementService.getUserAbonnementsHistory();
+    }
+
+
+    @GetMapping("calculateRenewalRateForClub/{id}")
+    public double calculateRenewalRateForClub(@PathVariable Long id) {
+        return abonnementService.calculateRenewalRateForClub(id);
+    }
+
+    @GetMapping("analyzeClubPerformance/{id}")
+    public Map<String, Object> analyzeClubPerformance(@PathVariable Long id) {
+        return abonnementService.analyzeClubPerformance(id);
     }
 
 }

@@ -76,12 +76,9 @@ public class AbonnementService implements IAbonnementService {
 
     @Override
     public Abonnement getAbonnementById(Long id) {
-        LocalDate newEndDate = LocalDate.now();
 
-        Abonnement abonnement = updateAbonnementStatusIfExpired(id, newEndDate);
-        if (abonnement == null) return null;
 
-        return abonnement;
+        return abonnementRepository.findById(id).orElse(null);
     }
 
     @Override
@@ -94,7 +91,7 @@ public class AbonnementService implements IAbonnementService {
 
         abonnements.forEach(abonnement -> {
             System.out.println("Mise à jour du statut de l'abonnement " + abonnement.getId());
-            updateAbonnementStatusIfExpired(abonnement.getId(), LocalDate.now()); // Met à jour le statut
+            updateAbonnementStatusIfExpired(abonnement.getId()); // Met à jour le statut
         });
 
         return abonnements;
@@ -104,7 +101,7 @@ public class AbonnementService implements IAbonnementService {
 
 
 
-    public Abonnement updateAbonnementStatusIfExpired(Long abonnementId, LocalDate newEndDate) {
+    public Abonnement updateAbonnementStatusIfExpired(Long abonnementId) {
         Optional<Abonnement> optional = abonnementRepository.findById(abonnementId);
         if (optional.isEmpty()) return null;
 
@@ -140,7 +137,7 @@ public class AbonnementService implements IAbonnementService {
         UserInfo currentUser = getCurrentUser();
 
         // Vérifie que l'utilisateur courant est bien le propriétaire de l'abonnement
-        if (currentUser == null || !abonnement.getUser().equals(currentUser)) return null;
+        if (!abonnement.getUser().equals(currentUser)) return null;
 
         LocalDate currentEndDate = abonnement.getEndDate();
 
@@ -221,7 +218,7 @@ public class AbonnementService implements IAbonnementService {
     }
 
 
-     @Scheduled( cron = "0 0 0 * * ?")
+     @Scheduled( cron = "0 */1 * * * ?")
     public void checkAndExpireAbonnements() {
          List<Abonnement> abonnements = abonnementRepository.findAll();
          LocalDate today = LocalDate.now();
@@ -230,6 +227,9 @@ public class AbonnementService implements IAbonnementService {
              if (abonnement.getEndDate().isBefore(today)) {
                  abonnement.setStatus("expired");
                  abonnementRepository.save(abonnement);
+             }else{
+                    abonnement.setStatus("actif");
+                    abonnementRepository.save(abonnement);
              }
          }
      }
