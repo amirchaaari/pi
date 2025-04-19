@@ -73,7 +73,7 @@ public class UserInfo {
     @JsonIgnore
     private Set<Abonnement> abonnements;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)  // Change fetch type to EAGER since trophies are frequently accessed
     @JsonIgnore
     private Set<Trophy> trophies;
 

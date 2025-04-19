@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -59,7 +60,7 @@ public class TrophyService {
         return false;
     }
 
-    // Attribution automatique de trophées
+    @Transactional
     public UserInfo updateUserPoints(int userId, int newPoints) {
         UserInfo user = userInfoRepository.findById(userId).orElseThrow();
 
@@ -75,46 +76,36 @@ public class TrophyService {
         return userInfoRepository.save(user);
     }
 
-    // Pour récupérer l'utilisateur connecté
+    @Transactional(readOnly = true)
     public UserInfo getCurrentUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         return userInfoRepository.findByEmail(username).orElse(null);
     }
 
+    @Transactional
     public void updateUserTrophies(UserInfo user) {
-        Set<Trophy> earned = user.getTrophies();
-
+        UserInfo managedUser = userInfoRepository.findById(user.getId()).orElseThrow();
+        Set<Trophy> earned = managedUser.getTrophies();
 
         Set<Trophy> allTrophies = trophyRepository.findAll().stream()
-                .filter(trophy -> !earned.contains(trophy) && user.getPoints() >= trophy.getRequiredPoints())
+                .filter(trophy -> !earned.contains(trophy) && managedUser.getPoints() >= trophy.getRequiredPoints())
                 .collect(Collectors.toSet());
-
 
         if (!allTrophies.isEmpty()) {
             earned.addAll(allTrophies);
-            user.setTrophies(earned);
-            userInfoRepository.save(user);
+            managedUser.setTrophies(earned);
+            userInfoRepository.save(managedUser);
         }
-
     }
 
-
-    @Scheduled(cron = "*/15 * *  * * ?")
+    @Transactional
+    @Scheduled(cron = "*/15 * * * * ?")
     public void claimTrophies() {
         List<UserInfo> users = userInfoRepository.findAll();
         for (UserInfo user : users) {
             updateUserTrophies(user);
         }
     }
-
-
-
-
-
-
-
-
-
 
 }
 
