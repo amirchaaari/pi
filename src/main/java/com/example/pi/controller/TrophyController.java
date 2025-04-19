@@ -11,8 +11,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/trophies")
@@ -64,8 +66,21 @@ public class TrophyController {
 
     @GetMapping("/my-trophies")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public Set<Trophy> getMyTrophies() {
+    public HashMap<String, Object> getMyTrophies() {
         UserInfo user = trophyService.getCurrentUser();
-        return user != null ? user.getTrophies() : Collections.emptySet();
+
+        HashMap<String, Object> trophies = new HashMap<>();
+        trophies.put("points", user.getPoints());
+        trophies.put("trophies", user.getTrophies().stream()
+                .map(trophy -> {
+                    HashMap<String, Object> trophyMap = new HashMap<>();
+                    trophyMap.put("id", trophy.getId());
+                    trophyMap.put("name", trophy.getName());
+                    trophyMap.put("description", trophy.getDescription());
+                    return trophyMap;
+                })
+                .collect(Collectors.toList()));
+        return trophies;
+
     }
 }
