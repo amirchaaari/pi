@@ -222,9 +222,12 @@ public class ClubService  implements IClubService {
     }
 
 
-    public List<Club> recommanderClubsPourUtilisateur(int userId) {
+    public List<Club> recommanderClubsPourUtilisateur() {
         // Étape 1 : Récupérer les abonnements de l'utilisateur
-        UserInfo user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        UserInfo user = getAuthenticatedUser();
+        if (user == null) {
+            throw new RuntimeException("User not authenticated");
+        }
         Set<Abonnement> abonnements = user.getAbonnements();
 
         // Étape 2 : Récupérer les packs abonnés
@@ -251,5 +254,27 @@ public class ClubService  implements IClubService {
         return clubsSimilaires;
     }
 
+    public Set<Long> getRecommendedClubIds(int userId) {
+        UserInfo user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Get all sports from user's subscription history
+        Set<Sport> userSports = user.getAbonnements().stream()
+                .map(abonnement -> abonnement.getPack().getClub().getSports())
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet());
+
+        // Get clubs that have similar sports but user hasn't subscribed to yet
+        Set<Club> subscribedClubs = user.getAbonnements().stream()
+                .map(abonnement -> abonnement.getPack().getClub())
+                .collect(Collectors.toSet());
+
+        return clubRepository.findAll().stream()
+                .filter(club -> !subscribedClubs.contains(club)) // Exclude already subscribed clubs
+                .filter(club -> club.getSports().stream()
+                        .anyMatch(userSports::contains)) // Match clubs with similar sports
+                .map(Club::getId)
+                .collect(Collectors.toSet());
+    }
 
 }

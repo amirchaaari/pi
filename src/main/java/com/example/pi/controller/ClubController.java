@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @AllArgsConstructor
@@ -185,12 +186,23 @@ public class ClubController {
         return ResponseEntity.ok(performanceResponse);
     }
 
-    @GetMapping("/recommander/{userId}")
+    @GetMapping("/recommander")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<List<Club>> recommanderClubs(@PathVariable int userId) {
-        return ResponseEntity.ok(clubService.recommanderClubsPourUtilisateur(userId));
+    public ResponseEntity<List<Club>> recommanderClubs() {
+        return ResponseEntity.ok(clubService.recommanderClubsPourUtilisateur());
     }
 
-
+    @GetMapping("/recommended-ids/{userId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Set<Long>> getRecommendedClubIds(@PathVariable int userId) {
+        try {
+            Set<Long> recommendedIds = clubService.getRecommendedClubIds(userId);
+            return ResponseEntity.ok(recommendedIds);
+        } catch (Exception e) {
+            return ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(null);
+        }
+    }
 
 }
