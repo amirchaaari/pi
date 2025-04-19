@@ -11,6 +11,8 @@ import com.example.pi.repository.TrophyRepository;
 import com.example.pi.repository.UserInfoRepository;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.annotation.Schedules;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -81,16 +83,38 @@ public class TrophyService {
 
     public void updateUserTrophies(UserInfo user) {
         Set<Trophy> earned = user.getTrophies();
+
+
         Set<Trophy> allTrophies = trophyRepository.findAll().stream()
-                .filter(trophy -> user.getPoints() >= trophy.getRequiredPoints())
+                .filter(trophy -> !earned.contains(trophy) && user.getPoints() >= trophy.getRequiredPoints())
                 .collect(Collectors.toSet());
 
-        allTrophies.removeAll(earned); // Nouveaux trophées uniquement
 
         if (!allTrophies.isEmpty()) {
             earned.addAll(allTrophies);
+            user.setTrophies(earned);
             userInfoRepository.save(user);
         }
+
     }
+
+
+    @Scheduled(cron = "0 0 0 * * ?")
+    public void claimTrophies() {
+        List<UserInfo> users = userInfoRepository.findAll();
+        for (UserInfo user : users) {
+            updateUserTrophies(user);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
 }
 
