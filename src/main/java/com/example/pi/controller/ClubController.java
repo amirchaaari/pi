@@ -186,22 +186,15 @@ public class ClubController {
         return ResponseEntity.ok(performanceResponse);
     }
 
-    @GetMapping("/recommander")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<List<Club>> recommanderClubs() {
-        return ResponseEntity.ok(clubService.recommanderClubsPourUtilisateur());
-    }
 
-    @GetMapping("/recommended-ids/{userId}")
+
+    @GetMapping("/recommended-ids")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<Set<Long>> getRecommendedClubIds(@PathVariable int userId) {
+    public  List<Club> getRecommendedClubIds() {
         try {
-            Set<Long> recommendedIds = clubService.getRecommendedClubIds(userId);
-            return ResponseEntity.ok(recommendedIds);
+            return clubService.recommanderClubsPourUtilisateur();
         } catch (Exception e) {
-            return ResponseEntity
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(null);
+           throw new RuntimeException("Error while fetching recommended club IDs: " + e.getMessage());
         }
     }
 

@@ -246,35 +246,13 @@ public class ClubService  implements IClubService {
                 .collect(Collectors.toSet());
 
         // Étape 5 : Rechercher d'autres clubs proposant ces sports (mais pas déjà abonnés)
-        List<Club> clubsSimilaires = clubRepository.findAll().stream()
+
+        return clubRepository.findAll().stream()
                 .filter(club -> !clubsAbonnes.contains(club))
                 .filter(club -> club.getSports().stream().anyMatch(sportsPreferes::contains))
                 .collect(Collectors.toList());
-
-        return clubsSimilaires;
     }
 
-    public Set<Long> getRecommendedClubIds(int userId) {
-        UserInfo user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
 
-        // Get all sports from user's subscription history
-        Set<Sport> userSports = user.getAbonnements().stream()
-                .map(abonnement -> abonnement.getPack().getClub().getSports())
-                .flatMap(Set::stream)
-                .collect(Collectors.toSet());
-
-        // Get clubs that have similar sports but user hasn't subscribed to yet
-        Set<Club> subscribedClubs = user.getAbonnements().stream()
-                .map(abonnement -> abonnement.getPack().getClub())
-                .collect(Collectors.toSet());
-
-        return clubRepository.findAll().stream()
-                .filter(club -> !subscribedClubs.contains(club)) // Exclude already subscribed clubs
-                .filter(club -> club.getSports().stream()
-                        .anyMatch(userSports::contains)) // Match clubs with similar sports
-                .map(Club::getId)
-                .collect(Collectors.toSet());
-    }
 
 }
