@@ -2,14 +2,10 @@ package com.example.pi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -29,9 +25,7 @@ public class TrainingSession {
     private LocalTime endTime;
     private int maxParticipants = 10;
     private int sport;
-    private String hmsRoomId;
-    private String hmsRoomCode;
-    private String hmsRoomLink;
+    private String meetLink;
 
     @ManyToOne
     @JsonIgnore

@@ -4,6 +4,7 @@ package com.example.pi.service;
 import com.example.pi.entity.UserInfo;
 import com.example.pi.repository.UserInfoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,9 +13,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
+@Primary
 public class UserInfoService implements UserDetailsService {
 
     @Autowired
@@ -58,5 +61,17 @@ public class UserInfoService implements UserDetailsService {
         }
 
         return "User not authenticated";
+    }
+
+    public UserInfo getUserById(int receiverId) {
+        return repository.findById(receiverId).orElse(null);
+    }
+
+    public UserInfo getUserByUsername(String name) {
+        return repository.findByEmail(name).orElse(null);
+    }
+
+    public List<UserInfo> getUsersByRole(String roleCoach) {
+        return repository.findByRoles(roleCoach);
     }
 }

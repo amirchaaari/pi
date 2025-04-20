@@ -1,8 +1,6 @@
 package com.example.pi.controller;
 
 import com.example.pi.entity.AuthRequest;
-import com.example.pi.entity.Coach;
-import com.example.pi.entity.Nutritionist;
 import com.example.pi.entity.UserInfo;
 import com.example.pi.service.JwtService;
 import com.example.pi.service.UserInfoService;
@@ -13,6 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/auth")
@@ -55,6 +55,20 @@ public class UserController {
         service.deleteUserById(id);
         return "User Deleted Successfully";
     }
+    // Get list of coaches (for current user)
+    @GetMapping("/coaches")
+    @PreAuthorize("hasAuthority('ROLE_USER')")
+    public List<UserInfo> getAllCoaches() {
+        return service.getUsersByRole("ROLE_COACH");
+    }
+
+    // Get list of users (for coaches)
+    @GetMapping("/users")
+    @PreAuthorize("hasAuthority('ROLE_COACH')")
+    public List<UserInfo> getAllUsers() {
+        return service.getUsersByRole("ROLE_USER");
+    }
+
 
 
     @GetMapping("/nutritionist/nutritionistProfile")

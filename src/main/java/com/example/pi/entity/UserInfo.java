@@ -7,6 +7,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @JsonTypeInfo(
@@ -38,6 +40,11 @@ public class UserInfo {
     private String password;
     private String roles;
 
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+    private LocalDateTime lastLogin = LocalDateTime.now();
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy="coach")
     @JsonIgnore
     private Set<TrainingSession> trainingSessions;
@@ -45,4 +52,6 @@ public class UserInfo {
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     @JsonIgnore
     private Set<Review> reviews;
+
+
 }
