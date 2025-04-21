@@ -5,12 +5,13 @@ import com.example.pi.entity.ClubCreationRequest;
 import com.example.pi.service.AbonnementService;
 import com.example.pi.service.ClubService;
 import com.example.pi.service.PackService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -108,27 +109,48 @@ public class ClubController {
         }
     }
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @PostMapping("/submit-creation-request")
     @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
-    public ResponseEntity<?> submitClubCreationRequest(@RequestBody ClubCreationRequest request) {
+    public ResponseEntity<?> submitClubCreationRequest(
+            @RequestPart("request") String requestJson,
+            @RequestPart("document") MultipartFile document) {
         try {
-            ClubCreationRequest creationRequest = clubService.submitClubCreationRequest(request);
+            ClubCreationRequest request = objectMapper.readValue(requestJson, ClubCreationRequest.class);
+            ClubCreationRequest creationRequest = clubService.submitClubCreationRequest(request, document);
+
             if (creationRequest == null) {
                 return ResponseEntity
-                    .badRequest()
-                    .body(Map.of("error", "Unable to submit club creation request"));
+                        .badRequest()
+                        .body(Map.of("error", "Unable to submit club creation request"));
             }
+
             return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(creationRequest);
+                    .status(HttpStatus.CREATED)
+                    .body(creationRequest);
+
         } catch (Exception e) {
             return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("error", e.getMessage()));
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
         }
     }
 
-   // @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/admin/document/{requestId}")
+    public ResponseEntity<byte[]> getDocument(@PathVariable Long requestId) {
+        byte[] documentData = clubService.getClubRequestDocument(requestId);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=document.pdf")
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(documentData);
+    }
+
+
+
+    // @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/admin/pending-requests")
     public ResponseEntity<?> getPendingRequests() {
         try {

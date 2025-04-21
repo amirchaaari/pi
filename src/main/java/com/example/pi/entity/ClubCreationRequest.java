@@ -20,6 +20,9 @@ public class ClubCreationRequest {
     private String name;
     private String description;
     private int capacity;
+    @Lob
+    @Column(name = "document", columnDefinition = "LONGBLOB")
+    private byte[] document;
 
     @Enumerated(EnumType.STRING)
     private RequestStatus status; // Status de la demande (APPROVED, PENDING, REJECTED)

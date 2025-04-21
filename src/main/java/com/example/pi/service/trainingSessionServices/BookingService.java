@@ -93,16 +93,16 @@ public class BookingService implements IBookingService {
         return bookingRepository.findByUser(user);
     }
 
-    @Scheduled(cron = "0 * * * * *") // Every minute for demo
-    public void autoRejectExpiredBookings() {
-        LocalDateTime now = LocalDateTime.now();
-        bookingRepository.findByStatusAndTrainingSessionEndTimeBefore(Booking.Status.PENDING, now.toLocalTime())
-                .forEach(booking -> {
-                    booking.setStatus(Booking.Status.REJECTED);
-                    booking.setResolvedAt(now);
-                    bookingRepository.save(booking);
-                    notificationService.notifyUser(booking.getUser(),
-                            "Booking auto-rejected for: " + booking.getTrainingSession().getDescription());
-                });
-    }
+//    @Scheduled(cron = "0 * * * * *") // Every minute for demo
+//    public void autoRejectExpiredBookings() {
+//        LocalDateTime now = LocalDateTime.now();
+//        bookingRepository.findByStatusAndTrainingSessionEndTimeBefore(Booking.Status.PENDING, now.toLocalTime())
+//                .forEach(booking -> {
+//                    booking.setStatus(Booking.Status.REJECTED);
+//                    booking.setResolvedAt(now);
+//                    bookingRepository.save(booking);
+//                    notificationService.notifyUser(booking.getUser(),
+//                            "Booking auto-rejected for: " + booking.getTrainingSession().getDescription());
+//                });
+//    }
 }

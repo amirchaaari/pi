@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -72,17 +73,17 @@ public class UserInfoService implements UserDetailsService {
         }
 
         userInfo.setPassword(encoder.encode(userInfo.getPassword()));
-        userInfo.setEnabled(false); // Mark not enabled
-
-        // Generate token
-        String token = UUID.randomUUID().toString();
-        userInfo.setVerificationToken(token);
-        userInfo.setVerificationTokenExpiry(LocalDateTime.now().plusHours(24));
+        userInfo.setEnabled(true); // Mark not enabled
+//
+//        // Generate token
+//        String token = UUID.randomUUID().toString();
+//        userInfo.setVerificationToken(token);
+//        userInfo.setVerificationTokenExpiry(LocalDateTime.now().plusHours(24));
 
         repository.save(userInfo);
 
-        String verificationLink = "http://localhost:8089/auth/verify?token=" + token;
-        emailService.sendVerificationEmail(userInfo.getEmail(), verificationLink);
+//        String verificationLink = "http://localhost:8089/auth/verify?token=" + token;
+//        emailService.sendVerificationEmail(userInfo.getEmail(), verificationLink);
 
         return "Verification email sent. Please check your inbox.";
     }
@@ -130,7 +131,9 @@ public class UserInfoService implements UserDetailsService {
         return "User not authenticated";
     }
 
-
+    public List<UserInfo> getAllUsers() {
+        return repository.findAll();
+    }
 
 
 }

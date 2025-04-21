@@ -7,9 +7,13 @@ import com.example.pi.repository.ClubCreationRequestRepository;
 import com.example.pi.repository.SportRepository;
 import com.example.pi.repository.UserInfoRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -31,17 +35,28 @@ public class ClubService  implements IClubService {
         return userRepository.findByEmail(username).orElse(null);  // Retourne null si l'utilisateur n'est pas trouvé
     }
 
-    // Soumettre une demande de création de club
-    public ClubCreationRequest submitClubCreationRequest(ClubCreationRequest request) {
+    // Soumettre une demande de création de club avec un document //
+    public ClubCreationRequest submitClubCreationRequest(ClubCreationRequest request, MultipartFile documentFile) {
         UserInfo authenticatedUser = getAuthenticatedUser();
         if (authenticatedUser == null || !authenticatedUser.getRoles().contains("ROLE_CLUB_OWNER")) {
             return null;  // Retourne null si l'utilisateur n'est pas authentifié ou n'est pas un ClubOwner
         }
 
-        // Associe le ClubOwner à la demande et définit son statut à PENDING
-        request.setClubOwner(authenticatedUser);
-        request.setStatus(ClubCreationRequest.RequestStatus.PENDING);
-        return clubCreationRequestRepository.save(request);
+        try {
+            // Convertir le fichier en tableau de bytes
+            byte[] documentBytes = documentFile.getBytes();
+
+            // Associe le ClubOwner à la demande et définit son statut à PENDING
+            request.setClubOwner(authenticatedUser);
+            request.setStatus(ClubCreationRequest.RequestStatus.PENDING);
+            request.setDocument(documentBytes);
+
+            // Sauvegarde la demande de création de club avec le document
+            return clubCreationRequestRepository.save(request);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null; // Retourne null si l'upload du document échoue
+        }
     }
 
     // Approuver une demande de création de club et créer le club associé
@@ -89,6 +104,7 @@ public class ClubService  implements IClubService {
         clubCreationRequestRepository.save(request);
         return true;
     }
+
 
     // Récupérer toutes les demandes en attente
     public List<ClubCreationRequest> getPendingClubCreationRequests() {
@@ -251,6 +267,17 @@ public class ClubService  implements IClubService {
                 .filter(club -> !clubsAbonnes.contains(club))
                 .filter(club -> club.getSports().stream().anyMatch(sportsPreferes::contains))
                 .collect(Collectors.toList());
+    }
+
+    public byte[] getClubRequestDocument(Long requestId) {
+        ClubCreationRequest request = clubCreationRequestRepository.findById(requestId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Club request not found"));
+
+        if (request.getDocument() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No document attached to this request");
+        }
+
+        return request.getDocument();
     }
 
 

@@ -13,6 +13,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/auth")
 public class UserController {
@@ -83,6 +85,11 @@ public class UserController {
     @GetMapping("/verify")
     public String verifyUser(@RequestParam("token") String token) {
         return service.verifyUser(token);
+    }
+
+    @GetMapping("/users")
+    public List<UserInfo> getAllUsers() {
+        return service.getAllUsers();
     }
 
 
