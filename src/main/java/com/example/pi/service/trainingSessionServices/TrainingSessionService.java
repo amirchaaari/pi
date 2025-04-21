@@ -34,7 +34,7 @@ public class TrainingSessionService implements ITrainingSessionService {
         // Get the current logged-in user's email (the coach)
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUserEmail = authentication.getName();
-
+///
         // Find the coach by email from the database
         UserInfo coach = userInfoRepository.findByEmail(currentUserEmail)
                 .orElseThrow(() -> new RuntimeException("Coach not found with email: " + currentUserEmail));
