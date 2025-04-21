@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -120,6 +121,9 @@ public class TrainingSessionService implements ITrainingSessionService {
                     reviewCount != null ? reviewCount : 0
             );
         }).collect(Collectors.toList());
+    }
+    public List<TrainingSession> getSessionsInRange(LocalDate start, LocalDate end) {
+        return trainingSessionRepository.findByDateBetween(start, end);
     }
 }
 
