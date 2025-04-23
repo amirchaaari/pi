@@ -2,6 +2,7 @@ package com.example.pi.controller.TrainingSessionControllers;
 
 import com.example.pi.dto.CoachDTO;
 import com.example.pi.entity.TrainingSession;
+import com.example.pi.service.UserInfoService;
 import com.example.pi.service.trainingSessionServices.TrainingSessionService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,8 @@ public class TrainingSessionController {
 
     @Autowired
     TrainingSessionService trainingSessionService;
+    @Autowired
+    UserInfoService userService;
 
     @GetMapping("/retrieve-all-TrainingSessions")
     public List<TrainingSession> getTrainingSessions() {

@@ -52,6 +52,10 @@ public class SecurityConfig {
                         .requestMatchers("/auth/coach/**").hasAuthority("ROLE_COACH")
                         .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
                         .requestMatchers("/clubs/**").hasAuthority("ROLE_CLUB_OWNER")
+                        .requestMatchers("/training-sessions/chat").permitAll()
+                        .requestMatchers("/training-sessions/users").permitAll()
+                        .requestMatchers("/training-sessions/messages/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .anyRequest().authenticated() // Protect all other endpoints
                 )
                 .sessionManagement(sess -> sess

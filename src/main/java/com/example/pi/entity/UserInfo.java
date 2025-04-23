@@ -8,7 +8,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @JsonTypeInfo(
@@ -41,8 +40,7 @@ public class UserInfo {
     private String roles;
 
 
-    @Enumerated(EnumType.STRING)
-    private UserStatus status;
+    private Status status = Status.ONLINE;
     private LocalDateTime lastLogin = LocalDateTime.now();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="coach")

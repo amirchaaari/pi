@@ -1,6 +1,6 @@
 package com.example.pi.entity;
 
-public enum UserStatus {
+public enum Status {
     ONLINE,
     OFFLINE
 }

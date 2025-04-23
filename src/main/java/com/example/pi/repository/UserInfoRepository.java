@@ -1,5 +1,6 @@
 package com.example.pi.repository;
 
+import com.example.pi.entity.Status;
 import com.example.pi.entity.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -26,4 +27,5 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
             "ORDER BY COALESCE(AVG(r.rating), 0.0) DESC, COUNT(r) DESC")
     List<Object[]> findCoachesWithAvgRating(@Param("roles") String roles);
 
+    List<UserInfo> findAllByStatus(Status status);
 }
