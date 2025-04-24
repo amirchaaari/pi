@@ -6,7 +6,7 @@ import com.example.pi.entity.UserInfo;
 import java.util.List;
 
 public interface ITrainingSessionService {
-    TrainingSession createSession(TrainingSession session);
+    TrainingSession createSession(TrainingSession session) throws Exception;
     List<TrainingSession> getAllSessions();
     TrainingSession getSessionById(Long sessionId);
     TrainingSession updateSession(Long id,TrainingSession session);
