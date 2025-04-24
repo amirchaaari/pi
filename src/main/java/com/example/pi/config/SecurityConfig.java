@@ -6,6 +6,7 @@ import com.example.pi.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -46,6 +47,7 @@ public class SecurityConfig {
 
                 .csrf(csrf -> csrf.disable()) // Disable CSRF for stateless APIs
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken","/auth/deleteUser/{id}").permitAll()
                         .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
                         .requestMatchers("/bookings").hasAuthority("ROLE_USER")
@@ -53,6 +55,10 @@ public class SecurityConfig {
                         .requestMatchers("/auth/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/auth/coach/**").hasAuthority("ROLE_COACH")
                         .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
+                        .requestMatchers("/recipe/favorites/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/Powfit/recipe/**").permitAll()
+                        .requestMatchers("/Powfit/dietprogram/**").permitAll()
+                        .requestMatchers("/Powfit/mealplan/**").permitAll()
                         .requestMatchers("/auth/**").permitAll() // this line is key
 
                         .anyRequest().authenticated() // Protect all other endpoints

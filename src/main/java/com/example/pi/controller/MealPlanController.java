@@ -1,22 +1,22 @@
 package com.example.pi.controller;
 
+import com.example.pi.dto.MealPlanRequest;
 import com.example.pi.entity.MealPlan;
-import com.example.pi.entity.Recipe;
 import com.example.pi.service.IMealPlanService;
-import com.example.pi.service.IRecipeService;
-import com.example.pi.service.MealPlanService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @AllArgsConstructor
 @RequestMapping("/mealplan")
 public class MealPlanController {
     @Autowired
     IMealPlanService mealPlanService;
+
 
     //recupération des plan nutritionnel
     @GetMapping("/retrieve-allMealPlans")
@@ -27,6 +27,7 @@ public class MealPlanController {
     //ajout
     @PostMapping("/add-mealPlan")
     public String addMealPlan(@RequestBody MealPlan mealPlan) {
+        System.out.println("Adding meal plan: " + mealPlan);
         mealPlanService.addMealPlan(mealPlan);
         return "mealplan added successfully";
     }
@@ -78,5 +79,12 @@ public class MealPlanController {
     public List<MealPlan> findMealPlansByUserIdsAndDaysOfWeek(@RequestParam List<Long> userIds, @RequestParam List<String> daysOfWeek) {
         return mealPlanService.findMealPlansByUserIdsAndDaysOfWeek(userIds, daysOfWeek);
     }
+
+    @PostMapping("/create")
+    public ResponseEntity<MealPlan> createMealPlan(@RequestBody MealPlanRequest request) {
+        MealPlan saved = mealPlanService.createMealPlan(request);
+        return ResponseEntity.ok(saved);
+    }
+
 }
 

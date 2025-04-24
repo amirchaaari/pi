@@ -15,5 +15,11 @@ public interface IDietProgramService {
 
     void removeDietProgram(Long idDietProgram);
 
+    List<DietProgram> findByUserId(Long userId);
+
+    List<DietProgram> findByMultipleUserIds(List<Long> userIds);
+
+    String compareNutritionPrograms(Long programId1, Long programId2);
+
     List<DietProgram> addDietPrograms(List<DietProgram> DietPrograms);
 }

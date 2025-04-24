@@ -4,11 +4,11 @@ import com.example.pi.entity.DietProgram;
 import com.example.pi.entity.Recipe;
 import com.example.pi.service.IDietProgramService;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @RestController
 @AllArgsConstructor
 @RequestMapping("/dietprogram")
@@ -29,6 +29,9 @@ public class DietProgramController {
     //modification
     @PutMapping("/updateDietProgram")
     public DietProgram updateDietProgram(@RequestBody DietProgram dietProgram) {
+        if(dietProgram.getIdDiet()== null){
+            throw new IllegalArgumentException("diet program id is required for the update");
+        }
         DietProgram updatedDietProgram = dietProgramService.updateDietProgram(dietProgram);
         return updatedDietProgram;
     }
@@ -43,4 +46,9 @@ public class DietProgramController {
     public void removeDietProgram(@PathVariable("DietProgramId") long id) {
         dietProgramService.removeDietProgram(id);
     }
+    @GetMapping("/compare")
+    public String comparePrograms(@RequestParam Long programId1, @RequestParam Long programId2) {
+        return dietProgramService.compareNutritionPrograms(programId1, programId2);
+    }
 }
+

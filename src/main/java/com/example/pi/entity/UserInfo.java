@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @JsonTypeInfo(
@@ -68,4 +69,8 @@ public class UserInfo {
 
     @OneToMany(mappedBy = "gymGoer", cascade = CascadeType.ALL)
     private Set<Abonnement> abonnements; // Un user peut souscrire à plusieurs abonnement
+    // In User entity
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<DietProgram> dietPrograms;
 }

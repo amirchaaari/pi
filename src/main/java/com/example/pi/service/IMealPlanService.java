@@ -1,5 +1,6 @@
 package com.example.pi.service;
 
+import com.example.pi.dto.MealPlanRequest;
 import com.example.pi.entity.MealPlan;
 
 import java.util.List;
@@ -26,4 +27,6 @@ public interface IMealPlanService {
     List<MealPlan> findMealPlansByUserIdAndDayOfWeek(Long userId, String dayOfWeek);
 
     List<MealPlan> findMealPlansByUserIdsAndDaysOfWeek(List<Long> userIds, List<String> daysOfWeek);
+
+    MealPlan createMealPlan(MealPlanRequest request);
 }
