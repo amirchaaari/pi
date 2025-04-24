@@ -37,14 +37,14 @@ public class UserController {
         return service.addUser(userInfo);
     }
     @GetMapping("/user/userProfile")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    //@PreAuthorize("hasAuthority('ROLE_USER')")
     public String userProfile() {
         return service.getUserProfile();
 
     }
 
     @GetMapping("/coach/coachProfile")
-    @PreAuthorize("hasAuthority('ROLE_COACH')")
+    //@PreAuthorize("hasAuthority('ROLE_COACH')")
     public String coachProfile() {
         return service.getUserProfile();
 
@@ -59,12 +59,12 @@ public class UserController {
 
 
     @GetMapping("/nutritionist/nutritionistProfile")
-    @PreAuthorize("hasAuthority('ROLE_NUTRITIONIST')")
+    //@PreAuthorize("hasAuthority('ROLE_NUTRITIONIST')")
     public String nutritionistProfile() {
         return "Welcome to Nutritionist Profile";
     }
     @GetMapping("/admin/adminProfile")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    //@PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public String adminProfile() {
         return "Welcome to Admin Profile";
     }

@@ -40,7 +40,7 @@ public class UserInfo {
     @Column(nullable = false)
     private String password;
     @Column(nullable = false)
-    private String roles;
+    private String roles; 
 
     @Column
     private boolean enabled = false;
