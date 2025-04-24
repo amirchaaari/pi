@@ -106,55 +106,42 @@ public class AbonnementService implements IAbonnementService {
     }
 
 
-    public Abonnement renewAbonnement(Long abonnementId, LocalDate newEndDate) {
-        // Validate input
-        if (newEndDate.isBefore(LocalDate.now())) {
-            throw new IllegalArgumentException("La nouvelle date ne peut pas être dans le passé.");
-        }
-
-        // Get subscription
+    public Abonnement renewAbonnement(Long abonnementId) {
+        // Récupérer l'abonnement à partir de l'ID fourni
         Abonnement abonnement = abonnementRepository.findById(abonnementId)
-                .orElseThrow(() -> new IllegalArgumentException("Abonnement non trouvé."));
+                .orElseThrow(() -> new IllegalArgumentException("❌ Abonnement non trouvé."));
 
+        // Vérifier que l'utilisateur est bien celui qui a l'abonnement
         UserInfo currentUser = getCurrentUser();
-
-        // Verify ownership
-        if (!abonnement.getUser().equals(currentUser)) {
-
+        if (currentUser == null || abonnement.getUser().getId() != currentUser.getId()) {
+            throw new SecurityException("⚠️ Vous n'avez pas le droit de renouveler cet abonnement.");
         }
 
-        LocalDate currentEndDate = abonnement.getEndDate();
+        // Calcul de la nouvelle date de fin
+        Pack pack = abonnement.getPack();
+        LocalDate startDate = LocalDate.now();  // La date de début est aujourd'hui
+        LocalDate newEndDate = startDate.plusDays(pack.getDuration());  // La date de fin dépend de la durée du pack
 
-        // Prevent renewal to an earlier date
-        if (newEndDate.isBefore(currentEndDate)) {
-            throw new IllegalArgumentException("La nouvelle date doit être après la date de fin actuelle.");
-        }
+        // Calcul des points gagnés pendant la durée de l'abonnement
+        long days = ChronoUnit.DAYS.between(abonnement.getEndDate(), newEndDate);
+        int gainedPoints = (int) days * 2;  // Exemple: chaque jour donne 2 points
+        currentUser.setPoints(currentUser.getPoints() + gainedPoints);
+        userInfoRepository.save(currentUser);
 
-        try {
-            // Calculate points
-            long days = ChronoUnit.DAYS.between(currentEndDate, newEndDate);
-            int gainedPoints = (int) days * 2;
+        // Mise à jour de l'abonnement avec les nouvelles dates
+        abonnement.setStartDate(startDate);
+        abonnement.setEndDate(newEndDate);
+        abonnement.setStatus("active");
 
-            // Update user points
-            currentUser.setPoints(currentUser.getPoints() + gainedPoints);
-            userInfoRepository.save(currentUser);
+        // Sauvegarde de l'abonnement renouvelé
+        abonnement = abonnementRepository.save(abonnement);
 
-            // Update subscription
-            abonnement.setEndDate(newEndDate);
-            abonnement.setEndDateOfRenewal(newEndDate);
-            abonnement.setStatus("actif");
-            abonnement = abonnementRepository.save(abonnement);
+        // Mettre à jour les trophées de l'utilisateur
+        trophyService.updateUserTrophies(currentUser);
 
-            // Update trophies
-            trophyService.updateUserTrophies(currentUser);
-
-            return abonnement;
-
-        } catch (Exception e) {
-            // Log the error
-            throw new RuntimeException("Erreur lors du renouvellement de l'abonnement");
-        }
+        return abonnement;
     }
+
 
     public double calculateRenewalRateForClub(Long clubId) {
         List<Abonnement> abonnements = abonnementRepository.findByPackClubId(clubId);
@@ -197,11 +184,11 @@ public class AbonnementService implements IAbonnementService {
         // Interprétation
         String interpretation;
         if (taux >= 70) {
-            interpretation = "🔥 Très bon taux de fidélisation !";
+            interpretation = "🔥 Very good retention rate!";
         } else if (taux >= 40) {
-            interpretation = "⚠️ Taux de fidélisation moyen.";
+            interpretation = "⚠️ Average retention rate.";
         } else {
-            interpretation = "❌ Faible fidélisation, à améliorer.";
+            interpretation = "❌ Low retention rate, needs improvement.";
         }
         response.put("interpretation", interpretation);
 
@@ -209,7 +196,8 @@ public class AbonnementService implements IAbonnementService {
     }
 
 
-     @Scheduled( cron = "0 */1 * * * ?")
+    //@Scheduled(cron = "*/1 * * * * *")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void checkAndExpireAbonnements() {
          List<Abonnement> abonnements = abonnementRepository.findAll();
          LocalDate today = LocalDate.now();

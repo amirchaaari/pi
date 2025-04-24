@@ -40,24 +40,25 @@ public class AbonnementRequestService {
 
 
     // Demande d’abonnement par GymGoer
-    public AbonnementRequest createRequest(Long packId, LocalDate startDate, LocalDate endDate) {
+    public AbonnementRequest createRequest(Long packId) {
         UserInfo currentUser = getCurrentUser();
         Optional<Pack> optionalPack = packRepository.findById(packId);
 
-        if (currentUser == null || optionalPack.isEmpty()) {
-            return null;
-        }
+        if (currentUser == null || optionalPack.isEmpty()) return null;
 
         AbonnementRequest request = new AbonnementRequest();
         request.setUser(currentUser);
         request.setPack(optionalPack.get());
         request.setRequestedDate(LocalDate.now());
+        request.setStartDate(LocalDate.now());  // Utilisation de la date actuelle
+        int durationDays = optionalPack.get().getDuration(); // Durée du pack en jours
+        request.setEndDate(LocalDate.now().plusDays(durationDays));  // Calcul de la date de fin
+
         request.setStatus(AbonnementRequest.RequestStatus.PENDING);
-        request.setStartDate(startDate);
-        request.setEndDate(endDate);
 
         return requestRepository.save(request);
     }
+
 
 
 
@@ -69,26 +70,25 @@ public class AbonnementRequestService {
         AbonnementRequest request = optionalRequest.get();
         UserInfo currentUser = getCurrentUser();
 
-        // Vérification que l'utilisateur connecté est bien le propriétaire du club
-        if (request.getPack().getClub().getOwner().getId() != currentUser.getId()) {
-            return null; // Non autorisé
-        }
+        if (request.getPack().getClub().getOwner().getId() != currentUser.getId()) return null;
 
-        // Mettre à jour le statut de la requête
         request.setStatus(AbonnementRequest.RequestStatus.APPROVED);
         requestRepository.save(request);
 
-        // Créer un nouvel abonnement à partir de la requête
         Abonnement abonnement = new Abonnement();
         abonnement.setUser(request.getUser());
         abonnement.setPack(request.getPack());
-        abonnement.setStartDate(request.getStartDate());
-        abonnement.setEndDate(request.getEndDate());
-        abonnement.setStatus("actif");
+        abonnement.setStartDate(LocalDate.now());
+
+        // Utilisation de la durée du pack pour définir la date de fin
+        int durationDays = request.getPack().getDuration();
+        abonnement.setEndDate(LocalDate.now().plusDays(durationDays));
+        abonnement.setStatus("active");
         abonnement.setEndDateOfRenewal(null);
 
         return abonnementRepository.save(abonnement);
     }
+
 
 
     // Rejeter une demande

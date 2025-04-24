@@ -30,7 +30,7 @@ public class AbonnementRequestController {
         System.out.println("Creating request for pack ID: " + packId);
         System.out.println("Start date: " + startDate);
         System.out.println("End date: " + endDate);
-        return requestService.createRequest(packId, startDate, endDate);
+        return requestService.createRequest(packId);
     }
 
 
