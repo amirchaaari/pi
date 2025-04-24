@@ -65,6 +65,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-websocket</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <scope>test</scope>
@@ -86,7 +90,38 @@
             <artifactId>jjwt-jackson</artifactId>
             <version>0.11.5</version>
         </dependency>
+        <!-- Google API Client -->
+        <!-- https://mvnrepository.com/artifact/com.google.api-client/google-api-client -->
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+            <version>1.25.0</version>
+        </dependency>
+
+        <!-- Google OAuth -->
+        <dependency>
+            <groupId>com.google.oauth-client</groupId>
+            <artifactId>google-oauth-client-jetty</artifactId>
+            <version>1.34.1</version>
+        </dependency>
+
+        <!-- Google Calendar API -->
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-calendar</artifactId>
+            <version>v3-rev411-1.25.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version> <!-- Use the latest version -->
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
     </dependencies>
+
 
     <build>
         <plugins>

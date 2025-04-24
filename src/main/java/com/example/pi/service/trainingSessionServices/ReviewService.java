@@ -11,7 +11,6 @@ import com.example.pi.repository.trainignSessionRepo.ReviewRepository;
 import com.example.pi.repository.trainignSessionRepo.TrainingSessionRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -19,11 +18,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
+
 @Service
 @RequiredArgsConstructor
-public class ReviewService implements IReviewService{
+public class ReviewService implements IReviewService {
 
     @Autowired
     private final ReviewRepository reviewRepository;
@@ -41,6 +40,7 @@ public class ReviewService implements IReviewService{
                 .orElseThrow(() -> new RuntimeException("Session not found"));
 
         validateReviewEligibility(user, session);
+
         if (rating < 1 || rating > 5) {
             throw new IllegalArgumentException("Rating must be between 1 and 5");
         }
@@ -57,11 +57,12 @@ public class ReviewService implements IReviewService{
 
     private void validateReviewEligibility(UserInfo user, TrainingSession session) {
         // Check session has ended
-        if (session.getEndTime().isAfter(LocalTime.from(LocalDateTime.now()))) {
-            throw new IllegalStateException("Session hasn't ended yet");
+        LocalDateTime sessionEndDateTime = LocalDateTime.of(session.getDate(), session.getEndTime());
+        if (LocalDateTime.now().isBefore(sessionEndDateTime)) {
+            throw new IllegalStateException("Cannot review a session that hasn't ended yet");
         }
 
-        // Check user attended the session
+        // Check user has an approved booking for this session
         boolean hasApprovedBooking = bookingRepository.existsByUserAndTrainingSessionAndStatus(
                 user,
                 session,
@@ -69,14 +70,8 @@ public class ReviewService implements IReviewService{
         );
 
         if (!hasApprovedBooking) {
-            throw new IllegalStateException("User didn't attend this session");
+            throw new IllegalStateException("Only participants with approved bookings can review this session");
         }
-
-        // Check existing review
-        if (reviewRepository.existsByUserAndTrainingSession(user, session)) {
-            throw new IllegalStateException("Already reviewed this session");
-        }
-
 
     }
 
@@ -85,14 +80,18 @@ public class ReviewService implements IReviewService{
     }
 
     @Transactional
-    public Review updateReview(Long reviewId,Review review) {
-        review = reviewRepository.findById(reviewId)
+    public Review updateReview(Long reviewId, Review review) {
+        Review existingReview = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new RuntimeException("Review not found"));
-        validateReviewOwnership(review);
+
+        validateReviewOwnership(existingReview);
         validateRating(review.getRating());
-        review.setRating(review.getRating());
-        review.setDescription(review.getDescription());
-        return reviewRepository.save(review);
+
+        existingReview.setRating(review.getRating());
+        existingReview.setDescription(review.getDescription());
+        existingReview.setCreatedAt(LocalDateTime.now()); // Update timestamp on edit
+
+        return reviewRepository.save(existingReview);
     }
 
     @Transactional
@@ -107,7 +106,7 @@ public class ReviewService implements IReviewService{
     private void validateReviewOwnership(Review review) {
         UserInfo currentUser = getCurrentUser();
         if (!review.getUser().equals(currentUser)) {
-            throw new AccessDeniedException("You don't own this review");
+            throw new AccessDeniedException("You can only modify your own reviews");
         }
     }
 

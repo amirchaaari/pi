@@ -1,13 +1,11 @@
 package com.example.pi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Id;
-import lombok.*;
 import jakarta.persistence.*;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Builder
 @Entity
@@ -26,7 +24,7 @@ public class Booking {
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private Status status = Status.PENDING;
-
+    private boolean reminderSent = false;
     @ManyToOne
     @JsonIgnore
     private UserInfo user;
