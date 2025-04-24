@@ -40,7 +40,7 @@ public class UserController {
         return service.addUser(userInfo);
     }
     @GetMapping("/user/userProfile")
-    @PreAuthorize("hasAuthority('ROLE_USER')")
+    //@PreAuthorize("hasAuthority('ROLE_USER')")
     public String userProfile() {
         return service.getUserProfile();
 

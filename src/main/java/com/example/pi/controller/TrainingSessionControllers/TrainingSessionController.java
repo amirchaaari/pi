@@ -2,7 +2,6 @@ package com.example.pi.controller.TrainingSessionControllers;
 
 import com.example.pi.dto.CoachDTO;
 import com.example.pi.entity.TrainingSession;
-import com.example.pi.service.UserInfoService;
 import com.example.pi.service.trainingSessionServices.TrainingSessionService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +19,6 @@ public class TrainingSessionController {
 
     @Autowired
     TrainingSessionService trainingSessionService;
-    @Autowired
-    UserInfoService userService;
 
     @GetMapping("/retrieve-all-TrainingSessions")
     public List<TrainingSession> getTrainingSessions() {
@@ -45,6 +42,11 @@ public class TrainingSessionController {
         return trainingSessionService.updateSession(ts.getId(), ts);
     }
 
+    @GetMapping("/coach/sessions")
+    public List<TrainingSession> getSessionsByCurrentCoach() {
+        return trainingSessionService.getSessionsByCurrentCoach();
+    }
+
     @DeleteMapping("/delete-TrainingSession/{idTrainingSession}")
     @PreAuthorize("hasRole('ROLE_COACH')")
     public void deleteTrainingSession(@PathVariable("idTrainingSession") Long id) {
@@ -57,12 +59,11 @@ public class TrainingSessionController {
         return ResponseEntity.ok(coaches);
     }
 
-    @GetMapping("/by-date-range")
-    public ResponseEntity<List<TrainingSession>> getSessionsInRange(
+    @GetMapping("/coach/sessions/range")
+    public List<TrainingSession> getCoachSessionsInRange(
             @RequestParam("start") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate start,
             @RequestParam("end") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate end) {
-        List<TrainingSession> sessions = trainingSessionService.getSessionsInRange(start, end);
-        return ResponseEntity.ok(sessions);
+        return trainingSessionService.getSessionsInRangeForCurrentCoach(start, end);
     }
 
 

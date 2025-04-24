@@ -122,8 +122,30 @@ public class TrainingSessionService implements ITrainingSessionService {
             );
         }).collect(Collectors.toList());
     }
-    public List<TrainingSession> getSessionsInRange(LocalDate start, LocalDate end) {
-        return trainingSessionRepository.findByDateBetween(start, end);
+    public List<TrainingSession> getSessionsInRangeForCurrentCoach(LocalDate start, LocalDate end) {
+        // Get current logged-in user's email
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+
+        // Fetch the coach by email
+        UserInfo coach = userInfoRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new RuntimeException("Coach not found with email: " + currentUserEmail));
+
+        // Query training sessions within range for that coach
+        return trainingSessionRepository.findByCoachAndDateBetween(coach, start, end);
     }
+    public List<TrainingSession> getSessionsByCurrentCoach() {
+        // Get the current logged-in user's email (coach) from the SecurityContext
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName(); // Get the current user's email
+
+        // Find the coach by email from the database
+        UserInfo coach = userInfoRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new RuntimeException("Coach not found with email: " + currentUserEmail));
+
+        // Retrieve the training sessions associated with the current coach
+        return trainingSessionRepository.findByCoach(coach);
+    }
+
 }
 

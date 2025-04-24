@@ -33,7 +33,7 @@ public class ChatRoomService {
     }
 
     private Integer createChatId(Integer senderId, Integer recipientId) {
-        var chatId = senderId.hashCode() + recipientId.hashCode(); // Example way to create a chatId
+        var chatId = senderId.hashCode() + recipientId.hashCode();
 
         ChatRoom senderRecipient = ChatRoom.builder()
                 .chatId(chatId)
