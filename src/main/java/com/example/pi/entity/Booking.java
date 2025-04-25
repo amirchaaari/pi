@@ -31,8 +31,8 @@ public class Booking {
     @JsonIgnore
     private UserInfo user;
 
-    @ManyToOne
-    private TrainingSession trainingSession;
+    /*@ManyToOne
+    private TrainingSession trainingSession;*/
 
     @Builder.Default
     private LocalDateTime bookedAt = LocalDateTime.now();
