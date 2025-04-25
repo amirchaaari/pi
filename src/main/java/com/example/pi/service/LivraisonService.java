@@ -1,14 +1,12 @@
+
 package com.example.pi.service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import com.example.pi.entity.Livraison;
 import com.example.pi.repository.LivraisonRepository;
 import com.example.pi.serviceInterface.ILivraisonInterface;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -22,9 +20,11 @@ public class LivraisonService implements ILivraisonInterface {
 
 
     @Override
-    public List<Livraison> GetListLivraisons(String status) {
-        return livraisonRepository.findByStatus(status);
+    public List<Livraison> GetListLivraisons() {
+        return livraisonRepository.findAll();
     }
+
+
 
     @Override
     public Livraison addLivraison(Livraison l) {
@@ -73,7 +73,7 @@ public class LivraisonService implements ILivraisonInterface {
     }
 
 
-    @Scheduled(cron = "0 0 * * * ?")
+    /*@Scheduled(cron = "0 0 * * * ?")
     public void alertForArrivingLivraisons() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime alertTime = now.plusHours(2);
@@ -90,7 +90,7 @@ public class LivraisonService implements ILivraisonInterface {
                     " is arriving soon at " + livraison.getScheduleddate());
 
         }
-    }
+    }*/
 
 
     public List<Object[]> getLivraisonStatisticsByStatus() {
@@ -101,3 +101,4 @@ public class LivraisonService implements ILivraisonInterface {
 
 
 }
+

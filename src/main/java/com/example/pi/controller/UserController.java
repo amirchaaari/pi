@@ -1,3 +1,4 @@
+/*
 package com.example.pi.controller;
 
 import com.example.pi.entity.AuthRequest;
@@ -51,7 +52,9 @@ public class UserController {
         return "Welcome to Coach Profile";
     }
 
-    /*delete a user*/
+    */
+/*delete a user*//*
+
     @DeleteMapping("/deleteUser/{id}")
     public String deleteUser(@PathVariable int id) {
         service.deleteUserById(id);
@@ -87,3 +90,4 @@ public class UserController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
+*/

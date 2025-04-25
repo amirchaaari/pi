@@ -1,3 +1,4 @@
+/*
 package com.example.pi.service.trainingSessionServices;
 
 import com.example.pi.entity.TrainingSession;
@@ -18,4 +19,4 @@ public class NotificationService {
         // Implement your notification logic (email, push, etc.)
         System.out.println("Notification sent to " + user.getEmail() + ": " + s);
     }
-}
+}*/

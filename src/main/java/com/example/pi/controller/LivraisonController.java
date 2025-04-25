@@ -13,8 +13,8 @@ import java.util.List;
 public class LivraisonController {
         ILivraisonInterface livraisonService;
     @GetMapping("/retrieve-all-livraison")
-    public List<Livraison> getAllLivraison(String status) {
-        return livraisonService.GetListLivraisons(status);
+    public List<Livraison> getAllLivraison() {
+        return livraisonService.GetListLivraisons();
     }
 
     @PostMapping("/add-livraison")

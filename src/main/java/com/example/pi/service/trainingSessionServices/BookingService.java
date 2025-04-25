@@ -1,3 +1,4 @@
+/*
 package com.example.pi.service.trainingSessionServices;
 
 import com.example.pi.entity.Booking;
@@ -106,3 +107,4 @@ public class BookingService implements IBookingService {
                 });
     }
 }
+*/

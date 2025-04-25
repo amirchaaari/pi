@@ -1,3 +1,4 @@
+/*
 package com.example.pi.service.trainingSessionServices;
 
 import com.example.pi.entity.Booking;
@@ -132,3 +133,4 @@ public class ReviewService implements IReviewService{
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 }
+*/

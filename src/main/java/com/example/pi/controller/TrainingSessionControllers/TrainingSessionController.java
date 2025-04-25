@@ -1,3 +1,4 @@
+/*
 package com.example.pi.controller.TrainingSessionControllers;
 
 import com.example.pi.entity.TrainingSession;
@@ -46,3 +47,4 @@ public class TrainingSessionController {
     }
 
 }
+*/

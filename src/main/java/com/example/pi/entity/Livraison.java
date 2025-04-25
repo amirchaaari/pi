@@ -19,6 +19,7 @@ import java.util.Set;
 @Builder
 @Entity
 @Component
+@Data
 
 public class Livraison {
     @Id

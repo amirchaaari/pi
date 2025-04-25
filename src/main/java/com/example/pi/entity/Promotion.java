@@ -2,9 +2,7 @@ package com.example.pi.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -12,6 +10,8 @@ import java.util.Set;
 @Entity
 @Table(name = "promotions")
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Promotion {
@@ -20,10 +20,9 @@ public class Promotion {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    private String category;
     private String description;
     private double discountPercentage;
-
     private LocalDate startDate;
     private LocalDate endDate;
     private LocalDate expiryDate;
@@ -32,5 +31,5 @@ public class Promotion {
     @JsonIgnore
     private Set<Category> categories;*/
 
-    private int usageCount;
+
 }

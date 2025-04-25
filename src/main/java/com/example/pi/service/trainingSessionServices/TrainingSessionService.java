@@ -1,3 +1,4 @@
+/*
 package com.example.pi.service.trainingSessionServices;
 
 import com.example.pi.entity.TrainingSession;
@@ -63,3 +64,4 @@ public class TrainingSessionService implements ITrainingSessionService {
     }
 }
 
+*/

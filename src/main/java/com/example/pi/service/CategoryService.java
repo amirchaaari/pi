@@ -1,3 +1,4 @@
+/*
 package com.example.pi.service;
 
 import com.example.pi.entity.Category;
@@ -52,4 +53,4 @@ public class CategoryService {
     public boolean existsById(Long id) {
         return categoryRepository.existsById(id);
     }
-}
+}*/

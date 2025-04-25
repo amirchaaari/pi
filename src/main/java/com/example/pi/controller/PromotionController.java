@@ -2,6 +2,7 @@ package com.example.pi.controller;
 
 import com.example.pi.entity.Promotion;
 import com.example.pi.service.PromotionService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,14 +18,14 @@ public class PromotionController {
     @Autowired
     private PromotionService promotionService;
 
-    // Get all promotions
-    @GetMapping
-    public ResponseEntity<List<Promotion>> getAllPromotions() {
-        List<Promotion> promotions = promotionService.findAll();
-        return new ResponseEntity<>(promotions, HttpStatus.OK);
+    @Transactional
+    @GetMapping("/get-all")
+    public List<Promotion> getAllPromotions() {
+        return promotionService.findAll();
     }
 
     // Get a promotion by ID
+    @Transactional
     @GetMapping("/{id}")
     public ResponseEntity<Promotion> getPromotionById(@PathVariable Long id) {
         Optional<Promotion> promotion = promotionService.findById(id);
@@ -33,6 +34,7 @@ public class PromotionController {
     }
 
     // Create a new promotion
+    @Transactional
     @PostMapping("/add-promotion")
     public ResponseEntity<Promotion> createPromotion(@RequestBody Promotion promotion) {
         Promotion savedPromotion = promotionService.save(promotion);
@@ -40,6 +42,7 @@ public class PromotionController {
     }
 
     // Update an existing promotion
+    @Transactional
     @PutMapping("/{id}")
     public ResponseEntity<Promotion> updatePromotion(@PathVariable Long id, @RequestBody Promotion promotion) {
         if (!promotionService.findById(id).isPresent()) {
@@ -51,6 +54,7 @@ public class PromotionController {
     }
 
     // Delete a promotion
+    @Transactional
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePromotion(@PathVariable Long id) {
         if (!promotionService.findById(id).isPresent()) {

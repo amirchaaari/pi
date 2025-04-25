@@ -57,7 +57,7 @@ public class PromotionService {
     }*/
 
 
-    @Scheduled(cron = "0 0 9 * * ?")
+    /*@Scheduled(cron = "0 0 9 * * ?")
     public void checkForAlmostExpiredPromotions() {
         LocalDate today = LocalDate.now();
         LocalDate alertDate = today.plusDays(2);
@@ -73,7 +73,7 @@ public class PromotionService {
                     + promotion.getExpiryDate());
 
         }
-    }
+    }*/
 
 
 

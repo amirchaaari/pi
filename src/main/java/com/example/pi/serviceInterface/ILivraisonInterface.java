@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ILivraisonInterface {
 
-    List<Livraison> GetListLivraisons(String status);
+    List<Livraison> GetListLivraisons();
     Livraison addLivraison(Livraison l);
     Livraison updateLivraison(Livraison l);
 
