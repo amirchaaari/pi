@@ -5,8 +5,8 @@ import com.example.pi.entity.AuthRequest;
 import com.example.pi.entity.Coach;
 import com.example.pi.entity.Nutritionist;
 import com.example.pi.entity.UserInfo;
-import com.example.pi.service.JwtService;
-import com.example.pi.service.UserInfoService;
+import com.example.pi.serviceimp.JwtService;
+import com.example.pi.serviceimp.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +26,7 @@ public class UserController {
 
     @Autowired
     private JwtService jwtService;
+
 
     @Autowired
     private AuthenticationManager authenticationManager;
