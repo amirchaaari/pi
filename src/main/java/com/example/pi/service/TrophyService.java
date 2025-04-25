@@ -53,12 +53,27 @@ public class TrophyService {
     }
 
     public boolean deleteTrophy(Long id) {
-        if (trophyRepository.existsById(id)) {
-            trophyRepository.deleteById(id);
+        Optional<Trophy> optionalTrophy = trophyRepository.findById(id);
+
+        if (optionalTrophy.isPresent()) {
+            Trophy trophy = optionalTrophy.get();
+
+            // Retirer le trophée de tous les utilisateurs
+            for (UserInfo user : trophy.getUsers()) {
+                user.getTrophies().remove(trophy);
+            }
+
+            // Vider la collection côté Trophy (précaution)
+            trophy.getUsers().clear();
+
+            // Ensuite supprimer le trophée
+            trophyRepository.delete(trophy);
             return true;
         }
+
         return false;
     }
+
 
     @Transactional
     public UserInfo updateUserPoints(int userId, int newPoints) {

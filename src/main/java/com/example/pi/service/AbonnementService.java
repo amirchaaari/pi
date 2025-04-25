@@ -106,42 +106,39 @@ public class AbonnementService implements IAbonnementService {
     }
 
 
-    public Abonnement renewAbonnement(Long abonnementId) {
+    public Abonnement renewAbonnement(Long abonnementId, LocalDate newEndDate) {
         // Récupérer l'abonnement à partir de l'ID fourni
         Abonnement abonnement = abonnementRepository.findById(abonnementId)
                 .orElseThrow(() -> new IllegalArgumentException("❌ Abonnement non trouvé."));
 
-        // Vérifier que l'utilisateur est bien celui qui a l'abonnement
-        UserInfo currentUser = getCurrentUser();
-        if (currentUser == null || abonnement.getUser().getId() != currentUser.getId()) {
-            throw new SecurityException("⚠️ Vous n'avez pas le droit de renouveler cet abonnement.");
+        // Vérifier que l'abonnement n'est pas déjà expiré
+        if (abonnement.getEndDate().isAfter(newEndDate)) {
+            throw new IllegalArgumentException("❌ La nouvelle date de fin doit être après l'ancienne.");
         }
 
-        // Calcul de la nouvelle date de fin
-        Pack pack = abonnement.getPack();
-        LocalDate startDate = LocalDate.now();  // La date de début est aujourd'hui
-        LocalDate newEndDate = startDate.plusDays(pack.getDuration());  // La date de fin dépend de la durée du pack
+        // ✅ On utilise directement l'utilisateur de l'abonnement
+        UserInfo abonnementUser = abonnement.getUser();
 
-        // Calcul des points gagnés pendant la durée de l'abonnement
+        // Calcul des points gagnés pendant la durée de prolongation
         long days = ChronoUnit.DAYS.between(abonnement.getEndDate(), newEndDate);
         int gainedPoints = (int) days * 2;  // Exemple: chaque jour donne 2 points
-        currentUser.setPoints(currentUser.getPoints() + gainedPoints);
-        userInfoRepository.save(currentUser);
+
+        abonnementUser.setPoints(abonnementUser.getPoints() + gainedPoints);
+        userInfoRepository.save(abonnementUser);
 
         // Mise à jour de l'abonnement avec les nouvelles dates
-        abonnement.setStartDate(startDate);
+        abonnement.setStartDate(LocalDate.now());  // Date de début = aujourd'hui
         abonnement.setEndDate(newEndDate);
         abonnement.setStatus("active");
+        abonnement.setEndDateOfRenewal(LocalDate.now());
+        // Sauvegarder l’abonnement
+        Abonnement updatedAbonnement = abonnementRepository.save(abonnement);
 
-        // Sauvegarde de l'abonnement renouvelé
-        abonnement = abonnementRepository.save(abonnement);
+        // Mise à jour des trophées
+        trophyService.updateUserTrophies(abonnementUser);
 
-        // Mettre à jour les trophées de l'utilisateur
-        trophyService.updateUserTrophies(currentUser);
-
-        return abonnement;
+        return updatedAbonnement;
     }
-
 
     public double calculateRenewalRateForClub(Long clubId) {
         List<Abonnement> abonnements = abonnementRepository.findByPackClubId(clubId);

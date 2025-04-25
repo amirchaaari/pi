@@ -37,6 +37,10 @@ public class Club {
         @Transient
         private double averageSubscriptionsPerPack;
 
+        @Lob
+        @Column(name = "image", columnDefinition = "LONGBLOB")
+        private byte[] image;
+
 
 
 

@@ -3,6 +3,9 @@ package com.example.pi.controller;
 import com.example.pi.entity.Abonnement;
 import com.example.pi.service.AbonnementService;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,10 +54,14 @@ public class AbonnementController {
     }
 
     @PutMapping("/renew-abonnement/{id}")
- //   @PreAuthorize("hasRole('ROLE_USER')")
-    public Abonnement renewAbonnement(@PathVariable Long id) {
-        return abonnementService.renewAbonnement(id);
+    public ResponseEntity<Abonnement> renewAbonnement(
+            @PathVariable("id") Long id,
+            @RequestParam("newEndDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate newEndDate) {
+        Abonnement updated = abonnementService.renewAbonnement(id, newEndDate);
+        return ResponseEntity.ok(updated);
     }
+
+
 
 
 

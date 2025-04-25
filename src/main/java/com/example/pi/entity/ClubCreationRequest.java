@@ -24,6 +24,11 @@ public class ClubCreationRequest {
     @Column(name = "document", columnDefinition = "LONGBLOB")
     private byte[] document;
 
+    @Lob
+    @Column(name = "image", columnDefinition = "LONGBLOB")
+    private byte[] image;
+
+
     @Enumerated(EnumType.STRING)
     private RequestStatus status; // Status de la demande (APPROVED, PENDING, REJECTED)
 

@@ -36,55 +36,56 @@ public class ClubService  implements IClubService {
     }
 
     // Soumettre une demande de création de club avec un document //
-    public ClubCreationRequest submitClubCreationRequest(ClubCreationRequest request, MultipartFile documentFile) {
+    public ClubCreationRequest submitClubCreationRequest(ClubCreationRequest request, MultipartFile documentFile, MultipartFile imageFile) {
         UserInfo authenticatedUser = getAuthenticatedUser();
         if (authenticatedUser == null || !authenticatedUser.getRoles().contains("ROLE_CLUB_OWNER")) {
-            return null;  // Retourne null si l'utilisateur n'est pas authentifié ou n'est pas un ClubOwner
+            return null;
         }
 
         try {
-            // Convertir le fichier en tableau de bytes
             byte[] documentBytes = documentFile.getBytes();
+            byte[] imageBytes = imageFile != null ? imageFile.getBytes() : null;
 
-            // Associe le ClubOwner à la demande et définit son statut à PENDING
             request.setClubOwner(authenticatedUser);
             request.setStatus(ClubCreationRequest.RequestStatus.PENDING);
             request.setDocument(documentBytes);
+            request.setImage(imageBytes);
 
-            // Sauvegarde la demande de création de club avec le document
             return clubCreationRequestRepository.save(request);
         } catch (IOException e) {
             e.printStackTrace();
-            return null; // Retourne null si l'upload du document échoue
+            return null;
         }
     }
+
 
     // Approuver une demande de création de club et créer le club associé
     public Club approveClubCreationRequest(Long requestId) {
         Optional<ClubCreationRequest> optionalRequest = clubCreationRequestRepository.findById(requestId);
         if (optionalRequest.isEmpty()) {
-            return null;  // Retourne null si la demande n'est pas trouvée
+            return null;
         }
 
         ClubCreationRequest request = optionalRequest.get();
         UserInfo authenticatedUser = getAuthenticatedUser();
         if (authenticatedUser == null || !authenticatedUser.getRoles().contains("ROLE_ADMIN")) {
-            return null;  // Retourne null si l'utilisateur n'est pas un Admin
+            return null;
         }
 
-        // Modifie le statut de la demande et sauvegarde la mise à jour
         request.setStatus(ClubCreationRequest.RequestStatus.APPROVED);
         clubCreationRequestRepository.save(request);
 
-        // Crée un nouveau club avec les informations de la demande approuvée
         Club club = new Club();
         club.setName(request.getName());
         club.setDescription(request.getDescription());
         club.setCapacity(request.getCapacity());
         club.setOwner(request.getClubOwner());
         club.setStatus(Club.RequestStatus.APPROVED);
+        club.setImage(request.getImage());
+
         return clubRepository.save(club);
     }
+
 
     // Refuser une demande de création de club
     public boolean rejectClubCreationRequest(Long requestId) {
@@ -194,7 +195,8 @@ public class ClubService  implements IClubService {
         return clubRepository.save(club);
     }
 
-    public Club updateClub(Long id, Club updatedClub) {
+    // Mise à jour du club avec nouvelle image si fournie
+    public Club updateClub(Long id, Club updatedClub, MultipartFile imageFile) {
         Optional<Club> existingClubOpt = clubRepository.findById(id);
         UserInfo currentUser = getAuthenticatedUser();
 
@@ -203,19 +205,43 @@ public class ClubService  implements IClubService {
         }
 
         Club existingClub = existingClubOpt.get();
-        
-        // Check if user is owner or admin
-        if (!existingClub.getOwner().equals(currentUser) && 
-            !currentUser.getRoles().contains("ROLE_ADMIN")) {
+
+        // Vérifie si l'utilisateur est propriétaire ou admin
+        if (!existingClub.getOwner().equals(currentUser) &&
+                !currentUser.getRoles().contains("ROLE_ADMIN")) {
             throw new RuntimeException("Not authorized to update this club");
         }
 
         existingClub.setName(updatedClub.getName());
         existingClub.setDescription(updatedClub.getDescription());
         existingClub.setCapacity(updatedClub.getCapacity());
-        
+
+        // Si une nouvelle image est fournie, l’enregistrer
+        if (imageFile != null && !imageFile.isEmpty()) {
+            try {
+                existingClub.setImage(imageFile.getBytes());
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to upload image", e);
+            }
+        }
+
         return clubRepository.save(existingClub);
     }
+
+    @Override
+    public byte[] getClubImage(Long id) {
+        Club club = clubRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Club not found with id: " + id));
+
+        // Vérifie si l'image existe
+        if (club.getImage() == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No image found for this club");
+        }
+
+        return club.getImage(); // Retourne l'image sous forme de tableau d'octets
+    }
+
+
 
 
     public void calculateStatistics(Long clubId) {

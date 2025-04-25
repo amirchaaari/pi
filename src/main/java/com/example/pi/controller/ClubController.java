@@ -65,18 +65,35 @@ public class ClubController {
         }
     }
 
+    // Mise à jour d'un club avec image (si fournie)
     @PutMapping("/update-club/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_CLUB_OWNER', 'ROLE_ADMIN')")
-    public ResponseEntity<?> updateClub(@PathVariable Long id, @RequestBody Club club) {
+    public ResponseEntity<?> updateClub(
+            @PathVariable Long id,
+            @RequestParam("name") String name,
+            @RequestParam("description") String description,
+            @RequestParam("capacity") int capacity,
+            @RequestParam("status") Club.RequestStatus status,
+            @RequestPart(value = "image", required = false) MultipartFile imageFile) {
+
         try {
-            Club updatedClub = clubService.updateClub(id, club);
-            return ResponseEntity.ok(updatedClub);
-        } catch (RuntimeException e) {
+            // Créer un objet Club avec les nouvelles données
+            Club updatedClub = new Club();
+            updatedClub.setName(name);
+            updatedClub.setDescription(description);
+            updatedClub.setCapacity(capacity);
+            updatedClub.setStatus(status);
+
+            // Appel à la méthode du service pour mettre à jour le club
+            Club updatedClubResponse = clubService.updateClub(id, updatedClub, imageFile);
+
+            return ResponseEntity.ok(updatedClubResponse);
+        } catch (Exception e) {
             return ResponseEntity
-                .status(HttpStatus.BAD_REQUEST)
-                .body(Map.of("error", e.getMessage()));
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(Map.of("error", e.getMessage()));
         }
     }
+
 
     @DeleteMapping("/remove-club/{id}")
     @PreAuthorize("hasAnyRole('ROLE_CLUB_OWNER', 'ROLE_ADMIN')")
@@ -113,13 +130,17 @@ public class ClubController {
     private ObjectMapper objectMapper;
 
     @PostMapping("/submit-creation-request")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
+    //@PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
     public ResponseEntity<?> submitClubCreationRequest(
             @RequestPart("request") String requestJson,
-            @RequestPart("document") MultipartFile document) {
+            @RequestParam(value = "document", required = false) MultipartFile document,
+            @RequestParam(value = "image", required = false) MultipartFile image) {
         try {
+            // Convertir le JSON en objet ClubCreationRequest
             ClubCreationRequest request = objectMapper.readValue(requestJson, ClubCreationRequest.class);
-            ClubCreationRequest creationRequest = clubService.submitClubCreationRequest(request, document);
+
+            // Appeler le service pour soumettre la demande de création de club
+            ClubCreationRequest creationRequest = clubService.submitClubCreationRequest(request, document, image);
 
             if (creationRequest == null) {
                 return ResponseEntity
@@ -127,16 +148,20 @@ public class ClubController {
                         .body(Map.of("error", "Unable to submit club creation request"));
             }
 
+            // Retourner la réponse avec le statut CREATED et la demande créée
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(creationRequest);
 
         } catch (Exception e) {
+            // Gérer les erreurs et retourner un message d'erreur avec le statut BAD_REQUEST
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(Map.of("error", e.getMessage()));
         }
     }
+
+
 
     @GetMapping("/admin/document/{requestId}")
     public ResponseEntity<byte[]> getDocument(@PathVariable Long requestId) {
@@ -218,6 +243,18 @@ public class ClubController {
         } catch (Exception e) {
            throw new RuntimeException("Error while fetching recommended club IDs: " + e.getMessage());
         }
+    }
+    @GetMapping("/{id}/image")
+    public ResponseEntity<byte[]> getClubImage(@PathVariable Long id) {
+        byte[] image = clubService.getClubImage(id); // récupère le BLOB
+        if (image == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_JPEG); // ou PNG si besoin
+
+        return new ResponseEntity<>(image, headers, HttpStatus.OK);
     }
 
 }

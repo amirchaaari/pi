@@ -22,16 +22,11 @@ public class AbonnementRequestController {
 
     @PostMapping("/request/{packId}")
     @PreAuthorize("hasRole('ROLE_USER')")
-    public AbonnementRequest createRequest(
-            @PathVariable Long packId,
-            @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
-            @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
-
+    public AbonnementRequest createRequest(@PathVariable Long packId) {
         System.out.println("Creating request for pack ID: " + packId);
-        System.out.println("Start date: " + startDate);
-        System.out.println("End date: " + endDate);
         return requestService.createRequest(packId);
     }
+
 
 
     // Le Club Owner approuve une demande
