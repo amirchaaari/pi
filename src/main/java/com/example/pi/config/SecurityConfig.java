@@ -2,7 +2,7 @@ package com.example.pi.config;
 
 
 import com.example.pi.filter.JwtAuthFilter;
-import com.example.pi.service.UserInfoService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
