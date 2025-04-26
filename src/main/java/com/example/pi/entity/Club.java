@@ -42,9 +42,21 @@ public class Club {
         //@JsonManagedReference("club-pack")
         private Set<Pack> packs;
 
+        // 👑 Club owner (single)
         @ManyToOne
-       @JsonIgnore
+        @JoinColumn(name = "owner_id")
+        @JsonIgnore
         private UserInfo owner;
+
+        // 🧑‍🏫 Assigned coaches (many)
+        @ManyToMany
+        @JoinTable(
+                name = "club_coaches",
+                joinColumns = @JoinColumn(name = "club_id"),
+                inverseJoinColumns = @JoinColumn(name = "user_id")
+        )
+        private Set<UserInfo> coaches;
+
 
 
 }

@@ -18,7 +18,6 @@ import java.util.Set;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Coach.class, name = "COACH"),
         @JsonSubTypes.Type(value = Nutritionist.class, name = "NUTRITIONIST"),
-        @JsonSubTypes.Type(value = Nutritionist.class, name = "USER"),
         @JsonSubTypes.Type(value = ClubOwner.class, name = "ClubOwner")
 })
 @Entity
@@ -42,6 +41,8 @@ public class UserInfo {
     @Column(nullable = false)
     private String roles;
 
+    private int sessions;
+
     @Column
     private boolean enabled = false;
 
@@ -53,11 +54,27 @@ public class UserInfo {
     @Column(unique = true)
     private String resetToken;
 
+
+    @Column(name = "forcePasswordReset")
+    private boolean forcePasswordReset=false;
+
+    @Column(name = "lastPasswordChange")
+    private LocalDateTime lastPasswordChange;
     private LocalDateTime tokenExpiryTime;
+
+
+    private LocalDateTime lastSession;
+
+
+
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="coach")
     @JsonIgnore
     private Set<TrainingSession> trainingSessions;
+
+
+
+
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     @JsonIgnore
@@ -66,6 +83,17 @@ public class UserInfo {
     @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
     private Set<Club> clubs; // Un user peut créer plusieurs clubs
 
+
+
     @OneToMany(mappedBy = "gymGoer", cascade = CascadeType.ALL)
     private Set<Abonnement> abonnements; // Un user peut souscrire à plusieurs abonnement
+
+    // Clubs the coach is part of
+    @ManyToMany(mappedBy = "coaches")
+    @JsonIgnore
+    private Set<Club> assignedClubs;
+
+
+
+
 }
