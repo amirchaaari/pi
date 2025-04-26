@@ -8,4 +8,5 @@ public class CartItemRequest {
     private String name;
     private double price;
     private long quantity;
+    private String imageUrl; // Add this field
 }

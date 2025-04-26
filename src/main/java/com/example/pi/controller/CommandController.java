@@ -19,14 +19,15 @@ public class CommandController {
 
     @Autowired
     private CommandService commandService;
-    private Object Collectors;
 
     @GetMapping
+//    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public List<Command> getAllCommands() {
         return commandService.getAllCommands(); // Retrieve all commands
     }
 
     @GetMapping("/{id}")
+//    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<Command> getCommandById(@PathVariable Long id) {
         Command command = commandService.getCommandById(id);
         if (command != null) {
@@ -37,36 +38,25 @@ public class CommandController {
     }
 
     @PostMapping
-    public ResponseEntity<Command> createCommand(
-            @RequestBody AddToCartRequest request,
-            @RequestParam(defaultValue = "1") Integer userId) { // Change to Integer
-        Command createdCommand = commandService.createCommand(
-                request.getProductId(),
-                request.getQuantity(),
-                userId);
+//    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Command> createCommand(@RequestBody AddToCartRequest request) {
+        Command createdCommand = commandService.createCommand(request.getProductId(), request.getQuantity());
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCommand);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Command> updateCommand(
-            @PathVariable Long id,
-            @RequestBody Map<String, Object> updates) {
-
+//    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<Command> updateCommand(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         // Extract parameters from the request body
         Integer quantity = (Integer) updates.get("quantity");
-        Long productId = updates.get("productId") != null ?
-                ((Number) updates.get("productId")).longValue() : null;
-        Integer userId = updates.get("userId") != null ?
-                (Integer) updates.get("userId") : 1; // Default to 1 for now
+        Long productId = updates.get("productId") != null ? ((Number) updates.get("productId")).longValue() : null;
 
-        Command updatedCommand = commandService.updateCommand(id, quantity, productId, userId);
+        Command updatedCommand = commandService.updateCommand(id, quantity, productId);
         return ResponseEntity.ok(updatedCommand);
     }
 
-
-
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ROLE_USER')")
+//    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<Void> deleteCommand(@PathVariable Long id) {
         commandService.deleteById(id);
         return ResponseEntity.noContent().build();
@@ -77,9 +67,10 @@ public class CommandController {
         return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR); // Handle exceptions
     }
 
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<List<Map<String, Object>>> getCommandsWithProducts(@PathVariable Long userId) {
-        List<Command> commands = commandService.getCommandsByUserWithProducts(userId); // Removed extra parentheses
+    @GetMapping("/user")
+//    @PreAuthorize("hasRole('ROLE_USER')")
+    public ResponseEntity<List<Map<String, Object>>> getCommandsWithProducts() {
+        List<Command> commands = commandService.getCommandsByUserWithProducts(); // No userId needed
 
         List<Map<String, Object>> response = commands.stream()
                 .map(command -> {

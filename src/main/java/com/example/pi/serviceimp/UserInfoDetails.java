@@ -1,7 +1,6 @@
 package com.example.pi.serviceimp;
 
 import com.example.pi.entity.UserInfo;
-import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,8 +14,7 @@ public class UserInfoDetails implements UserDetails {
     private String username; // Changed from 'name' to 'username' for clarity
     private String password;
 
-     @Getter
-     private int id;  // Add user ID
+    private int id;  // Add user ID
 
 
     private List<GrantedAuthority> authorities;
@@ -36,6 +34,9 @@ public class UserInfoDetails implements UserDetails {
         return authorities;
     }
 
+    public int getId() {
+        return id;
+    }
     @Override
     public String getPassword() {
         return password;
