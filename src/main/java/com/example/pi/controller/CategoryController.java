@@ -5,8 +5,10 @@ import com.example.pi.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import java.util.List;
 
@@ -18,18 +20,21 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping
+//    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<List<Category>> getAllCategories() {
         List<Category> categories = categoryService.getAllCategories();
         return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/{id}")
+//    @PreAuthorize("hasAnyAuthority('ROLE_USER', 'ROLE_ADMIN')")
     public ResponseEntity<Category> getCategoryById(@PathVariable Long id) {
         Category category = categoryService.getCategoryById(id);
         return category != null ? ResponseEntity.ok(category) : ResponseEntity.notFound().build();
     }
 
     @PostMapping
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Category> createCategory(
             @RequestParam("name") String name,
             @RequestParam("description") String description,
@@ -51,6 +56,7 @@ public class CategoryController {
     }
 
     @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Category> updateCategory(
             @PathVariable Long id,
             @RequestParam("name") String name,
@@ -74,6 +80,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
 //    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
         categoryService.deleteById(id);
