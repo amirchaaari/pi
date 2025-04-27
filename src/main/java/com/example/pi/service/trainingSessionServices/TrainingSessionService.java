@@ -1,11 +1,13 @@
 package com.example.pi.service.trainingSessionServices;
 
 import com.example.pi.dto.CoachDTO;
+import com.example.pi.entity.Booking;
 import com.example.pi.entity.TrainingSession;
 import com.example.pi.entity.UserInfo;
 import com.example.pi.interfaces.trainingSession.ITrainingSessionService;
 import com.example.pi.repository.UserInfoRepository;
 import com.example.pi.repository.trainignSessionRepo.BookingRepository;
+import com.example.pi.repository.trainignSessionRepo.ReviewRepository;
 import com.example.pi.repository.trainignSessionRepo.TrainingSessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,8 @@ public class TrainingSessionService implements ITrainingSessionService {
     private GoogleCalendarService googleCalendarService;
     @Autowired
     private final BookingRepository bookingRepository;
-
+    @Autowired
+    private final ReviewRepository reviewRepository;
 
     public TrainingSession createSession(TrainingSession trainingSession) throws Exception {
         // Get the current logged-in user's email (the coach)
@@ -146,6 +149,22 @@ public class TrainingSessionService implements ITrainingSessionService {
         // Retrieve the training sessions associated with the current coach
         return trainingSessionRepository.findByCoach(coach);
     }
+
+    public List<Booking> getBookingsByCoachId() {
+        // Get the current logged-in user's email (the coach)
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentUserEmail = authentication.getName();
+
+        // Find the coach by email from the database
+        UserInfo coach = userInfoRepository.findByEmail(currentUserEmail)
+                .orElseThrow(() -> new RuntimeException("Coach not found with email: " + currentUserEmail));
+
+        // Retrieve the bookings associated with the current coach
+        return bookingRepository.findBookingsByCoach(coach);
+    }
+
+
+
 
 }
 

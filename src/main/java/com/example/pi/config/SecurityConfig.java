@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken","/auth/deleteUser/{id}","/ws/**", "/pi/ws/**", "/pi/ws/websocket","training-sessions/recommended").permitAll()
+                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken","/auth/deleteUser/{id}","/ws/**", "/pi/ws/**", "/pi/ws/websocket","training-sessions/recommended","auth/logout").permitAll()
                         .requestMatchers("/auth/user/**").hasAnyAuthority("ROLE_USER", "ROLE_COACH", "ROLE_NUTRITIONIST")
                         .requestMatchers("/bookings","/abonnement-requests/**").hasAnyAuthority("ROLE_USER", "ROLE_CLUB_OWNER")
                         .requestMatchers("/bookings/*/approve", "/bookings/*/reject").hasAuthority("ROLE_COACH")
@@ -54,6 +54,7 @@ public class SecurityConfig {
                         .requestMatchers("/clubs/**").hasAuthority("ROLE_CLUB_OWNER")
                         .requestMatchers("/coach/sessions","/coach/sessions/range").hasAuthority("ROLE_COACH")
                         .requestMatchers("/training-sessions/chat").permitAll()
+                        .requestMatchers("/training-sessions/chat/**").permitAll()
                         .requestMatchers("/training-sessions/users").permitAll()
                         .requestMatchers("/training-sessions/messages/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
