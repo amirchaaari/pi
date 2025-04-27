@@ -98,7 +98,7 @@ public class UserInfoService implements UserDetailsService {
     }
 
 
-    @Scheduled(fixedDelay = 50000) // Runs every 50 seconds (you can change this)
+//    @Scheduled(fixedDelay = 50000) // Runs every 50 seconds (you can change this)
     public void enforcePasswordResetPolicy() {
         LocalDateTime threeMonthsAgo = LocalDateTime.now().minusMonths(3);
         List<UserInfo> users = repository.findAll();

@@ -9,6 +9,9 @@ import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import jakarta.validation.constraints.Size;
+
+
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
@@ -36,7 +39,10 @@ public class UserInfo {
     private String name;
     @Column(unique = true, nullable = false)
     private String email;
+
     @Column(nullable = false)
+    @Size(min = 8, message = "Password must be at least 8 characters long")
+
     private String password;
     @Column(nullable = false)
     private String roles;

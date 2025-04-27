@@ -6,6 +6,7 @@ import com.example.pi.entity.Nutritionist;
 import com.example.pi.entity.UserInfo;
 import com.example.pi.service.JwtService;
 import com.example.pi.service.UserInfoService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,13 +41,13 @@ public class UserController {
     }
 
     @PostMapping("/addNewUser")
-    public String addNewUser(@RequestBody UserInfo userInfo) {
+    public String addNewUser(@RequestBody @Valid UserInfo userInfo) {
         return service.addUser(userInfo);
     }
     @PostMapping("/owner/add-to-club")
 
 
-    public String addUserToClub(@RequestBody UserInfo userInfo, @RequestParam Long clubId) {
+    public String addUserToClub(@RequestBody  UserInfo userInfo, @RequestParam Long clubId) {
         return service.addUserToClub(userInfo, clubId);
     }
 
@@ -71,7 +72,7 @@ public class UserController {
 //
 //    }
 
-    @GetMapping("/coach/coachProfile")
+    @GetMapping("/userProfile")
     public ResponseEntity<Map<String, Object>> coachProfile() {
         Map<String, Object> profile = service.getBasicUserProfile();
         if (profile != null) {
@@ -99,7 +100,7 @@ public class UserController {
     }
 
     @PostMapping("/generateToken")
-    public ResponseEntity<?> authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<?> authenticateAndGetToken(@RequestBody  AuthRequest authRequest) {
         try {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
