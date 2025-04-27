@@ -5,6 +5,7 @@ import com.example.pi.entity.UserInfo;
 import com.example.pi.service.TrophyService;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,6 @@ public class TrophyController {
     private final TrophyService trophyService;
 
     @GetMapping("/retrieve-all-trophies")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public List<Trophy> getAll() {
         return trophyService.getAllTrophies();
     }
@@ -83,4 +83,16 @@ public class TrophyController {
         return trophies;
 
     }
+    @PostMapping("/assignTrophy")
+    public ResponseEntity<UserInfo> assignTrophyToUser() {
+        try {
+            UserInfo user = trophyService.assignTrophyToUser();
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'attribution des trophées dans le contrôleur : " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+
 }

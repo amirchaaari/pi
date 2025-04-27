@@ -226,12 +226,6 @@ public class ClubController {
         }
     }
 
-    @GetMapping("/admin/{clubId}/performance")
-    @PreAuthorize("hasRole('ROLE_USER')")
-    public ResponseEntity<Map<String, Object>> analyzePerformance(@PathVariable Long clubId) {
-        Map<String, Object> performanceResponse = abonnementService.analyzeClubPerformance(clubId);
-        return ResponseEntity.ok(performanceResponse);
-    }
 
 
 
@@ -255,6 +249,10 @@ public class ClubController {
         headers.setContentType(MediaType.IMAGE_JPEG); // ou PNG si besoin
 
         return new ResponseEntity<>(image, headers, HttpStatus.OK);
+    }
+    @GetMapping("/{clubId}/occupancy-rate")
+    public double getClubOccupancyRate(@PathVariable Long clubId) {
+        return clubService.calculateClubOccupancyRate(clubId);
     }
 
 }

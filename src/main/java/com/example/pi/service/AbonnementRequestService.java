@@ -75,6 +75,7 @@ public class AbonnementRequestService {
         request.setStatus(AbonnementRequest.RequestStatus.APPROVED);
         requestRepository.save(request);
 
+        // Création de l'abonnement
         Abonnement abonnement = new Abonnement();
         abonnement.setUser(request.getUser());
         abonnement.setPack(request.getPack());
@@ -86,8 +87,16 @@ public class AbonnementRequestService {
         abonnement.setStatus("active");
         abonnement.setEndDateOfRenewal(null);
 
-        return abonnementRepository.save(abonnement);
+        Abonnement savedAbonnement = abonnementRepository.save(abonnement);
+
+        // ➡️ Incrémenter subscriptionCount du Pack
+        Pack pack = request.getPack();
+        pack.setSubscriptionCount(pack.getSubscriptionCount() + 1);
+        packRepository.save(pack); // Assure-toi que tu as packRepository injecté !
+
+        return savedAbonnement;
     }
+
 
 
 

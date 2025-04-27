@@ -150,8 +150,11 @@ public class AbonnementService implements IAbonnementService {
                 .filter(a -> a.getEndDateOfRenewal() != null)
                 .count();
 
-        return (double) renouvellements / totalAbonnements * 100;
+        double rate = (double) renouvellements / totalAbonnements * 100;
+
+        return Math.round(rate * 100.0) / 100.0; // arrondi à 2 chiffres après la virgule
     }
+
 
     @Override
     public Map<String, Object> analyzeClubPerformance(Long clubId) {

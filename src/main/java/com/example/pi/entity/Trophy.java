@@ -19,6 +19,6 @@ public class Trophy {
     private String description;
     private int requiredPoints;
 
-    @ManyToMany(mappedBy = "trophies") // côté inverse de la relation
+    @ManyToMany(mappedBy = "trophies")
     private Set<UserInfo> users;
 }

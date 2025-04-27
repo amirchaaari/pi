@@ -306,6 +306,27 @@ public class ClubService  implements IClubService {
         return request.getDocument();
     }
 
+    public double calculateClubOccupancyRate(Long clubId) {
+        // Récupérer le club
+        Club club = clubRepository.findById(clubId)
+                .orElseThrow(() -> new RuntimeException("Club not found"));
+
+        int capacity = club.getCapacity();
+        if (capacity == 0) return 0.0; // pour éviter division par 0
+
+        // Compter tous les abonnements liés aux packs du club
+        int totalSubscriptions = club.getPacks().stream()
+                .flatMap(pack -> pack.getAbonnements().stream())
+                .mapToInt(abonnement -> 1) // chaque abonnement compte pour 1
+                .sum();
+
+        double occupancyRate = (double) totalSubscriptions / capacity * 100;
+
+        // Arrondi à 2 chiffres après la virgule
+        return Math.round(occupancyRate * 100.0) / 100.0;
+    }
+
+
 
 
 }

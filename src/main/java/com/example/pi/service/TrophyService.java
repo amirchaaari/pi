@@ -52,15 +52,18 @@ public class TrophyService {
         }).orElse(null);
     }
 
+    @Transactional
     public boolean deleteTrophy(Long id) {
         Optional<Trophy> optionalTrophy = trophyRepository.findById(id);
 
         if (optionalTrophy.isPresent()) {
             Trophy trophy = optionalTrophy.get();
 
-            // Retirer le trophée de tous les utilisateurs
+            // Supprimer le trophée de tous les utilisateurs
             for (UserInfo user : trophy.getUsers()) {
                 user.getTrophies().remove(trophy);
+                // On met à jour l'utilisateur après avoir retiré le trophée
+                userInfoRepository.save(user);
             }
 
             // Vider la collection côté Trophy (précaution)
@@ -73,6 +76,7 @@ public class TrophyService {
 
         return false;
     }
+
 
 
     @Transactional
@@ -120,6 +124,15 @@ public class TrophyService {
         for (UserInfo user : users) {
             updateUserTrophies(user);
         }
+    }
+
+    @Transactional
+    public UserInfo assignTrophyToUser() {
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        System.out.println(">> Email récupéré : " + email);
+
+        return userInfoRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Utilisateur non trouvé avec email : " + email));
     }
 
 }
