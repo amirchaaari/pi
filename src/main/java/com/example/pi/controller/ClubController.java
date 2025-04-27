@@ -250,9 +250,9 @@ public class ClubController {
 
         return new ResponseEntity<>(image, headers, HttpStatus.OK);
     }
-    @GetMapping("/{clubId}/occupancy-rate")
-    public double getClubOccupancyRate(@PathVariable Long clubId) {
-        return clubService.calculateClubOccupancyRate(clubId);
+    @GetMapping("/occupancy-rates")
+    public List<Map<String, Object>> getAllClubsOccupancyRate() {
+        return clubService.calculateAllClubsOccupancyRate();
     }
 
 }

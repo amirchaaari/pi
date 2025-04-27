@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -57,5 +58,10 @@ public class PackController {
         return packService.getPacksByPopularity();
     }
 
+    @GetMapping("/statistics")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public Map<String, Object> getPacksPopularityStatistics() {
+        return packService.getPacksPopularityStatistics();
+    }
 
 }

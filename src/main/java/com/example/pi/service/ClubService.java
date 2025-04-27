@@ -14,10 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -306,26 +303,41 @@ public class ClubService  implements IClubService {
         return request.getDocument();
     }
 
-    public double calculateClubOccupancyRate(Long clubId) {
-        // Récupérer le club
-        Club club = clubRepository.findById(clubId)
-                .orElseThrow(() -> new RuntimeException("Club not found"));
+    public List<Map<String, Object>> calculateAllClubsOccupancyRate() {
+        // Récupérer tous les clubs
+        List<Club> clubs = clubRepository.findAll();
 
-        int capacity = club.getCapacity();
-        if (capacity == 0) return 0.0; // pour éviter division par 0
+        List<Map<String, Object>> occupancyRates = new ArrayList<>();
 
-        // Compter tous les abonnements liés aux packs du club
-        int totalSubscriptions = club.getPacks().stream()
-                .flatMap(pack -> pack.getAbonnements().stream())
-                .mapToInt(abonnement -> 1) // chaque abonnement compte pour 1
-                .sum();
+        // Parcourir tous les clubs et calculer le taux d'occupation pour chacun
+        for (Club club : clubs) {
+            int capacity = club.getCapacity();
+            if (capacity == 0) {
+                occupancyRates.add(createOccupancyRateMap(club.getId(), 0.0));
+                continue; // Si la capacité est 0, on passe au club suivant
+            }
 
-        double occupancyRate = (double) totalSubscriptions / capacity * 100;
+            // Compter tous les abonnements liés aux packs du club
+            int totalSubscriptions = club.getPacks().stream()
+                    .flatMap(pack -> pack.getAbonnements().stream())
+                    .mapToInt(abonnement -> 1) // chaque abonnement compte pour 1
+                    .sum();
 
-        // Arrondi à 2 chiffres après la virgule
-        return Math.round(occupancyRate * 100.0) / 100.0;
+            double occupancyRate = (double) totalSubscriptions / capacity * 100;
+
+            // Arrondi à 2 chiffres après la virgule
+            occupancyRates.add(createOccupancyRateMap(club.getId(), Math.round(occupancyRate * 100.0) / 100.0));
+        }
+
+        return occupancyRates;
     }
 
+    private Map<String, Object> createOccupancyRateMap(Long clubId, Double occupancyRate) {
+        Map<String, Object> rateMap = new HashMap<>();
+        rateMap.put("clubId", clubId);
+        rateMap.put("occupancyRate", occupancyRate);
+        return rateMap;
+    }
 
 
 

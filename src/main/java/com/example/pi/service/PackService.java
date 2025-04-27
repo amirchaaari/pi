@@ -112,6 +112,61 @@ public class PackService implements IPackService {
         return packs;
     }
 
+    public Map<String, Object> getPacksPopularityStatistics() {
+        // Récupérer tous les packs et leurs abonnements
+        List<Pack> packs = packRepository.findAll();
+        List<Object[]> counts = abonnementRepository.countAbonnementsByPack();
+
+        // Créer une map pour un accès rapide au nombre d'abonnements par pack
+        Map<Long, Integer> countMap = new HashMap<>();
+        for (Object[] obj : counts) {
+            Long packId = (Long) obj[0];
+            Long count = (Long) obj[1];
+            countMap.put(packId, count.intValue());
+        }
+
+        // Initialisation de variables pour les statistiques
+        int totalAbonnements = 0;
+        int maxAbonnements = Integer.MIN_VALUE;
+        Pack mostPopularPack = null;
+        int minAbonnements = Integer.MAX_VALUE;
+        Pack leastPopularPack = null;
+
+        // Mettre à jour chaque pack avec le nombre d'abonnements et calculer les statistiques
+        for (Pack pack : packs) {
+            int count = countMap.getOrDefault(pack.getId(), 0);
+            pack.setSubscriptionCount(count); // Met à jour le nombre d'abonnements du pack
+            totalAbonnements += count;
+
+            // Vérifier si c'est le pack avec le plus d'abonnements
+            if (count > maxAbonnements) {
+                maxAbonnements = count;
+                mostPopularPack = pack;
+            }
+
+            // Vérifier si c'est le pack avec le moins d'abonnements
+            if (count < minAbonnements) {
+                minAbonnements = count;
+                leastPopularPack = pack;
+            }
+        }
+
+        // Calculer la moyenne des abonnements
+        double averageAbonnements = packs.size() > 0 ? (double) totalAbonnements / packs.size() : 0;
+
+        // Construire la carte des statistiques à retourner
+        Map<String, Object> statistics = new HashMap<>();
+        statistics.put("totalAbonnements", totalAbonnements);
+        statistics.put("averageAbonnements", averageAbonnements);
+        statistics.put("maxAbonnements", maxAbonnements);
+        statistics.put("mostPopularPack", mostPopularPack != null ? mostPopularPack.getName() : "Aucun");
+        statistics.put("leastPopularPack", leastPopularPack != null ? leastPopularPack.getName() : "Aucun");
+        statistics.put("allPacks", packs); // Inclure tous les packs avec leur nombre d'abonnements
+
+        return statistics;
+    }
+
+
 
 
 }
