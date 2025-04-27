@@ -1,5 +1,6 @@
 package com.example.pi.service;
 
+import com.example.pi.dto.DietProgramRequest;
 import com.example.pi.entity.DietProgram;
 
 import java.util.List;
@@ -7,9 +8,9 @@ import java.util.List;
 public interface IDietProgramService {
     List<DietProgram> retrieveAllDietPrograms();
 
-    DietProgram addDietProgram(DietProgram Diet);
+    DietProgram addDietProgram(DietProgramRequest dietProgramRequest);
 
-    DietProgram updateDietProgram(DietProgram Diet);
+    DietProgram updateDietProgram(DietProgramRequest dietProgramRequest);
 
     DietProgram retrieveDietProgram(Long idDietProgram);
 
@@ -21,5 +22,7 @@ public interface IDietProgramService {
 
     String compareNutritionPrograms(Long programId1, Long programId2);
 
-    List<DietProgram> addDietPrograms(List<DietProgram> DietPrograms);
+
+
+    List<DietProgram> addDietPrograms(List<DietProgramRequest> dietProgramRequests);
 }

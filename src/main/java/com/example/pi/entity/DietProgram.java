@@ -21,7 +21,7 @@ public class DietProgram {
     private String name;
     private String description;
     private int calories;
-    private int duration; // bel ayam
+    private int duration; // bel months
     @Enumerated(EnumType.STRING)
     private TargetGoal targetGoal;
     @ManyToOne

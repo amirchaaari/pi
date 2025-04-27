@@ -15,7 +15,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
     Optional<UserInfo> findByEmail(String email); // Use 'email' if that is the correct field for login
 
     void deleteByEmail(String email);
-
+    Optional<UserInfo> findByName(String name);
     List<UserInfo> findByRoles(String roleCoach);
 
     @Query("SELECT c, COALESCE(AVG(r.rating), 0.0), COUNT(r) " +
@@ -28,4 +28,5 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
     List<Object[]> findCoachesWithAvgRating(@Param("roles") String roles);
 
     List<UserInfo> findAllByStatus(Status status);
+
 }

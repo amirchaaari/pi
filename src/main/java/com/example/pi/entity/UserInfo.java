@@ -51,12 +51,9 @@ public class UserInfo {
     @OneToMany(cascade = CascadeType.ALL, mappedBy="user")
     @JsonIgnore
     private Set<Review> reviews;
-
-
-    @OneToMany(mappedBy = "gymGoer", cascade = CascadeType.ALL)
-    private Set<Abonnement> abonnements; // Un user peut souscrire à plusieurs abonnement
     // In User entity
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<DietProgram> dietPrograms;
+
 }

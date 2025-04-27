@@ -1,14 +1,19 @@
 package com.example.pi.controller;
 
 import com.example.pi.dto.MealPlanRequest;
+
 import com.example.pi.entity.MealPlan;
+import com.example.pi.entity.enumeration.MealType;
 import com.example.pi.service.IMealPlanService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @AllArgsConstructor
@@ -17,74 +22,105 @@ public class MealPlanController {
     @Autowired
     IMealPlanService mealPlanService;
 
-
-    //recupération des plan nutritionnel
+    // Get all meal plans
     @GetMapping("/retrieve-allMealPlans")
-    public List<MealPlan> retrieveAllMealPlans() {
+    public ResponseEntity<List<MealPlan>> retrieveAllMealPlans() {
         List<MealPlan> mealPlans = mealPlanService.retrieveAllMealPlans();
-        return mealPlans;
+        return ResponseEntity.ok(mealPlans);
     }
-    //ajout
+
+    // Add meal plan
     @PostMapping("/add-mealPlan")
-    public String addMealPlan(@RequestBody MealPlan mealPlan) {
-        System.out.println("Adding meal plan: " + mealPlan);
-        mealPlanService.addMealPlan(mealPlan);
-        return "mealplan added successfully";
+    public ResponseEntity<String> addMealPlan(@RequestBody MealPlanRequest request) {
+        MealPlan created = mealPlanService.createMealPlan(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body("Meal plan added successfully for user: " + created.getUserEmail());
     }
-    //modification
-    @PutMapping("/update-mealplan")
-    public String updateMealPlan(@RequestBody MealPlan mealPlan) {
-        MealPlan mealPlanUpdated = mealPlanService.updateMealPlan(mealPlan);
-        return "mealplan updated successfully";
+
+    // Update meal plan
+    @PreAuthorize("hasRole('NUTRITIONIST')")
+    @PutMapping("/update-mealplan/{id}")
+    public ResponseEntity<String> updateMealPlan(
+            @PathVariable Long id,
+            @RequestBody MealPlanRequest request) {
+        MealPlan existing = mealPlanService.retrieveMealPlan(id);
+        if (existing == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // Update fields mel request
+        existing.setDayOfWeek(request.getDayOfWeek());
+        existing.setDescription(request.getDescription());
+        existing.setMealType(request.getMealType());
+        existing.setMealOrder(request.getMealOrder());
+
+        MealPlan updated = mealPlanService.updateMealPlan(existing);
+        return ResponseEntity.ok("Meal plan updated successfully for: " + updated.getUserEmail());
     }
-    //recupération taa meal whd
-    @GetMapping("/retrieve-mealPlan")
-    public MealPlan retrieveMealPlan(@RequestParam long id) {
+
+
+    @GetMapping("/retrieve-mealPlan/{id}")
+    public ResponseEntity<MealPlan> retrieveMealPlan(@PathVariable Long id) {
         MealPlan mealPlan = mealPlanService.retrieveMealPlan(id);
-        return mealPlan;
+        return mealPlan != null ?
+                ResponseEntity.ok(mealPlan) :
+                ResponseEntity.notFound().build();
     }
 
-    //supression d'un meal plan
-    @DeleteMapping("/remove-mealPlan/{MealPlanId}")
-    public void removeMealPlan(@PathVariable ("MealPlanId") long MealPlanId) {
-        mealPlanService.removeMealPlan(MealPlanId);
+    @PreAuthorize("hasRole('NUTRITIONIST')")
+    @DeleteMapping("/remove-mealPlan/{id}")
+    public ResponseEntity<String> removeMealPlan(@PathVariable Long id) {
+        MealPlan existing = mealPlanService.retrieveMealPlan(id);
+        if (existing == null) {
+            return ResponseEntity.notFound().build();
+        }
+        mealPlanService.removeMealPlan(id);
+        return ResponseEntity.ok("Meal plan deleted successfully for: " + existing.getUserEmail());
     }
 
-    //ajout de plusieur Mealplans
+
     @PostMapping("/add-manyMealPlans")
-    public List<MealPlan> addManyMealPlans(@RequestBody List<MealPlan> mealPlanList) {
-        return mealPlanService.addManyMealPlans(mealPlanList);
+    public ResponseEntity<List<MealPlan>> addManyMealPlans(@RequestBody List<MealPlanRequest> requests) {
+        // You'll need to implement batch creation in service
+        List<MealPlan> created = requests.stream()
+                .map(mealPlanService::createMealPlan)
+                .toList();
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
-    //advanced chwaya
-    // ycherchy mealplan par plusieurs userIds
+
+
     @GetMapping("/findByMultipleUserIds")
-    public List<MealPlan> findMealPlansByUserIds(@RequestParam List<Long> userIds) {
-        return mealPlanService.findMealPlansByUserIds(userIds);
+    public ResponseEntity<List<MealPlan>> findMealPlansByUserIds(@RequestParam List<Long> userIds) {
+        return ResponseEntity.ok(mealPlanService.findMealPlansByUserIds(userIds));
     }
 
-    // ycherchy mealplan    par plusieurs jours de la semaine
     @GetMapping("/findByMultipleDaysOfWeek")
-    public List<MealPlan> findMealPlansByDaysOfWeek(@RequestParam List<String> daysOfWeek) {
-        return mealPlanService.findMealPlansByDaysOfWeek(daysOfWeek);
+    public ResponseEntity<List<MealPlan>> findMealPlansByDaysOfWeek(
+            @RequestParam List<String> daysOfWeek,
+            @RequestParam(required = false) MealType mealType) { // New optional filter
+        List<MealPlan> result = mealPlanService.findMealPlansByDaysOfWeek(daysOfWeek);
+        if (mealType != null) {
+            result = result.stream()
+                    .filter(mp -> mp.getMealType() == mealType)
+                    .toList();
+        }
+        return ResponseEntity.ok(result);
     }
 
-    // ycherchy mealplan bel  userId we jour de la semaine
-    @GetMapping("/findByUserIdAndDayOfWeek")
-    public List<MealPlan> findMealPlansByUserIdAndDayOfWeek(@RequestParam Long userId, @RequestParam String dayOfWeek) {
-        return mealPlanService.findMealPlansByUserIdAndDayOfWeek(userId, dayOfWeek);
-    }
-
-    // ycherchy mealplan  par plusieurs userIds et jours de la semaine
-    @GetMapping("/findByUserIdsAndDaysOfWeek")
-    public List<MealPlan> findMealPlansByUserIdsAndDaysOfWeek(@RequestParam List<Long> userIds, @RequestParam List<String> daysOfWeek) {
-        return mealPlanService.findMealPlansByUserIdsAndDaysOfWeek(userIds, daysOfWeek);
-    }
-
+    //creation
+    @PreAuthorize("hasRole('NUTRITIONIST')")
     @PostMapping("/create")
     public ResponseEntity<MealPlan> createMealPlan(@RequestBody MealPlanRequest request) {
         MealPlan saved = mealPlanService.createMealPlan(request);
-        return ResponseEntity.ok(saved);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
     }
 
+    // trecuperi mealplan hasb type
+    @GetMapping("/by-meal-type/{mealType}")
+    public ResponseEntity<List<MealPlan>> getByMealType(@PathVariable MealType mealType) {
+        List<MealPlan> result = mealPlanService.retrieveAllMealPlans().stream()
+                .filter(mp -> mp.getMealType() == mealType)
+                .toList();
+        return ResponseEntity.ok(result);
+    }
 }
-
