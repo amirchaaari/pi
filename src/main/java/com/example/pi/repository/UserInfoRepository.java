@@ -8,6 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -28,4 +30,9 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
     List<Object[]> findCoachesWithAvgRating(@Param("roles") String roles);
 
     List<UserInfo> findAllByStatus(Status status);
+    Optional<UserInfo> findByResetToken(String resetToken);
+    Optional<UserInfo> findByVerificationToken(String verificationToken);
+    List<UserInfo> findByLastSessionBefore(LocalDateTime dateTime);
+
+
 }
