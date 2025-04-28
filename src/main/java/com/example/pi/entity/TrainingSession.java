@@ -8,6 +8,7 @@ import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @NoArgsConstructor
@@ -40,5 +41,6 @@ public class TrainingSession {
     private List<Review> reviews;
 
     @OneToMany(mappedBy = "trainingSession", cascade = CascadeType.ALL)
-    private List<Exercise> exercices;
+    @JsonIgnore
+    private Set<Exercise> exercices;
 }

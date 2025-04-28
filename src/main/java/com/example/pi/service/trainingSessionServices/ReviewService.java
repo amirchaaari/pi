@@ -130,4 +130,22 @@ public class ReviewService implements IReviewService {
         return userInfoRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+    public List<Review>getReviewsByCoachId(){
+        UserInfo currentUser = getCurrentUser();
+        System.out.println("Current user: " + currentUser.getId());
+        System.out.println(reviewRepository.findByTrainingSession_Coach(currentUser.getId()));
+        return reviewRepository.findByTrainingSession_Coach(currentUser.getId());
+    }
+
+
+
+
+
+
+
+
+
+
+
 }

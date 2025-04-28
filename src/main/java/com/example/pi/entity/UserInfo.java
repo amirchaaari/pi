@@ -40,7 +40,7 @@ public class UserInfo {
     private String roles;
 
 
-    private Status status = Status.ONLINE;
+    private Status status ;
     private LocalDateTime lastLogin = LocalDateTime.now();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="coach")

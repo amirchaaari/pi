@@ -113,7 +113,7 @@ public class BookingService implements IBookingService {
     }
 
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "* * * * * *")
     public void sendSessionReminders() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime sessionStartTime = now.plusMinutes(15);
@@ -147,5 +147,13 @@ public class BookingService implements IBookingService {
                     bookingRepository.save(booking);
                 });
     }
+
+    public List<Booking> getBookingsByCoach() {
+        UserInfo coach = getCurrentUser();
+        return bookingRepository.finbookingsforTrainingSessionByCoach(coach.getId());
+    }
+
+    //get training session id from booking id
+
 
 }
