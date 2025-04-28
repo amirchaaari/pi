@@ -32,4 +32,13 @@ public interface IMeetingService {
 
 
     List<Map<String, Object>> getAvailableSlots(LocalDate date);
+
+    List<Meeting> getMeetingsByDossier(Long dossierId);
+
+    Meeting createMeeting(Long dossierId, Meeting meeting);
+
+    long getTotalMeetings();
+    long getConfirmedMeetings();
+    long getCanceledMeetings();
+
 }

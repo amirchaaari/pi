@@ -11,20 +11,10 @@ import java.util.List;
 @Getter
 @Setter
 @AllArgsConstructor
-@NoArgsConstructor
+
 @Builder
 public class Nutritionist extends UserInfo {
 
-
-
-
-
-
-    private String phone;
-    private Double salary;
-
-    @Temporal(TemporalType.DATE)
-    private Date hiredDate;
 
 
 }

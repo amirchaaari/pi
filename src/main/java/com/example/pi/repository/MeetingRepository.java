@@ -14,6 +14,8 @@ public interface MeetingRepository extends CrudRepository <Meeting , Long> {
     List<Meeting> findByDateBetween(LocalDateTime start, LocalDateTime end);
 
 
+    List<Meeting> findByDossierId(Long dossierId);
+    long countByStatus(String status);
 
 
 

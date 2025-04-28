@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken","/auth/deleteUser/{id}","/ws/**", "/pi/ws/**", "/pi/ws/websocket","training-sessions/recommended").permitAll()
                         .requestMatchers("/auth/user/**").hasAnyAuthority("ROLE_USER", "ROLE_COACH", "ROLE_NUTRITIONIST")
                         .requestMatchers("/bookings","/abonnement-requests/**").hasAnyAuthority("ROLE_USER", "ROLE_CLUB_OWNER")
@@ -57,6 +58,8 @@ public class SecurityConfig {
                         .requestMatchers("/training-sessions/users").permitAll()
                         .requestMatchers("/training-sessions/messages/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
+
+                        .requestMatchers("/**").permitAll()
                         .anyRequest().authenticated() // Protect all other endpoints
                 )
                 .sessionManagement(sess -> sess

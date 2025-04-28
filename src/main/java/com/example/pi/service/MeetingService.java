@@ -1,24 +1,36 @@
 package com.example.pi.service;
 
 import com.example.pi.entity.Meeting;
+import com.example.pi.repository.DossierRepository;
 import com.example.pi.repository.MeetingRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import com.example.pi.entity.Dossier;
 
-import java.awt.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class MeetingService implements IMeetingService{
 
     MeetingRepository meetingRepository ;
+    DossierRepository dossierRepository;
+
+    public Meeting createMeeting(Long dossierId, Meeting meeting) {
+        Dossier dossier = dossierRepository.findById(dossierId)
+                .orElseThrow(() -> new RuntimeException("Dossier not found"));
+
+        meeting.setDossier(dossier);
+
+        System.out.println(">>> DEBUG: Dossier ID = " + meeting.getDossier().getId());  // Ajoute ce log pour vérifier
+        return meetingRepository.save(meeting);
+    }
+
     @Override
     public List<Meeting> retrieveAllMeetings() {
         return (List<Meeting>) meetingRepository.findAll();
@@ -116,5 +128,20 @@ public class MeetingService implements IMeetingService{
         return meetingReminders;
     }
 
+@Override
+    public List<Meeting> getMeetingsByDossier(Long dossierId) {
+        return meetingRepository.findByDossierId(dossierId);
+    }
 
+    public long getTotalMeetings() {
+        return meetingRepository.count();
+    }
+
+    public long getConfirmedMeetings() {
+        return meetingRepository.countByStatus("Confirmed");
+    }
+
+    public long getCanceledMeetings() {
+        return meetingRepository.countByStatus("Canceled");
+    }
 }

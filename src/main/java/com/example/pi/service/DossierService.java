@@ -67,7 +67,9 @@ public class DossierService implements IDossierService{
 
         return stats;
     }
-
+    public long getTotalMedicalFolders() {
+        return dossierRepository.count();
+    }
 
 
 }

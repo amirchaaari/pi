@@ -1,11 +1,14 @@
 package com.example.pi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -60,7 +63,10 @@ public class Dossier implements Serializable {
 
     private Date updatedAt; // Date de mise à jour (optionnelle)
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="dossier")
-    private Set<Meeting> meetings;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="dossier" , fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("dossier")
+    @JsonManagedReference
+    private List<Meeting> meetings;
+
 
 }

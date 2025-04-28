@@ -21,6 +21,6 @@ public interface IDossierService {
     Dossier findDossierByPatientId(Long patientId); // recherche du dossier d'un patient spécifique
 
     Map<String, Object> getGenderStats();
-
+    long getTotalMedicalFolders();
 
 }
