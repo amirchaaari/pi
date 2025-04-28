@@ -18,15 +18,17 @@ public class Command {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne // ❌ Remove cascade here
     @JoinColumn(name = "user_id")
     private UserInfo user;
 
-    @ManyToOne
+    @ManyToOne // ❌ Remove cascade here
     @JoinColumn(name = "product_id")
-    @JsonBackReference // This prevents circular serialization
+    @JsonBackReference
     private Product product;
 
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true) // ✅ Only cascade on Livraison
+    private Livraison livraison;
 
     private Integer quantity;
 }

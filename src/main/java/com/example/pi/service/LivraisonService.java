@@ -1,12 +1,16 @@
 
 package com.example.pi.service;
 
+import com.example.pi.entity.Command;
+import com.example.pi.entity.Product;
+import com.example.pi.entity.UserInfo;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.example.pi.entity.Livraison;
 import com.example.pi.repository.LivraisonRepository;
 import com.example.pi.serviceInterface.ILivraisonInterface;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -97,48 +101,9 @@ public class LivraisonService implements ILivraisonInterface {
         return livraisonRepository.countLivraisonsByStatus();
     }
 
-    /*public Command createCommand(Long productId, Integer quantity, Long userId) {
-        // Find user and product
-        UserInfo user = userInfoRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
 
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
 
-        // Create and configure the delivery
-        Livraison livraison = new Livraison();
-        livraison.setAddress(user.getAddress()); // Assuming UserInfo has an address field
-        livraison.setStatus(Livraison.DeliveryStatus.PENDING);
 
-        // Set scheduled date to today + 3 days
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_YEAR, 3);
-        livraison.setScheduleddate(calendar.getTime());
-
-        // Set duration (you might want to calculate this differently)
-        livraison.setDuration(calendar.getTime()); // Or set a specific duration
-
-        // Create the command
-        Command command = new Command();
-        command.setUser(user);
-        command.setProduct(product);
-        command.setQuantity(quantity);
-        command.setLivraison(livraison);
-
-        // Save the delivery first (since it's the owning side of the relationship)
-        livraison = livraisonRepository.save(livraison);
-
-        // Then save the command
-        command = commandRepository.save(command);
-
-        // Add the command to the delivery's set of commands
-        livraison.getCommands().add(command);
-        livraisonRepository.save(livraison);
-
-        return command;
-    }
-
-*/
 
 
 }

@@ -36,8 +36,9 @@ public class Livraison {
 
 
     @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="livraison")
-    private Set<Command> commands;
+    @OneToOne(mappedBy = "livraison", cascade = CascadeType.ALL)
+    private Command command; // This must be correctly mapped
+
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;

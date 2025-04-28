@@ -8,6 +8,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @JsonTypeInfo(
@@ -40,7 +41,7 @@ public class UserInfo {
     private String email;
     private String password;
     private String roles;
-
+    private String address;
 
     private Status status = Status.ONLINE;
     private LocalDateTime lastLogin = LocalDateTime.now();
