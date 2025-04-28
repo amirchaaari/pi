@@ -68,7 +68,7 @@ public class CommandServiceImpl implements CommandService {
     @Transactional
     public Command getCommandById(Long id) {
         Optional<Command> command = commandRepository.findById(id);
-        return command.orElse(null); // Handle case where command is not found
+        return command.orElse(null);
     }
 
     @Transactional
