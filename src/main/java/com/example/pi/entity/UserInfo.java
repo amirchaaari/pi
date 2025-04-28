@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -18,9 +19,7 @@ import java.util.Set;
 @JsonSubTypes({
         @JsonSubTypes.Type(value = Coach.class, name = "COACH"),
         @JsonSubTypes.Type(value = Nutritionist.class, name = "NUTRITIONIST"),
-        @JsonSubTypes.Type(value = UserInfo.class, name = "USER"),
         @JsonSubTypes.Type(value = ClubOwner.class, name = "ClubOwner"),
-        @JsonSubTypes.Type(value = UserInfo.class, name = "ADMIN")
 })
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -92,8 +91,8 @@ public class UserInfo {
 
 
 
-    @OneToMany(mappedBy = "gymGoer", cascade = CascadeType.ALL)
-    private Set<Abonnement> abonnements; // Un user peut souscrire à plusieurs abonnement
+    /*@OneToMany(mappedBy = "gymGoer", cascade = CascadeType.ALL)
+    private Set<Abonnement> abonnements; // Un user peut souscrire à plusieurs abonnement*/
 
     // Clubs the coach is part of
     @ManyToMany(mappedBy = "coaches")

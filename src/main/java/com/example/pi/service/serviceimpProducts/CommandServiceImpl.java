@@ -34,14 +34,13 @@ public class CommandServiceImpl implements CommandService {
     @Autowired
     private final ProductRepository productRepository;
 
-    @Autowired
-//    private final LivraisonRepository livraisonRepository;
 
     private UserInfo getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return userInfoRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
 
 //    @Override
 //    @Transactional

@@ -14,10 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 import java.util.Collections;
 import java.util.List;
@@ -38,23 +35,18 @@ public class UserController {
 
     @GetMapping("/welcome")
     public String welcome() {
-        return "Welcome this endpoint is not secure";
+        return "Welcome, this endpoint is not secure.";
     }
 
     @PostMapping("/addNewUser")
     public String addNewUser(@RequestBody @Valid UserInfo userInfo) {
         return service.addUser(userInfo);
     }
+
     @PostMapping("/owner/add-to-club")
-
-
-    public String addUserToClub(@RequestBody  UserInfo userInfo, @RequestParam Long clubId) {
+    public String addUserToClub(@RequestBody UserInfo userInfo, @RequestParam Long clubId) {
         return service.addUserToClub(userInfo, clubId);
     }
-    @GetMapping("/user/userProfile")
-    //@PreAuthorize("hasAuthority('ROLE_USER')")
-    public String userProfile() {
-        return service.getUserProfile();
 
     @GetMapping("/owner/userProfile")
     public ResponseEntity<Map<String, Object>> userProfile() {
@@ -65,26 +57,16 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error", "User not authenticated"));
         }
     }
+
     @GetMapping("/userDetails")
     public ResponseEntity<UserInfo> getCurrentUser() {
         try {
-            UserInfo user = service.getUser(); // Appelle ta méthode service.getUser()
+            UserInfo user = service.getUser();
             return ResponseEntity.ok(user);
         } catch (RuntimeException ex) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build(); // 401 si non authentifié
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-
-
-
-
-
-
-//    @GetMapping("/owner/ownerProfile")
-//    public String ownerProfile() {
-//        return service.getUserProfile();
-//
-//    }
 
     @GetMapping("/userProfile")
     public ResponseEntity<Map<String, Object>> coachProfile() {
@@ -96,27 +78,23 @@ public class UserController {
         }
     }
 
-    /*delete a user*/
     @DeleteMapping("/deleteUser/{id}")
     public String deleteUser(@PathVariable int id) {
         service.deleteUserById(id);
         return "User Deleted Successfully";
     }
-    // Get list of coaches (for current user)
+
     @GetMapping("/coaches")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public List<UserInfo> getAllCoaches() {
         return service.getUsersByRole("ROLE_COACH");
     }
 
-    // Get list of users (for coaches)
     @GetMapping("/users")
     @PreAuthorize("hasAuthority('ROLE_COACH')")
-    public List<UserInfo> getAllUsers() {
+    public List<UserInfo> getAllUsersForCoach() {
         return service.getUsersByRole("ROLE_USER");
     }
-
-
 
     @GetMapping("/nutritionist/nutritionistProfile")
     public String nutritionistProfile() {
@@ -152,20 +130,9 @@ public class UserController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                         .body(Collections.singletonMap("message", "Invalid user request!"));
             }
-
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(Collections.singletonMap("message", "Authentication failed. Check your credentials."));
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-        );
-
-        if (authentication.isAuthenticated()) {
-            service.updateStatus(authRequest.getUsername(), Status.ONLINE);
-            return jwtService.generateToken(authRequest.getUsername());
-        } else {
-            throw new UsernameNotFoundException("Invalid user request!");
         }
     }
 
@@ -176,36 +143,16 @@ public class UserController {
         return "User status set to OFFLINE";
     }
 
-
-
-
-//    @PutMapping("/admin/blockUser/{id}")
-//    public String blockOrUnblockUser(@PathVariable int id, @RequestParam boolean block) {
-//        return service.toggleUserBlockStatus(id, block);
-//    }
-
-
-
-
-
-
-
-
-
     @GetMapping("/verify")
     public String verifyUser(@RequestParam("token") String token) {
         return service.verifyUser(token);
     }
-
-
 
     @PostMapping("/forgot-password")
     public String forgotPassword(@RequestBody Map<String, String> request) {
         String email = request.get("email");
         return service.initiatePasswordReset(email);
     }
-
-
 
     @PostMapping("/reset-password")
     public String resetPassword(@RequestBody Map<String, String> payload) {
@@ -218,10 +165,4 @@ public class UserController {
     public List<UserInfo> getAllUsers() {
         return service.getAllUsers();
     }
-
-
-
-
-
-
 }

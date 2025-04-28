@@ -33,14 +33,14 @@ public class Club {
         @Column
         private String status; // validé, non validé
 
-        @ManyToMany(cascade = CascadeType.ALL)
+/*        @ManyToMany(cascade = CascadeType.ALL)
         @JsonIgnore
         private Set<Sport> sports;
 
         @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
         @JsonIgnore
         //@JsonManagedReference("club-pack")
-        private Set<Pack> packs;
+        private Set<Pack> packs;*/
 
         // 👑 Club owner (single)
         @ManyToOne
