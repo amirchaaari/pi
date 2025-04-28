@@ -148,6 +148,11 @@ public class BookingService implements IBookingService {
                 });
     }
 
+    public List<Booking> getBookingsByCoach() {
+        UserInfo coach = getCurrentUser();
+        return bookingRepository.finbookingsforTrainingSessionByCoach(coach.getId());
+    }
+
     //get training session id from booking id
 
 

@@ -39,4 +39,9 @@ public class StatisticsController {
         return ResponseEntity.ok(statisticsService.getReviewCountPerSessionForCurrentCoach());
     }
 
+    @GetMapping("/stats")
+    public ResponseEntity<Map<String, Object>> getCoachStatistics() {
+        return ResponseEntity.ok(statisticsService.getCoachStatistics());
+    }
+
 }

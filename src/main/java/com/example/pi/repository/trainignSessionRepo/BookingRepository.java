@@ -53,4 +53,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findBookingsByCoach(@Param("coach") UserInfo coach);
 
 
+    @Query("SELECT b FROM Booking b WHERE b.trainingSession.coach.id = :id")
+    List<Booking> finbookingsforTrainingSessionByCoach(int id);
 }
