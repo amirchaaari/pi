@@ -23,7 +23,7 @@ import java.util.Optional;
 public class CommandServiceImpl implements CommandService {
 
     private final CommandRepository commandRepository;
-    private final UserInfoRepository userInfoRepository;
+    private final UserInfoRepository userInfoRepository;//
     private final ProductRepository productRepository;
 
     private UserInfo getCurrentUser() {
