@@ -28,8 +28,6 @@ public class MeetingController {
 
     }
 
-
-
     @GetMapping("/retrieve-meeting/{meeting-id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public Meeting retrieveMeeting(@PathVariable("meeting-id") Long meetingId) {

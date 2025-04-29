@@ -35,7 +35,6 @@ public class DossierController {
         return new ArrayList<>(dossier.getMeetings());  // Conversion Set à List si nécessaire
     }
 
-
     @GetMapping("/retrieve-dossier/{dossier-id}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public Dossier retrieveDossier(@PathVariable("dossier-id") Long dossierId) {
