@@ -17,6 +17,8 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
     Optional<UserInfo> findByEmail(String email); // Use 'email' if that is the correct field for login
 
     void deleteByEmail(String email);
+    Optional<UserInfo> findByResetToken(String resetToken);
+    Optional<UserInfo> findByVerificationToken(String verificationToken);
 
     List<UserInfo> findByRoles(String roleCoach);
 
@@ -30,8 +32,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
     List<Object[]> findCoachesWithAvgRating(@Param("roles") String roles);
     Optional<UserInfo> findByName(String name);
     List<UserInfo> findAllByStatus(Status status);
-    Optional<UserInfo> findByResetToken(String resetToken);
-    Optional<UserInfo> findByVerificationToken(String verificationToken);
+
     List<UserInfo> findByLastSessionBefore(LocalDateTime dateTime);
 
 

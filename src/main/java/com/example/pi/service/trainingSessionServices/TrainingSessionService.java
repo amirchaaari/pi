@@ -51,7 +51,6 @@ public class TrainingSessionService implements ITrainingSessionService {
         return trainingSessionRepository.save(trainingSession);
     }
 
-
     @Override
     public TrainingSession updateSession(Long id, TrainingSession trainingSession) {
         TrainingSession existingSession = trainingSessionRepository.findById(id)

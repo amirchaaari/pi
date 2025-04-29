@@ -41,7 +41,6 @@ public class ReviewService implements IReviewService {
                 .orElseThrow(() -> new RuntimeException("Session not found"));
 
         validateReviewEligibility(user, session);
-
         if (rating < 1 || rating > 5) {
             throw new IllegalArgumentException("Rating must be between 1 and 5");
         }

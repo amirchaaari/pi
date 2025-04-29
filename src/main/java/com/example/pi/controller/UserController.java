@@ -1,6 +1,9 @@
 package com.example.pi.controller;
 
 import com.example.pi.entity.AuthRequest;
+import com.example.pi.entity.Coach;
+import com.example.pi.entity.Nutritionist;
+import com.example.pi.entity.UserInfo;import com.example.pi.service.JwtService;
 import com.example.pi.entity.Status;
 import com.example.pi.entity.UserInfo;
 import com.example.pi.service.JwtService;
