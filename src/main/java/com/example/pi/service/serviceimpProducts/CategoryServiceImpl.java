@@ -3,6 +3,7 @@ package com.example.pi.service.serviceimpProducts;
 import com.example.pi.entity.Category;
 import com.example.pi.repository.CategoryRepository;
 import com.example.pi.service.CategoryService;
+import com.example.pi.service.ImageService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+    @Autowired
+    private ImageService imageService;
 
     @Override
     @Transactional

@@ -32,7 +32,8 @@ public class ReviewService implements IReviewService {
     private final TrainingSessionRepository trainingSessionRepository;
     @Autowired
     private final UserInfoRepository userInfoRepository;
-
+    @Autowired
+    private final UserScoringService userScoringService;
     @Transactional
     public Review createReview(Long sessionId, Integer rating, String description) {
         UserInfo user = getCurrentUser();
@@ -51,7 +52,7 @@ public class ReviewService implements IReviewService {
         review.setCreatedAt(LocalDateTime.now());
         review.setRating(rating);
         review.setDescription(description);
-
+        userScoringService.classifyUsers(user);
         return reviewRepository.save(review);
     }
 

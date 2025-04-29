@@ -34,7 +34,8 @@ public class BookingService implements IBookingService {
     private final TrainingSessionRepository trainingSessionRepository;
     @Autowired
     private final EmailService emailService;
-
+    @Autowired
+    private final UserScoringService userScoringService;
 
     private UserInfo getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -56,6 +57,7 @@ public class BookingService implements IBookingService {
         Booking booking = new Booking();
         booking.setUser(user);
         booking.setTrainingSession(trainingSession);
+        userScoringService.classifyUsers(user);
         return bookingRepository.save(booking);
     }
 

@@ -27,4 +27,5 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query("SELECT r FROM Review r WHERE r.trainingSession.coach.id = ?1")
     List<Review> findByTrainingSession_Coach(int coachId);
 
+    int countByUser(UserInfo user);
 }

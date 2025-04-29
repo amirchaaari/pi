@@ -70,7 +70,11 @@ public class UserInfo {
     @Column(name = "lastPasswordChange")
     private LocalDateTime lastPasswordChange;
     private LocalDateTime tokenExpiryTime;
+    @Column
+    private double score = 0.0;
 
+    @Enumerated(EnumType.STRING)
+    private UserLevel level = UserLevel.NEWBIE;
 
     private LocalDateTime lastSession;
 
