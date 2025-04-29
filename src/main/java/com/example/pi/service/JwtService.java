@@ -1,4 +1,4 @@
-package com.example.pi.serviceimp;
+package com.example.pi.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

@@ -1,4 +1,3 @@
-/*
 package com.example.pi.controller.TrainingSessionControllers;
 
 import com.example.pi.dto.CoachDTO;
@@ -70,4 +69,3 @@ public class TrainingSessionController {
 
 
 }
-*/

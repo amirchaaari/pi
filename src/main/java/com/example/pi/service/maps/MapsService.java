@@ -1,10 +1,11 @@
 package com.example.pi.service.maps;
 
+import com.example.pi.entity.Livreur;
+import com.example.pi.repository.LivraisonRepository.LivreurRepository;
 import com.google.maps.DirectionsApi;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
-import com.google.maps.model.DirectionsResult;  // Add this import
-import com.google.maps.model.DirectionsRoute;  // Add this import
+import com.google.maps.model.DirectionsResult;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.TravelMode;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,18 +14,19 @@ import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
+import java.util.*;
 
 
 @Service
 public class MapsService {
 
     private final GeoApiContext context;
+    private final LivreurRepository livreurRepository;  // Make final for immutability
 
-    // Correct constructor (no return type!)
-    @Autowired  // Explicitly mark for injection (optional but recommended)
-    public MapsService(GeoApiContext context) {
+    @Autowired
+    public MapsService(GeoApiContext context, LivreurRepository livreurRepository) {
         this.context = context;
+        this.livreurRepository = livreurRepository;
     }
 
 
@@ -33,23 +35,25 @@ public class MapsService {
     }
 
 
-
     public long getDuration(String origin, String destination, TravelMode mode) throws Exception {
-        DirectionsResult result = DirectionsApi.newRequest(context)
-                .origin(origin)
-                .destination(destination)
-                .mode(mode) // Can be DRIVING, WALKING, BICYCLING, or TRANSIT
-                .await();
+        // Create new context for each request
+        try (GeoApiContext context = new GeoApiContext.Builder()
+                .apiKey("AIzaSyDODHGmGhg5lsUhq-5tM5nZ_xckcyFDw9Q")
+                .build()) {
 
-        if (result.routes != null && result.routes.length > 0) {
-            DirectionsRoute route = result.routes[0];
-            if (route.legs != null && route.legs.length > 0) {
-                // Duration in seconds
-                return route.legs[0].duration.inSeconds;
+            DirectionsResult result = DirectionsApi.newRequest(context)
+                    .origin(origin)
+                    .destination(destination)
+                    .mode(mode)
+                    .await();
+
+            if (result.routes == null || result.routes.length == 0) {
+                throw new RuntimeException("No routes found");
             }
+            return result.routes[0].legs[0].duration.inSeconds;
         }
-        throw new RuntimeException("No route found between " + origin + " and " + destination);
     }
+
 
     // Convert duration (seconds) to a Date (for your Livraison entity)
     public Date convertSecondsToDate(long durationInSeconds) {
@@ -61,5 +65,37 @@ public class MapsService {
     public LocalDate convertSecondsToLocalDate(long durationInSeconds) {
         Instant instant = Instant.now().plusSeconds(durationInSeconds);
         return instant.atZone(ZoneId.systemDefault()).toLocalDate();
+    }
+
+    public Optional<Livreur> findNearestAvailableDriver(String deliveryAddress) throws Exception {
+        List<Livreur> availableDrivers = livreurRepository.findByAvailableTrue();
+        Map<Livreur, Long> validDrivers = new HashMap<>();
+
+        for (Livreur driver : availableDrivers) {
+            try {
+                // Use raw addresses without additional encoding
+                long duration = this.getDuration(
+                        driver.getAddress(),  // No encoding
+                        deliveryAddress,      // Already processed
+                        TravelMode.DRIVING
+                );
+                validDrivers.put(driver, duration);
+            } catch (Exception e) {
+
+            }
+        }
+
+        return validDrivers.entrySet().stream()
+                .min(Map.Entry.comparingByValue())
+                .map(Map.Entry::getKey);
+    }
+
+    private void validateAddress(String address) throws IllegalArgumentException {
+        if (address == null || address.trim().isEmpty()) {
+            throw new IllegalArgumentException("Address cannot be empty");
+        }
+        if (address.length() < 5) {
+            throw new IllegalArgumentException("Address is too short");
+        }
     }
 }

@@ -1,4 +1,3 @@
-/*
 package com.example.pi.service.trainingSessionServices;
 
 import com.example.pi.dto.CoachDTO;
@@ -149,4 +148,3 @@ public class TrainingSessionService implements ITrainingSessionService {
 
 }
 
-*/

@@ -125,6 +125,7 @@ public class UserController {
 
                 service.incrementSessionsAndSaveIt(authRequest.getUsername());
                 String token = jwtService.generateToken(authRequest.getUsername());
+                service.updateStatus(authRequest.getUsername(), Status.ONLINE);
                 return ResponseEntity.ok().body(Collections.singletonMap("token", token));
             } else {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

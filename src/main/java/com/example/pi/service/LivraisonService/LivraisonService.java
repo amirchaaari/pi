@@ -6,7 +6,7 @@ import com.example.pi.entity.Livreur;
 import com.example.pi.repository.LivraisonRepository.LivraisonRepository;
 import com.example.pi.repository.LivraisonRepository.LivreurRepository;
 import com.example.pi.service.EmailService;
-import com.example.pi.service.Maps.MapsService;
+import com.example.pi.service.maps.MapsService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

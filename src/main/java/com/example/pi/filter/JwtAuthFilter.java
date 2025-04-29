@@ -1,7 +1,7 @@
 package com.example.pi.filter;
 
-import com.example.pi.serviceimp.JwtService;
-import com.example.pi.serviceimp.UserInfoService;
+import com.example.pi.service.JwtService;
+import com.example.pi.service.UserInfoService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

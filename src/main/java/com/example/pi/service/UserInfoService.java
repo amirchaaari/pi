@@ -173,7 +173,6 @@ public class UserInfoService implements UserDetailsService {
         userInfo.setVerificationTokenExpiry(LocalDateTime.now().plusHours(24));
         //set the lastpasswordchange to now
         userInfo.setLastPasswordChange(LocalDateTime.now());
-
         repository.save(userInfo);
 
         String verificationLink = "http://localhost:8089/auth/verify?token=" + token;

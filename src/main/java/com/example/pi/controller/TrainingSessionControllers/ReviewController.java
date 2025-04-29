@@ -1,4 +1,3 @@
-/*
 package com.example.pi.controller.TrainingSessionControllers;
 
 import com.example.pi.entity.Review;
@@ -52,4 +51,4 @@ public class ReviewController {
     public void deleteReview(@PathVariable Long reviewId) {
         reviewService.deleteReview(reviewId);
     }
-}*/
+}

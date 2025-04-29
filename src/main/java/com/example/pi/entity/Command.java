@@ -27,8 +27,8 @@ public class Command {
     @JsonBackReference
     private Product product;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true) // ✅ Only cascade on Livraison
-    private Livraison livraison;
+//    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true) // ✅ Only cascade on Livraison
+//    private Livraison livraison;
 
     private Integer quantity;
 }

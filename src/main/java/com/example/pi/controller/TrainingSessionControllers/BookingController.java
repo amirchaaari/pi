@@ -1,4 +1,3 @@
-/*
 package com.example.pi.controller.TrainingSessionControllers;
 
 import com.example.pi.entity.Booking;
@@ -53,4 +52,3 @@ public class BookingController {
         bookingService.processCoachDecision(id, Booking.Status.REJECTED);
     }
 }
-*/
