@@ -26,13 +26,11 @@ public class ClubService  implements IClubService {
     private final UserInfoRepository userRepository;
     private final SportRepository sportRepository;
 
-    // Méthode pour récupérer l'utilisateur actuellement authentifié
     private UserInfo getAuthenticatedUser() {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
-        return userRepository.findByEmail(username).orElse(null);  // Retourne null si l'utilisateur n'est pas trouvé
+        return userRepository.findByEmail(username).orElse(null);
     }
 
-    // Soumettre une demande de création de club avec un document //
     public ClubCreationRequest submitClubCreationRequest(ClubCreationRequest request, MultipartFile documentFile, MultipartFile imageFile) {
         UserInfo authenticatedUser = getAuthenticatedUser();
         if (authenticatedUser == null || !authenticatedUser.getRoles().contains("ROLE_CLUB_OWNER")) {
@@ -56,7 +54,6 @@ public class ClubService  implements IClubService {
     }
 
 
-    // Approuver une demande de création de club et créer le club associé
     public Club approveClubCreationRequest(Long requestId) {
         Optional<ClubCreationRequest> optionalRequest = clubCreationRequestRepository.findById(requestId);
         if (optionalRequest.isEmpty()) {
@@ -84,41 +81,37 @@ public class ClubService  implements IClubService {
     }
 
 
-    // Refuser une demande de création de club
     public boolean rejectClubCreationRequest(Long requestId) {
         Optional<ClubCreationRequest> optionalRequest = clubCreationRequestRepository.findById(requestId);
         if (optionalRequest.isEmpty()) {
-            return false;  // Retourne false si la demande n'est pas trouvée
+            return false;
         }
 
         ClubCreationRequest request = optionalRequest.get();
         UserInfo authenticatedUser = getAuthenticatedUser();
         if (authenticatedUser == null || !authenticatedUser.getRoles().contains("ROLE_ADMIN")) {
-            return false;  // Retourne false si l'utilisateur n'est pas un Admin
+            return false;
         }
 
-        // Modifie le statut de la demande à REJECTED et sauvegarde la mise à jour
         request.setStatus(ClubCreationRequest.RequestStatus.REJECTED);
         clubCreationRequestRepository.save(request);
         return true;
     }
 
 
-    // Récupérer toutes les demandes en attente
     public List<ClubCreationRequest> getPendingClubCreationRequests() {
         return clubCreationRequestRepository.findByStatus(ClubCreationRequest.RequestStatus.PENDING);
     }
 
-    // Affecter un sport à un club
     public Club affecterSportToClub(Long clubId, Long sportId) {
         Optional<Sport> sportOpt = sportRepository.findById(sportId);
         if (sportOpt.isEmpty()) {
-            return null;  // Retourne null si le sport n'est pas trouvé
+            return null;
         }
 
         Optional<Club> clubOpt = clubRepository.findById(clubId);
         if (clubOpt.isEmpty()) {
-            return null;  // Retourne null si le club n'est pas trouvé
+            return null;
         }
 
         Club club = clubOpt.get();
@@ -149,7 +142,7 @@ public class ClubService  implements IClubService {
             throw new RuntimeException("Not authorized to delete this club");
         }
 
-        // 🔄 Dissocier les sports avant suppression
+        //  Dissocier les sports avant suppression
         for (Sport sport : club.getSports()) {
             sport.getClubs().remove(club);
         }
@@ -188,11 +181,10 @@ public class ClubService  implements IClubService {
             throw new RuntimeException("User not authenticated");
         }
         club.setOwner(owner);
-        club.setStatus(Club.RequestStatus.PENDING); // New clubs start as pending
+        club.setStatus(Club.RequestStatus.PENDING);
         return clubRepository.save(club);
     }
 
-    // Mise à jour du club avec nouvelle image si fournie
     public Club updateClub(Long id, Club updatedClub, MultipartFile imageFile) {
         Optional<Club> existingClubOpt = clubRepository.findById(id);
         UserInfo currentUser = getAuthenticatedUser();
@@ -213,7 +205,6 @@ public class ClubService  implements IClubService {
         existingClub.setDescription(updatedClub.getDescription());
         existingClub.setCapacity(updatedClub.getCapacity());
 
-        // Si une nouvelle image est fournie, l’enregistrer
         if (imageFile != null && !imageFile.isEmpty()) {
             try {
                 existingClub.setImage(imageFile.getBytes());
@@ -230,12 +221,11 @@ public class ClubService  implements IClubService {
         Club club = clubRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Club not found with id: " + id));
 
-        // Vérifie si l'image existe
         if (club.getImage() == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "No image found for this club");
         }
 
-        return club.getImage(); // Retourne l'image sous forme de tableau d'octets
+        return club.getImage();
     }
 
 
@@ -304,7 +294,6 @@ public class ClubService  implements IClubService {
     }
 
     public List<Map<String, Object>> calculateAllClubsOccupancyRate() {
-        // Récupérer tous les clubs
         List<Club> clubs = clubRepository.findAll();
 
         List<Map<String, Object>> occupancyRates = new ArrayList<>();
@@ -337,6 +326,18 @@ public class ClubService  implements IClubService {
         rateMap.put("clubId", clubId);
         rateMap.put("occupancyRate", occupancyRate);
         return rateMap;
+    }
+
+    public Club getClubForAuthenticatedOwner() {
+        UserInfo currentUser = getAuthenticatedUser();
+
+        if (currentUser == null || !currentUser.getRoles().contains("ROLE_CLUB_OWNER")) {
+            throw new RuntimeException("Unauthorized or not a club owner");
+        }
+
+        return clubRepository.findByOwner(currentUser).stream()
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("No club found for this owner"));
     }
 
 

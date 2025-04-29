@@ -80,6 +80,10 @@ public class AbonnementRequestService {
         abonnement.setUser(request.getUser());
         abonnement.setPack(request.getPack());
         abonnement.setStartDate(LocalDate.now());
+        // ➡️ Incrémenter subscriptionCount du Pack
+        Pack pack = request.getPack();
+        pack.setSubscriptionCount(pack.getSubscriptionCount() + 1);
+        packRepository.save(pack);
 
         // Utilisation de la durée du pack pour définir la date de fin
         int durationDays = request.getPack().getDuration();
@@ -89,10 +93,6 @@ public class AbonnementRequestService {
 
         Abonnement savedAbonnement = abonnementRepository.save(abonnement);
 
-        // ➡️ Incrémenter subscriptionCount du Pack
-        Pack pack = request.getPack();
-        pack.setSubscriptionCount(pack.getSubscriptionCount() + 1);
-        packRepository.save(pack); // Assure-toi que tu as packRepository injecté !
 
         return savedAbonnement;
     }

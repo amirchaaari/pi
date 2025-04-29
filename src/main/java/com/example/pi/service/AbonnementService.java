@@ -170,9 +170,11 @@ public class AbonnementService implements IAbonnementService {
             packs.forEach(pack -> {
                 Map<String, Object> packDTO = new HashMap<>();
                 packDTO.put("packName", pack.getName());
-                packDTO.put("subscriptionCount", pack.getSubscriptionCount());
+                int subscriptionCount = abonnementRepository.countByPackId(pack.getId());
+                packDTO.put("subscriptionCount", subscriptionCount);
                 packPerformanceList.add(packDTO);
             });
+
             response.put("packPerformance", packPerformanceList);
             response.put("message", "✅ Analyse de performance du club réussie.");
         }

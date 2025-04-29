@@ -65,9 +65,10 @@ public class ClubController {
         }
     }
 
-    // Mise à jour d'un club avec image (si fournie)
     @PutMapping("/update-club/{id}")
+    @PreAuthorize("hasAnyRole('ROLE_CLUB_OWNER', 'ROLE_ADMIN')")
     public ResponseEntity<?> updateClub(
+
             @PathVariable Long id,
             @RequestParam("name") String name,
             @RequestParam("description") String description,
@@ -130,7 +131,7 @@ public class ClubController {
     private ObjectMapper objectMapper;
 
     @PostMapping("/submit-creation-request")
-    //@PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
+    @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
     public ResponseEntity<?> submitClubCreationRequest(
             @RequestPart("request") String requestJson,
             @RequestParam(value = "document", required = false) MultipartFile document,
@@ -254,5 +255,12 @@ public class ClubController {
     public List<Map<String, Object>> getAllClubsOccupancyRate() {
         return clubService.calculateAllClubsOccupancyRate();
     }
+
+    @GetMapping("/my-club")
+    public ResponseEntity<Club> getClubForOwner() {
+        Club club = clubService.getClubForAuthenticatedOwner();
+        return ResponseEntity.ok(club);
+    }
+
 
 }

@@ -53,7 +53,6 @@ public class PackController {
     }
 
     @GetMapping("/popularity")
-    @PreAuthorize("hasRole('ROLE_USER')")
     public List<Pack> getPopularPacks() {
         return packService.getPacksByPopularity();
     }
