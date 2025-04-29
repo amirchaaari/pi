@@ -34,7 +34,8 @@ public class BookingService implements IBookingService {
     private final TrainingSessionRepository trainingSessionRepository;
     @Autowired
     private final EmailService emailService;
-
+    @Autowired
+    private final UserScoringService userScoringService;
 
     private UserInfo getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -56,6 +57,7 @@ public class BookingService implements IBookingService {
         Booking booking = new Booking();
         booking.setUser(user);
         booking.setTrainingSession(trainingSession);
+        userScoringService.classifyUsers(user);
         return bookingRepository.save(booking);
     }
 
@@ -113,7 +115,7 @@ public class BookingService implements IBookingService {
     }
 
 
-    @Scheduled(cron = "0 * * * * *")
+    @Scheduled(cron = "* * * * * *")
     public void sendSessionReminders() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime sessionStartTime = now.plusMinutes(15);
@@ -147,5 +149,13 @@ public class BookingService implements IBookingService {
                     bookingRepository.save(booking);
                 });
     }
+
+    public List<Booking> getBookingsByCoach() {
+        UserInfo coach = getCurrentUser();
+        return bookingRepository.finbookingsforTrainingSessionByCoach(coach.getId());
+    }
+
+    //get training session id from booking id
+
 
 }

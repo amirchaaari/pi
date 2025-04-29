@@ -23,6 +23,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         registry.enableSimpleBroker("/user");
         registry.setApplicationDestinationPrefixes("/app");
         registry.setUserDestinationPrefix("/user");
+        registry.enableSimpleBroker("/topic");  // Where clients subscribe
+        registry.setApplicationDestinationPrefixes("/app"); // Prefix for @MessageMapping
     }
 
     @Override
@@ -43,5 +45,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         messageConverters.add(converter);
         return false;
     }
+
+
 }
 

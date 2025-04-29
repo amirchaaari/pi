@@ -32,7 +32,8 @@ public class ReviewService implements IReviewService {
     private final TrainingSessionRepository trainingSessionRepository;
     @Autowired
     private final UserInfoRepository userInfoRepository;
-
+    @Autowired
+    private final UserScoringService userScoringService;
     @Transactional
     public Review createReview(Long sessionId, Integer rating, String description) {
         UserInfo user = getCurrentUser();
@@ -51,7 +52,7 @@ public class ReviewService implements IReviewService {
         review.setCreatedAt(LocalDateTime.now());
         review.setRating(rating);
         review.setDescription(description);
-
+        userScoringService.classifyUsers(user);
         return reviewRepository.save(review);
     }
 
@@ -130,4 +131,22 @@ public class ReviewService implements IReviewService {
         return userInfoRepository.findByEmail(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
+
+    public List<Review>getReviewsByCoachId(){
+        UserInfo currentUser = getCurrentUser();
+        System.out.println("Current user: " + currentUser.getId());
+        System.out.println(reviewRepository.findByTrainingSession_Coach(currentUser.getId()));
+        return reviewRepository.findByTrainingSession_Coach(currentUser.getId());
+    }
+
+
+
+
+
+
+
+
+
+
+
 }

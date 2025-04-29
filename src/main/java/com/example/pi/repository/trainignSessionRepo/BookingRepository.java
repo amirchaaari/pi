@@ -37,5 +37,24 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             @Param("status") Booking.Status status);
 
 
+    @Query("SELECT FUNCTION('DAYNAME', b.trainingSession.date) AS dayOfWeek, COUNT(b) " +
+            "FROM Booking b " +
+            "WHERE b.status = 'APPROVED' " +
+            "GROUP BY FUNCTION('DAYNAME', b.trainingSession.date)")
+    List<Object[]> countApprovedBookingsByDayOfWeek();
 
+    @Query("SELECT HOUR(b.trainingSession.startTime) AS hour, COUNT(b) " +
+            "FROM Booking b " +
+            "WHERE b.status = 'APPROVED' " +
+            "GROUP BY HOUR(b.trainingSession.startTime)")
+    List<Object[]> countApprovedBookingsByHour();
+
+    @Query("SELECT b FROM Booking b WHERE b.trainingSession.coach = :coach")
+    List<Booking> findBookingsByCoach(@Param("coach") UserInfo coach);
+
+
+    @Query("SELECT b FROM Booking b WHERE b.trainingSession.coach.id = :id")
+    List<Booking> finbookingsforTrainingSessionByCoach(int id);
+
+    int countByUser(UserInfo user);
 }
