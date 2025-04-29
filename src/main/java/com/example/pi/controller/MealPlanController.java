@@ -9,7 +9,6 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,7 +37,7 @@ public class MealPlanController {
     }
 
     // Update meal plan
-    @PreAuthorize("hasRole('NUTRITIONIST')")
+
     @PutMapping("/update-mealplan/{id}")
     public ResponseEntity<String> updateMealPlan(
             @PathVariable Long id,
@@ -67,7 +66,7 @@ public class MealPlanController {
                 ResponseEntity.notFound().build();
     }
 
-    @PreAuthorize("hasRole('NUTRITIONIST')")
+
     @DeleteMapping("/remove-mealPlan/{id}")
     public ResponseEntity<String> removeMealPlan(@PathVariable Long id) {
         MealPlan existing = mealPlanService.retrieveMealPlan(id);
@@ -108,7 +107,7 @@ public class MealPlanController {
     }
 
     //creation
-    @PreAuthorize("hasRole('NUTRITIONIST')")
+
     @PostMapping("/create")
     public ResponseEntity<MealPlan> createMealPlan(@RequestBody MealPlanRequest request) {
         MealPlan saved = mealPlanService.createMealPlan(request);

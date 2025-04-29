@@ -52,10 +52,10 @@ public class SecurityConfig {
                         .requestMatchers("/auth/admin/**","/clubs/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/auth/coach/**").hasAuthority("ROLE_COACH")
                         .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
-                        .requestMatchers("/recipe/favorites/**").hasAuthority("ROLE_USER")
-                        .requestMatchers("/recipe/**").permitAll()
-                        .requestMatchers("/dietprogram/**").permitAll()
-                        .requestMatchers("/mealplan/**").permitAll()
+                        .requestMatchers("/recipe/favorites/**").authenticated()
+                        .requestMatchers("/recipe/**").authenticated()
+                        .requestMatchers("/dietprogram/**").authenticated()
+                        .requestMatchers("/mealplan/**").authenticated()
                         .requestMatchers("/auth/**").permitAll() // this line is key
 
                         .requestMatchers("/clubs/**").hasAuthority("ROLE_CLUB_OWNER")

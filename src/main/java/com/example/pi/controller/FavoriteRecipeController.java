@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-@CrossOrigin(origins = "http://localhost:4200")
+
 @RestController
 @RequestMapping("/recipe/favorites")
 public class FavoriteRecipeController {
@@ -27,8 +27,8 @@ public class FavoriteRecipeController {
     }
 
     // najouty  recette lel favoris d'un utilisateur
-    @PostMapping("/addfav")
-    public FavoriteRecipe addFavorite(@RequestParam String email, @RequestParam Long recipeId) {
+    @PostMapping("/addfav/{email}/{recipeId}")
+    public FavoriteRecipe addFavorite(@PathVariable("email") String email, @PathVariable("recipeId") Long recipeId) {
         try {
             return favoriteRecipeService.addFavorite(email, recipeId);
         } catch (RuntimeException e) {
