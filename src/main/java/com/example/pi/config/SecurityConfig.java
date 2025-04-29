@@ -6,6 +6,7 @@ import com.example.pi.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -56,6 +57,13 @@ public class SecurityConfig {
                         .requestMatchers("/auth/coach/**").hasAuthority("ROLE_COACH")
                         .requestMatchers("/auth/owner/**").hasAuthority("ROLE_OWNER")
                         .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
+                        .requestMatchers("/recipe/favorites/**").authenticated()
+                        .requestMatchers("/recipe/**").authenticated()
+                        .requestMatchers("/dietprogram/**").authenticated()
+                        .requestMatchers("/analytics/**").authenticated()
+                        .requestMatchers("/mealplan/**").authenticated()
+                        .requestMatchers("/auth/**").permitAll() // this line is key
+
                         .requestMatchers("/clubs/**").hasAuthority("ROLE_CLUB_OWNER")
                         .requestMatchers("/coach/sessions","/coach/sessions/range").hasAuthority("ROLE_COACH")
                         .requestMatchers("/training-sessions/chat").permitAll()
