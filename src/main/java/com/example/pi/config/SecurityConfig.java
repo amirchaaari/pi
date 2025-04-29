@@ -59,7 +59,7 @@ public class SecurityConfig {
                         .requestMatchers("/training-sessions/messages/**").permitAll()
                         .requestMatchers("/ws/**").permitAll()
 
-                        .requestMatchers("/**").permitAll()
+
                         .anyRequest().authenticated() // Protect all other endpoints
                 )
                 .sessionManagement(sess -> sess
