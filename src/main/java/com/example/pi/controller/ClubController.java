@@ -256,6 +256,7 @@ public class ClubController {
         return clubService.calculateAllClubsOccupancyRate();
     }
 
+
     @GetMapping("/my-club")
     public ResponseEntity<Club> getClubForOwner() {
         Club club = clubService.getClubForAuthenticatedOwner();

@@ -3,6 +3,7 @@ package com.example.pi.interfaces;
 import com.example.pi.entity.Club;
 import com.example.pi.entity.Pack;
 import java.util.List;
+import java.util.Map;
 
 public interface IPackService {
     Pack createPack(Pack pack);
@@ -15,6 +16,8 @@ public interface IPackService {
 
 
     Club affecterPackToClub(Long clubId, Long packId);
+
+    Map<String, Object> getPacksPopularityStatistics();
 
 
 }

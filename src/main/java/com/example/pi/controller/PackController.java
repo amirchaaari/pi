@@ -4,7 +4,6 @@ import com.example.pi.entity.Club;
 import com.example.pi.entity.Pack;
 import com.example.pi.service.PackService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,9 +57,15 @@ public class PackController {
     }
 
     @GetMapping("/statistics")
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    //@PreAuthorize("hasRole('ROLE_ADMIN')")
     public Map<String, Object> getPacksPopularityStatistics() {
         return packService.getPacksPopularityStatistics();
+    }
+
+    @GetMapping("/hasClub/{id}")
+    @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
+    public boolean hasClub(@PathVariable Long id) {
+        return packService.isPackAffecterToClub(id);
     }
 
 }

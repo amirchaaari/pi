@@ -104,6 +104,8 @@ public class PackService implements IPackService {
         for (Pack pack : packs) {
             int count = countMap.getOrDefault(pack.getId(), 0);
             pack.setSubscriptionCount(count);
+            pack.setAbonnements(null);
+            pack.setAbonnementsrequests(null);
         }
 
         // Trier les packs par popularité (croissant ou décroissant selon ton besoin)
@@ -149,6 +151,9 @@ public class PackService implements IPackService {
                 minAbonnements = count;
                 leastPopularPack = pack;
             }
+
+            pack.setAbonnements(null);
+            pack.setAbonnementsrequests(null);
         }
 
         // Calculer la moyenne des abonnements
@@ -164,6 +169,12 @@ public class PackService implements IPackService {
         statistics.put("allPacks", packs); // Inclure tous les packs avec leur nombre d'abonnements
 
         return statistics;
+    }
+
+    //is pack affecter to club
+    public boolean isPackAffecterToClub(Long packId) {
+        Pack pack = packRepository.findById(packId).orElse(null);
+        return pack != null && pack.getClub() != null;
     }
 
 

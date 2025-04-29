@@ -118,7 +118,7 @@ public class TrophyService {
     }
 
     @Transactional
-    @Scheduled(cron = "*/15 * * * * ?")
+   // @Scheduled(cron = "*/15 * * * * ?")
     public void claimTrophies() {
         List<UserInfo> users = userInfoRepository.findAll();
         for (UserInfo user : users) {
