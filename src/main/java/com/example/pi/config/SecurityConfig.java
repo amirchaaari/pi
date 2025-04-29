@@ -55,6 +55,7 @@ public class SecurityConfig {
                         .requestMatchers("/recipe/favorites/**").authenticated()
                         .requestMatchers("/recipe/**").authenticated()
                         .requestMatchers("/dietprogram/**").authenticated()
+                        .requestMatchers("/analytics/**").authenticated()
                         .requestMatchers("/mealplan/**").authenticated()
                         .requestMatchers("/auth/**").permitAll() // this line is key
 

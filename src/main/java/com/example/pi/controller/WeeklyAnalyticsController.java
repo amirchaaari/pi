@@ -8,13 +8,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/recipe/analytics")
+@RequestMapping("/analytics")
 @RequiredArgsConstructor
 public class WeeklyAnalyticsController {
 
     private final WeekAnalyticsRepo weekAnalyticsRepo;
 
-    @GetMapping
+    @GetMapping("/getanalysis")
     public List<WeeklyAnalytics> getAllWeeklyAnalytics() {
         return weekAnalyticsRepo.findAll();
     }
