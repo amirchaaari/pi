@@ -16,7 +16,7 @@ import java.util.*;
 public class DossierController {
     IDossierService dossierService;
     @GetMapping("/retrieve-all-dossiers")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public List<Dossier> getDossiers() {
         List<Dossier> listDossiers = dossierService.retrieveAllDossiers();
         return listDossiers;
@@ -24,7 +24,7 @@ public class DossierController {
     }
 
     @GetMapping("/{dossierId}/meetings")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public List<Meeting> getMeetingsByFolderId(@PathVariable Long dossierId) {
         // Récupère le dossier via ton service
         Dossier dossier = dossierService.retrieveDossier(dossierId);
@@ -37,33 +37,33 @@ public class DossierController {
 
 
     @GetMapping("/retrieve-dossier/{dossier-id}")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public Dossier retrieveDossier(@PathVariable("dossier-id") Long dossierId) {
         return dossierService.retrieveDossier(dossierId);
     }
 
 
     @PostMapping("/add-dossier")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public Dossier addDossier(@RequestBody Dossier c) {
         Dossier dossier = dossierService.addDossier(c);
         return dossier;
     }
 
     @DeleteMapping("/remove-dossier/{dossier-id}")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public void removeDossier(@PathVariable("dossier-id") Long dossierId) {
         dossierService.removeDossier(dossierId);
     }
 
     @PutMapping("/update-dossier")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public Dossier updateDossier(@RequestBody Dossier c) {
         Dossier dossier= dossierService.updateDossier(c);
         return dossier;
     }
     @GetMapping("/gender-stats")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public Map<String, Object> getGenderStats() {
         return dossierService.getGenderStats();
     }

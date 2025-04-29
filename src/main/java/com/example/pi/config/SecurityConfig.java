@@ -63,6 +63,29 @@ public class SecurityConfig {
                         .requestMatchers("/analytics/**").authenticated()
                         .requestMatchers("/mealplan/**").authenticated()
                         .requestMatchers("/auth/**").permitAll() // this line is key
+                        .requestMatchers("/meeting/retrieve-all-meeting/**").authenticated()
+                        .requestMatchers("/meeting/retrieve-meeting/**").authenticated()
+                        .requestMatchers("/meeting/add-meeting/**").authenticated()
+                        .requestMatchers("/meeting/add-meeting-with-dossier/**").authenticated()
+                        .requestMatchers("/meeting/remove-meeting/**").authenticated()
+                        .requestMatchers("/meeting/update-meeting/**").authenticated()
+                        .requestMatchers("/meeting/reminders/**").authenticated()
+                        .requestMatchers("/meeting/available-slots/**").authenticated()
+                        .requestMatchers("/meeting/by-dossier/**").authenticated()
+                        .requestMatchers("/meeting/meetings/**").authenticated()
+                        .requestMatchers("/dossier/retrieve-all-dossiers/**").authenticated()
+                        .requestMatchers("/dossier/*/meetings").authenticated()
+                        .requestMatchers("/dossier/retrieve-dossier/**").authenticated()
+                        .requestMatchers("/dossier/add-dossier/**").authenticated()
+                        .requestMatchers("/dossier/remove-dossier/**").authenticated()
+                        .requestMatchers("/dossier/update-dossier/**").authenticated()
+                        .requestMatchers("/dossier/gender-stats/**").authenticated()
+
+
+
+
+
+
 
                         .requestMatchers("/clubs/**").hasAuthority("ROLE_CLUB_OWNER")
                         .requestMatchers("/coach/sessions","/coach/sessions/range").hasAuthority("ROLE_COACH")

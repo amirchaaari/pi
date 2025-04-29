@@ -21,7 +21,7 @@ import java.util.Map;
 public class MeetingController {
     IMeetingService meetingService ;
     @GetMapping("/retrieve-all-meeting")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public List<Meeting> getMeetings() {
         List<Meeting> listClients = meetingService.retrieveAllMeetings();
         return listClients;
@@ -31,7 +31,7 @@ public class MeetingController {
 
 
     @GetMapping("/retrieve-meeting/{meeting-id}")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public Meeting retrieveMeeting(@PathVariable("meeting-id") Long meetingId) {
         return meetingService.retrieveMeeting(meetingId);
     }
@@ -39,14 +39,14 @@ public class MeetingController {
 
 
     @PostMapping("/add-meeting")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public Meeting addMeeting(@RequestBody Meeting c) {
         Meeting meeting = meetingService.addMeeting(c);
         return meeting;
     }
 
     @PostMapping("/add-meeting-with-dossier")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> addMeeting(@RequestParam Long dossierId, @RequestBody Meeting meeting) {
         try {
             System.out.println("dossierId: " + dossierId);
@@ -62,25 +62,25 @@ public class MeetingController {
 
 
     @DeleteMapping("/remove-meeting/{meeting-id}")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public void removeMeeting(@PathVariable("meeting-id") Long meetingId) {
         meetingService.removeMeeting(meetingId);
     }
 
     @PutMapping("/update-meeting")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public Meeting updateMeeting(@RequestBody Meeting c) {
         Meeting meeting= meetingService.updateMeeting(c);
         return meeting;
     }
 
     @GetMapping("/reminders")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public List<Meeting> getMeetingReminders() {
         return meetingService.getMeetingReminders();
     }
     @GetMapping("/available-slots/{date}")
-    @PreAuthorize("hasRole('ROLE_NUTRITIONIST')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public List<Map<String, Object>> getAvailableSlots(
             @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
         return meetingService.getAvailableSlots(date);
