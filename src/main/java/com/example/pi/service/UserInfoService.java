@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -157,7 +158,6 @@ public class UserInfoService implements UserDetailsService {
 
 
 
-
     public String addUser(UserInfo userInfo) {
         Optional<UserInfo> existingUser = repository.findByEmail(userInfo.getEmail());
         if (existingUser.isPresent()) {
@@ -274,6 +274,12 @@ public class UserInfoService implements UserDetailsService {
 
 
 
+
+
+
+
+
+
     public Map<String, Object> getUserProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Map<String, Object> profileData = new HashMap<>();
@@ -301,6 +307,7 @@ public class UserInfoService implements UserDetailsService {
 
         return null;
     }
+   
 
     public UserInfo getUserById(int receiverId) {
         return repository.findById(receiverId).orElse(null);

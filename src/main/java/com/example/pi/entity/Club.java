@@ -28,38 +28,39 @@ public class Club {
         @Column
         private int capacity;
 
+        @Transient
+        private int totalSubscriptions;
+
+        @Transient
+        private int totalPacks;
+
+        @Transient
+        private double averageSubscriptionsPerPack;
+
+        @Lob
+        @Column(name = "image", columnDefinition = "LONGBLOB")
+        private byte[] image;
 
 
-        @Column
-        private String status; // validé, non validé
 
-/*        @ManyToMany(cascade = CascadeType.ALL)
-        @JsonIgnore
+
+        @Enumerated(EnumType.STRING)
+        private Club.RequestStatus status; // Status de la demande (APPROVED, PENDING, REJECTED)
+
+        public enum RequestStatus {
+                PENDING, APPROVED, REJECTED
+        }
+
+        @ManyToMany
         private Set<Sport> sports;
 
         @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
-        @JsonIgnore
         //@JsonManagedReference("club-pack")
-        private Set<Pack> packs;*/
+        private Set<Pack> packs;
 
-        // 👑 Club owner (single)
         @ManyToOne
-        @JoinColumn(name = "owner_id")
         @JsonIgnore
         private UserInfo owner;
 
-        // 🧑‍🏫 Assigned coaches (many)
-        @ManyToMany
-        @JoinTable(
-                name = "club_coaches",
-                joinColumns = @JoinColumn(name = "club_id"),
-                inverseJoinColumns = @JoinColumn(name = "user_id")
-        )
-        private Set<UserInfo> coaches;
-
-
 
 }
-
-
-
