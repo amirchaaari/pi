@@ -36,9 +36,9 @@ public class Product {
     @JoinColumn(name = "category_id")
     @JsonIgnoreProperties({"products", "hibernateLazyInitializer"})
 
-    private Category category;
-
-
+        private Category category;
+            @Column(name = "original_price")
+            private Double originalPrice;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference // To manage serialization of commands

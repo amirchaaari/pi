@@ -74,7 +74,7 @@ public class UserInfo {
 
     private LocalDateTime lastSession;
 
-
+    private String address;
 
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="coach")

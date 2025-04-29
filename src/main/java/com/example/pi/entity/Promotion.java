@@ -28,6 +28,7 @@ public class Promotion {
     /*@OneToMany(cascade = CascadeType.ALL, mappedBy="promotion")
     @JsonIgnore
     private Set<Category> categories;*/
-
+    @Column(nullable = false)
+    private boolean isActive = false; // Add this field
 
 }

@@ -73,7 +73,7 @@ public class SecurityConfig {
                         .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/auth/**").permitAll() // this line is key
 
-                        .anyRequest().authenticated() // Protect all other endpoints
+                        .anyRequest().permitAll()  // Protect all other endpoints
                 )
                 .sessionManagement(sess -> sess
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No sessions

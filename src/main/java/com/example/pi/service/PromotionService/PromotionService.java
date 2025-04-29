@@ -2,8 +2,10 @@ package com.example.pi.service.PromotionService;
 
 /*import com.example.pi.entity.Command;*/
 
+import com.example.pi.entity.Product;
 import com.example.pi.entity.Promotion;
 import com.example.pi.entity.UserInfo;
+import com.example.pi.repository.ProductRepository;
 import com.example.pi.repository.PromotionRepository.PromotionRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import com.example.pi.repository.UserInfoRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +26,9 @@ public class PromotionService {
     private PromotionRepository promotionRepository;
     @Autowired
     private final UserInfoRepository userInfoRepository;
+
+    @Autowired
+    private final ProductRepository productRepository;
     /*@Autowired
     private CommandRepository commandRepository;*/
 
@@ -89,6 +95,38 @@ public class PromotionService {
 
         }
     }*/
+
+    public void applyPromotion(Long promotionId) {
+        Promotion promotion = promotionRepository.findById(promotionId)
+                .orElseThrow(() -> new RuntimeException("Promotion not found with id: " + promotionId));
+
+        LocalDate today = LocalDate.now();
+
+        // Validate promotion dates
+        if (today.isBefore(promotion.getStartDate())) {
+            throw new RuntimeException("Promotion hasn't started yet");
+        }
+
+        if (today.isAfter(promotion.getEndDate())) {
+            throw new RuntimeException("Promotion has expired");
+        }
+
+        // Apply promotion to products
+        List<Product> products = productRepository.findByCategoryName(promotion.getCategory());
+
+        products.forEach(product -> {
+            if (product.getOriginalPrice() == null) {
+                product.setOriginalPrice(product.getPrice());
+            }
+            double discountedPrice = product.getOriginalPrice() *
+                    (1 - (promotion.getDiscountPercentage() / 100));
+            product.setPrice(discountedPrice);
+        });
+
+        productRepository.saveAll(products);
+        promotion.setActive(true);
+        promotionRepository.save(promotion);
+    }
 
 
 

@@ -2,11 +2,9 @@ package com.example.pi.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
+@Builder
 @Entity
 @Table(name = "commands")
 @Getter
@@ -27,8 +25,8 @@ public class Command {
     @JsonBackReference
     private Product product;
 
-//    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true) // ✅ Only cascade on Livraison
-//    private Livraison livraison;
+   @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true) // ✅ Only cascade on Livraison
+    private Livraison livraison;
 
     private Integer quantity;
 }

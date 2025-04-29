@@ -1,5 +1,6 @@
 package com.example.pi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -33,9 +34,10 @@ public class Livraison {
     private Date scheduleddate;
 
 
-   /* @JsonIgnore
-    @OneToMany(cascade = CascadeType.ALL, mappedBy="livraison")
-    private Set<Command> commands;*/
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "livraison", cascade = CascadeType.ALL)
+    private Command command; // This must be correctly mapped
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;

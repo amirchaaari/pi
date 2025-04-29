@@ -63,4 +63,15 @@ public class PromotionController {
         promotionService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/apply")
+    @Transactional
+    public ResponseEntity<String> applyPromotion(@PathVariable Long id) {
+        try {
+            promotionService.applyPromotion(id);
+            return ResponseEntity.ok("Promotion applied successfully");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
 }
