@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to the Club!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+    .email-header {
+      background-color: #2e7d32;
+      color: #ffffff;
+      text-align: center;
+    }
+    .email-header img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .email-header h2 {
+      margin: 0;
+      padding: 20px;
+      font-size: 24px;
+    }
+    .email-body {
+      padding: 30px 20px;
+      color: #333333;
+      line-height: 1.6;
+    }
+    .email-body ul {
+      padding-left: 20px;
+    }
+    .email-body li {
+      margin-bottom: 10px;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      background-color: #43a047;
+      color: #ffffff !important;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .highlight {
+      font-weight: bold;
+      color: #2e7d32;
+    }
+    .email-footer {
+      font-size: 12px;
+      text-align: center;
+      color: #888888;
+      background-color: #f1f1f1;
+      padding: 15px 20px;
+    }
+    @media only screen and (max-width: 620px) {
+      .email-body, .email-footer {
+        padding: 20px 15px;
+      }
+      .email-header h2 {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="email-container">
+  <div class="email-header">
+    <img src="https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg" alt="Gym banner">
+    <h2>Welcome, {{USERNAME}}!</h2>
+  </div>
+  <div class="email-body">
+    <p>We're thrilled to welcome you as a coach at <span class="highlight">{{CLUB_NAME}}</span>!</p>
+    <p>Here are your login credentials to get started:</p>
+    <ul>
+      <li><strong>Email:</strong> {{EMAIL}}</li>
+      <li><strong>Password:</strong> {{PASSWORD}}</li>
+    </ul>
+    <p>We recommend logging in and updating your password immediately to keep your account secure.</p>
+    <a href="http://localhost:4200/login" class="btn">Log In to Your Account</a>
+  </div>
+  <div class="email-footer">
+    &copy; {{CURRENT_YEAR}} Your Company Name. All rights reserved.
+  </div>
+</div>
+</body>
+</html>

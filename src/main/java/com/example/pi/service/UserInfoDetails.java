@@ -13,7 +13,7 @@ public class UserInfoDetails implements UserDetails {
 
     private String username; // Changed from 'name' to 'username' for clarity
     private String password;
-     private int id;  // Add user ID
+    private int id;  // Add user ID
     private boolean enabled;
 
     private List<GrantedAuthority> authorities;

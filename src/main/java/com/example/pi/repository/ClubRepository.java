@@ -11,4 +11,5 @@ import java.util.List;
 public interface ClubRepository extends JpaRepository<Club, Long> {
     List<Club> findByOwner(UserInfo owner);
     List<Club> findByStatus(Club.RequestStatus status);
+    Optional<Club> findByOwner_Id(Long ownerId);
 }

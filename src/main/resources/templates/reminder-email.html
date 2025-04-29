@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stay Connected with Us!</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+    }
+    .email-container {
+      max-width: 600px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+    .email-header {
+      background-color: #2e7d32;
+      color: #ffffff;
+      padding: 20px;
+      text-align: center;
+    }
+    .email-body {
+      padding: 30px 20px;
+      color: #333333;
+    }
+    .email-footer {
+      padding: 15px 20px;
+      font-size: 12px;
+      text-align: center;
+      color: #888888;
+      background-color: #f1f1f1;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 20px;
+      background-color: #43a047;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+    .highlight {
+      font-weight: bold;
+      color: #2e7d32;
+    }
+  </style>
+</head>
+<body>
+<div class="email-container">
+  <div class="email-header"><img src="https://images.pexels.com/photos/1954524/pexels-photo-1954524.jpeg"
+                                 alt="Gym banner"
+                                 style="width: 100%; height: auto; display: block;">
+
+    <h2>Hello {{USERNAME}}!</h2>
+  </div>
+  <div class="email-body">
+    <p>We hope you're doing well 🌟</p>
+
+    <p>This is just a friendly reminder to <span class="highlight">stay engaged</span> with your account and make the most of your experience with us.</p>
+
+    <p>Here are some things you can do today:</p>
+    <ul>
+      <li>✅ Update your profile or preferences</li>
+      <li>✅ Browse new opportunities or training content</li>
+      <li>✅ Connect with our team if you need help</li>
+    </ul>
+
+    <p>If you have any questions or need assistance, feel free to reach out. We're always here to support you.</p>
+
+    <a href="http://localhost:4200/" class="btn">Visit Your Dashboard</a>
+  </div>
+  <div class="email-footer">
+    © {{CURRENT_YEAR}} Your Company Name. All rights reserved.
+  </div>
+</div>
+</body>
+</html>
