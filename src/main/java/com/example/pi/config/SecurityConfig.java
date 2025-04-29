@@ -2,13 +2,14 @@ package com.example.pi.config;
 
 
 import com.example.pi.filter.JwtAuthFilter;
-import com.example.pi.serviceimp.UserInfoService;
+import com.example.pi.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -41,16 +42,53 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Enable CORS
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .anyRequest().permitAll() // Allow all requests
+                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken","/auth/deleteUser/{id}","/ws/**", "/pi/ws/**", "/pi/ws/websocket","training-sessions/recommended","auth/logout").permitAll()
+                        .requestMatchers("/auth/user/**").hasAnyAuthority("ROLE_USER", "ROLE_COACH", "ROLE_NUTRITIONIST")
+                        .requestMatchers("/bookings","/abonnement-requests/**").hasAnyAuthority("ROLE_USER", "ROLE_CLUB_OWNER")
+                        .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken").permitAll()
+                        .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
+                         .requestMatchers("/bookings").hasAuthority("ROLE_USER")
+                        .requestMatchers("/bookings/*/approve", "/bookings/*/reject").hasAuthority("ROLE_COACH")
+                        .requestMatchers("/auth/admin/**","/clubs/admin/**").hasAuthority("ROLE_ADMIN")
+                        .requestMatchers("/auth/coach/**").hasAuthority("ROLE_COACH")
+                        .requestMatchers("/auth/owner/**").hasAuthority("ROLE_OWNER")
+
+                        .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
+                        .requestMatchers("/clubs/**").hasAuthority("ROLE_CLUB_OWNER")
+                        .requestMatchers("/coach/sessions","/coach/sessions/range").hasAuthority("ROLE_COACH")
+                        .requestMatchers("/training-sessions/chat").permitAll()
+                        .requestMatchers("/training-sessions/chat/**").permitAll()
+                        .requestMatchers("/training-sessions/users").permitAll()
+                        .requestMatchers("/training-sessions/messages/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll() // this line is key
+
+                        .anyRequest().authenticated() // Protect all other endpoints
                 )
-                .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider())
-                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+                .sessionManagement(sess -> sess
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // No sessions
+                )
+                .authenticationProvider(authenticationProvider()) // Custom authentication provider
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT filter
 
         return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+        configuration.setExposedHeaders(Arrays.asList("Authorization"));
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 
     @Bean
@@ -69,19 +107,5 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        configuration.setAllowedHeaders(Arrays.asList("*"));
-        configuration.setAllowCredentials(true);
-        configuration.setExposedHeaders(Arrays.asList("Authorization"));
-
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 }

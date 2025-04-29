@@ -1,13 +1,11 @@
 package com.example.pi.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -35,10 +33,9 @@ public class Livraison {
     private Date scheduleddate;
 
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "livraison", cascade = CascadeType.ALL)
-    private Command command; // This must be correctly mapped
-
+   /* @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy="livraison")
+    private Set<Command> commands;*/
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus status;
