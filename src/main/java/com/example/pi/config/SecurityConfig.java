@@ -50,12 +50,11 @@ public class SecurityConfig {
                         .requestMatchers("/bookings","/abonnement-requests/**").hasAnyAuthority("ROLE_USER", "ROLE_CLUB_OWNER")
                         .requestMatchers("/auth/welcome", "/auth/addNewUser", "/auth/generateToken").permitAll()
                         .requestMatchers("/auth/user/**").hasAuthority("ROLE_USER")
-                         .requestMatchers("/bookings").hasAuthority("ROLE_USER")
+                        .requestMatchers("/bookings").hasAuthority("ROLE_USER")
                         .requestMatchers("/bookings/*/approve", "/bookings/*/reject").hasAuthority("ROLE_COACH")
                         .requestMatchers("/auth/admin/**","/clubs/admin/**").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/auth/coach/**").hasAuthority("ROLE_COACH")
                         .requestMatchers("/auth/owner/**").hasAuthority("ROLE_OWNER")
-
                         .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
                         .requestMatchers("/clubs/**").hasAuthority("ROLE_CLUB_OWNER")
                         .requestMatchers("/coach/sessions","/coach/sessions/range").hasAuthority("ROLE_COACH")

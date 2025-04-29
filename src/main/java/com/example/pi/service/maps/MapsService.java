@@ -1,4 +1,4 @@
-package com.example.pi.service.maps;
+package com.example.pi.service.Maps;
 
 import com.example.pi.entity.Livreur;
 import com.example.pi.repository.LivraisonRepository.LivreurRepository;

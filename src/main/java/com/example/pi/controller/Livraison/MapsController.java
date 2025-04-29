@@ -1,7 +1,7 @@
 package com.example.pi.controller.Livraison;
 
 import com.example.pi.entity.Livreur;
-import com.example.pi.service.maps.MapsService;
+import com.example.pi.service.Maps.MapsService;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.TravelMode;
 import org.springframework.http.ResponseEntity;
