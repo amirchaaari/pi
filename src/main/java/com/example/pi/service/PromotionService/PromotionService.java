@@ -8,20 +8,25 @@ import com.example.pi.entity.UserInfo;
 import com.example.pi.repository.ProductRepository;
 import com.example.pi.repository.PromotionRepository.PromotionRepository;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import com.example.pi.repository.UserInfoRepository;
-
+import com.example.pi.service.EmailService;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
+@Slf4j
 @Service
 @AllArgsConstructor
 public class PromotionService {
 
+
+    @Autowired
+    private EmailService emailService;
     @Autowired
     private PromotionRepository promotionRepository;
     @Autowired
@@ -127,6 +132,42 @@ public class PromotionService {
         promotion.setActive(true);
         promotionRepository.save(promotion);
     }
+
+    @Scheduled(cron = "0 */1 * * * *") // Runs daily at 9 AM
+    public void checkForAlmostExpiredPromotions() {
+        LocalDate today = LocalDate.now();
+        LocalDate alertDate = today.plusDays(2);
+
+        // Get all user emails once
+        List<String> allUserEmails = userInfoRepository.findAllEmails();
+
+        if (allUserEmails.isEmpty()) {
+            log.warn("No user emails found in database");
+            return;
+        }
+
+        // Get expiring promotions
+        List<Promotion> expiringPromotions = promotionRepository.findAll().stream()
+                .filter(p -> p.getExpiryDate() != null)
+                .filter(p -> p.getExpiryDate().isAfter(today))
+                .filter(p -> p.getExpiryDate().isBefore(alertDate))
+                .toList();
+
+        expiringPromotions.forEach(promotion -> {
+            log.info("Alerting users about promotion '{}' expiring on {}",
+                    promotion.getDescription(), promotion.getExpiryDate());
+
+            // Send to all users in parallel (async)
+            allUserEmails.forEach(email -> {
+                try {
+                    emailService.sendPromotionExpiryAlert(email, promotion);
+                } catch (Exception e) {
+                    log.error("Failed to send to {}: {}", email, e.getMessage());
+                }
+            });
+        });
+    }
+
 
 
 

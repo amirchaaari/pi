@@ -1,5 +1,6 @@
 package com.example.pi.service;
 
+import com.example.pi.entity.Promotion;
 import com.example.pi.interfaces.trainingSession.IEmailService;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
@@ -12,6 +13,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -206,6 +208,141 @@ public class EmailService implements IEmailService {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             MatrixToImageWriter.writeToStream(matrix, "PNG", out);
             return out.toByteArray();
+        }
+    }
+
+    @Async
+    public void sendPromotionExpiryAlert(String toEmail, Promotion promotion) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+            helper.setTo(toEmail);
+            helper.setSubject("⏰ Last Chance! " + promotion.getDescription() + " Ends Soon");
+
+            String htmlContent = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                font-family: 'Arial', sans-serif;
+                line-height: 1.6;
+                color: #333333;
+                max-width: 600px;
+                margin: 0 auto;
+                padding: 20px;
+            }
+            .header {
+                background-color: #4a6baf;
+                color: white;
+                padding: 20px;
+                text-align: center;
+                border-radius: 8px 8px 0 0;
+            }
+            .content {
+                padding: 20px;
+                background-color: #f9f9f9;
+                border-left: 1px solid #e1e1e1;
+                border-right: 1px solid #e1e1e1;
+            }
+            .promo-card {
+                background: white;
+                border-radius: 8px;
+                padding: 20px;
+                margin: 15px 0;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .promo-title {
+                color: #e74c3c;
+                font-size: 20px;
+                margin-top: 0;
+            }
+            .discount-badge {
+                background-color: #e74c3c;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 4px;
+                font-weight: bold;
+                display: inline-block;
+                margin: 10px 0;
+            }
+            .expiry-info {
+                background-color: #fff8e1;
+                padding: 10px;
+                border-left: 4px solid #ffc107;
+                margin: 15px 0;
+            }
+            .cta-button {
+                display: inline-block;
+                padding: 12px 24px;
+                background-color: #4a6baf;
+                color: white !important;
+                text-decoration: none;
+                border-radius: 4px;
+                font-weight: bold;
+                margin: 15px 0;
+            }
+            .footer {
+                text-align: center;
+                padding: 15px;
+                font-size: 12px;
+                color: #777777;
+                background-color: #f5f5f5;
+                border-radius: 0 0 8px 8px;
+                border: 1px solid #e1e1e1;
+                border-top: none;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h2>Don't Miss Out!</h2>
+        </div>
+        
+        <div class="content">
+            <p>Hello valued customer,</p>
+            <p>This is your final reminder about our special promotion:</p>
+            
+            <div class="promo-card">
+                <h3 class="promo-title">%s</h3>
+                <div class="discount-badge">%d%% OFF</div>
+                <p>%s</p>
+            </div>
+            
+            <div class="expiry-info">
+                ⏰ This promotion ends on <strong>%s</strong> (in just 2 days!)
+            </div>
+            
+            <p>Click below to take advantage of this offer before it's gone:</p>
+            
+            
+            <p>Thank you for being a valued customer!</p>
+        </div>
+        
+        <div class="footer">
+            <p>© 2023 Your Company Name. All rights reserved.</p>
+            <p>
+                
+            </p>
+        </div>
+    </body>
+    </html>
+    """.formatted(
+                    promotion.getDescription(),
+                    (int) promotion.getDiscountPercentage(),
+                    promotion.getDescription(),
+                    promotion.getExpiryDate()
+            );
+
+            helper.setText(htmlContent, true);
+            mailSender.send(message);
+            log.info("Beautiful promotion email sent to {}", toEmail);
+
+        } catch (Exception e) {
+            log.error("Failed to send HTML email to {}: {}", toEmail, e.getMessage());
         }
     }
 }

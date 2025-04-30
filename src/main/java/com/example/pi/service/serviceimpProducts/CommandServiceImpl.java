@@ -19,9 +19,12 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.util.Calendar;
 import java.util.List;
@@ -162,5 +165,12 @@ public class CommandServiceImpl implements CommandService {
     public List<Command> getCommandsByUserWithProducts() {
         UserInfo user = getCurrentUser();
         return commandRepository.findCommandsWithProductsByUserId((long) user.getId());
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(Exception e) {
+        e.printStackTrace(); // Log the full stack trace for debugging
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("An error occurred: " + e.getMessage());
     }
 }

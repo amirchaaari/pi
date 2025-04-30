@@ -69,6 +69,8 @@ public class SecurityConfig {
                         .requestMatchers("/clubs/admin/{clubId}/performance").hasAuthority("ROLE_ADMIN")
                         .requestMatchers("/trophies/**").hasAuthority("ROLE_ADMIN")
 
+                        .requestMatchers("/images/**").permitAll()
+
                         // User endpoints
                         .requestMatchers("/auth/user/**").hasAnyAuthority("ROLE_USER", "ROLE_COACH", "ROLE_NUTRITIONIST")
                         .requestMatchers("/bookings", "/abonnement-requests/**").hasAnyAuthority("ROLE_USER", "ROLE_CLUB_OWNER")
@@ -81,6 +83,7 @@ public class SecurityConfig {
 
                         // Nutritionist endpoints
                         .requestMatchers("/auth/nutritionist/**").hasAuthority("ROLE_NUTRITIONIST")
+                        .requestMatchers("/recipe/favorites/**").authenticated()
                         .requestMatchers("/recipe/**").authenticated()
                         .requestMatchers("/dietprogram/**").authenticated()
                         .requestMatchers("/analytics/**").authenticated()
@@ -93,6 +96,39 @@ public class SecurityConfig {
 
                         // Trophy system
                         .requestMatchers("/trophies/assignTrophy").authenticated()
+
+                        //products
+                        // Public endpoints
+                        .requestMatchers("/api/payments/health").permitAll()
+                        .requestMatchers("/api/payments/create-session").permitAll()
+                        .requestMatchers("/trigger-notification").permitAll()
+
+                        // Category endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/categories").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/categories").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/categories/**").permitAll()
+
+                        // Product endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/products").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/products").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/products/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").permitAll()
+                        .requestMatchers("/api/products/test-notification").permitAll()
+
+                        // Command endpoints
+                        .requestMatchers(HttpMethod.GET, "/api/commands").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/commands/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/commands").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/commands/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/commands/**").permitAll()
+                        .requestMatchers("/api/commands/user").permitAll()
+
+                        // WebSocket
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/topic/**").permitAll()
 
                         // General authenticated endpoints
                         .anyRequest().authenticated()

@@ -35,5 +35,9 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Integer> {
 
     List<UserInfo> findByLastSessionBefore(LocalDateTime dateTime);
 
+    @Query("SELECT u.email FROM UserInfo u")
+    List<String> findAllEmails();
+
+
 
 }
