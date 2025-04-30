@@ -24,6 +24,7 @@ import java.util.Set;
         @JsonSubTypes.Type(value = ClubOwner.class, name = "CLUB_OWNER"),
 
 
+//        @JsonSubTypes.Type(value = ClubOwner.class, name = "ClubOwner"),
 
 })
 @Entity
