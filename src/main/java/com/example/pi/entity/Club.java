@@ -62,5 +62,15 @@ public class Club {
         @JsonIgnore
         private UserInfo owner;
 
+        // 🧑‍🏫 Assigned coaches (many)
+        @ManyToMany
+        @JoinTable(
+                name = "club_coaches",
+                joinColumns = @JoinColumn(name = "club_id"),
+                inverseJoinColumns = @JoinColumn(name = "user_id")
+        )
+        private Set<UserInfo> coaches;
+
+
 
 }
