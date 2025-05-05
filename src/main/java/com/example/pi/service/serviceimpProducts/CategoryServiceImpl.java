@@ -94,7 +94,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     public String saveImage(MultipartFile imageFile) {
         try {
-            String directoryPath = "C:/Users/dalih/images";
+            String directoryPath = "C:/Users/ahmed/images";
             // Create directory if it doesn't exist
             File directory = new File(directoryPath);
             if (!directory.exists()) {

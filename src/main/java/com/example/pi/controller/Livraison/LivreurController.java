@@ -19,7 +19,7 @@ public class LivreurController {
         return ResponseEntity.ok(livreurService.registerDriver(livreur));
     }
 
-    @PatchMapping("/{id}/availability")
+    @PutMapping("/{id}/availability")
     public ResponseEntity<Livreur> updateAvailability(
             @PathVariable Long id,
             @RequestParam boolean available) {

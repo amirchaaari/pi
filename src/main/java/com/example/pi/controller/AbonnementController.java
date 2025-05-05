@@ -21,26 +21,26 @@ public class AbonnementController {
     private final AbonnementService abonnementService;
 
     @GetMapping("/retrieve-all-abonnements")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN')")
     public List<Abonnement> getAllAbonnements() {
         return abonnementService.getAllAbonnements();
     }
 
     @GetMapping("/retrieve-abonnement/{id}")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN')")
     public Abonnement getAbonnementById(@PathVariable Long id) {
         return abonnementService.getAbonnementById(id);
     }
 
 
     @PutMapping("/update-abonnement/{id}")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN')")
     public Abonnement updateAbonnement(@PathVariable Long id, @RequestBody Abonnement abonnement) {
         return abonnementService.updateAbonnement(id, abonnement);
     }
 
     @DeleteMapping("/remove-abonnement/{id}")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_OWNER') or hasRole('ROLE_ADMIN')")
     public void removeAbonnement(@PathVariable Long id) {
         abonnementService.deleteAbonnement(id);
     }

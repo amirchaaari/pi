@@ -28,25 +28,25 @@ public class PackController {
     }
 
     @PostMapping("/add-pack")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     public Pack addPack(@RequestBody Pack pack) {
         return packService.createPack(pack);
     }
 
     @PutMapping("/update-pack/{id}")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     public Pack updatePack(@PathVariable Long id, @RequestBody Pack pack) {
         return packService.updatePack(id, pack);
     }
 
     @DeleteMapping("/remove-pack/{id}")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     public void removePack(@PathVariable Long id) {
         packService.deletePack(id);
     }
 
     @PutMapping("/affect-pack/{packId}/to-club/{clubId}")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     public Club affecterPackToClub(@PathVariable Long clubId, @PathVariable Long packId) {
         return packService.affecterPackToClub(clubId, packId);
     }
@@ -63,7 +63,7 @@ public class PackController {
     }
 
     @GetMapping("/hasClub/{id}")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     public boolean hasClub(@PathVariable Long id) {
         return packService.isPackAffecterToClub(id);
     }

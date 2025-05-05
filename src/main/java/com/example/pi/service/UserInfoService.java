@@ -321,7 +321,9 @@ public class UserInfoService implements UserDetailsService {
         return repository.findByRoles(roleCoach);
     }
     public List<UserInfo> findConnectedUsers() {
-        return repository.findAll();
+        return repository.findAll().stream()
+                .filter(user -> user.getRoles().contains("ROLE_USER") || user.getRoles().contains("ROLE_COACH"))
+                .toList();
     }
     public UserInfo getUser() {
         // Récupérer l'authentification du SecurityContext

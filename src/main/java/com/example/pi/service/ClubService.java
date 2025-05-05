@@ -33,7 +33,7 @@ public class ClubService  implements IClubService {
 
     public ClubCreationRequest submitClubCreationRequest(ClubCreationRequest request, MultipartFile documentFile, MultipartFile imageFile) {
         UserInfo authenticatedUser = getAuthenticatedUser();
-        if (authenticatedUser == null || !authenticatedUser.getRoles().contains("ROLE_CLUB_OWNER")) {
+        if (authenticatedUser == null || !authenticatedUser.getRoles().contains("ROLE_OWNER")) {
             return null;
         }
 
@@ -167,7 +167,7 @@ public class ClubService  implements IClubService {
         }
         
         // If user is club owner, return only their clubs
-        if (currentUser.getRoles().contains("ROLE_CLUB_OWNER")) {
+        if (currentUser.getRoles().contains("ROLE_OWNER")) {
             return clubRepository.findByOwner(currentUser);
         }
         
@@ -331,7 +331,7 @@ public class ClubService  implements IClubService {
     public Club getClubForAuthenticatedOwner() {
         UserInfo currentUser = getAuthenticatedUser();
 
-        if (currentUser == null || !currentUser.getRoles().contains("ROLE_CLUB_OWNER")) {
+        if (currentUser == null || !currentUser.getRoles().contains("ROLE_OWNER")) {
             throw new RuntimeException("Unauthorized or not a club owner");
         }
 

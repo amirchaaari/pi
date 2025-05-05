@@ -51,7 +51,7 @@ public class ClubController {
     }
 
     @PostMapping("/add-club")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     public ResponseEntity<?> addClub(@RequestBody Club club) {
         try {
             Club savedClub = clubService.createClub(club);
@@ -66,7 +66,7 @@ public class ClubController {
     }
 
     @PutMapping("/update-club/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_CLUB_OWNER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_ADMIN')")
     public ResponseEntity<?> updateClub(
 
             @PathVariable Long id,
@@ -97,7 +97,7 @@ public class ClubController {
 
 
     @DeleteMapping("/remove-club/{id}")
-    @PreAuthorize("hasAnyRole('ROLE_CLUB_OWNER', 'ROLE_ADMIN')")
+    @PreAuthorize("hasAnyRole('ROLE_OWNER', 'ROLE_ADMIN')")
     public ResponseEntity<?> removeClub(@PathVariable Long id) {
         try {
             clubService.deleteClub(id);
@@ -110,7 +110,7 @@ public class ClubController {
     }
 
     @PostMapping("/{clubId}/sports/{sportId}")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
+    @PreAuthorize("hasRole('ROLE_OWNER')")
     public ResponseEntity<?> affecterSportToClub(@PathVariable Long clubId, @PathVariable Long sportId) {
         try {
             Club updatedClub = clubService.affecterSportToClub(clubId, sportId);
@@ -131,7 +131,7 @@ public class ClubController {
     private ObjectMapper objectMapper;
 
     @PostMapping("/submit-creation-request")
-    @PreAuthorize("hasRole('ROLE_CLUB_OWNER')")
+    //@PreAuthorize("hasRole('ROLE_OWNER')")
     public ResponseEntity<?> submitClubCreationRequest(
             @RequestPart("request") String requestJson,
             @RequestParam(value = "document", required = false) MultipartFile document,

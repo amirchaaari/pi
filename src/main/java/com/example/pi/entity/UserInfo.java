@@ -52,6 +52,8 @@ public class UserInfo {
     private String roles;
     private int points;
 
+    private String address;
+
  
 
 
@@ -87,7 +89,7 @@ public class UserInfo {
 
     private LocalDateTime lastSession;
 
-    private String address;
+
 
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy="coach")
