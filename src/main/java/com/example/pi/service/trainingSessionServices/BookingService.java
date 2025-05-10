@@ -114,7 +114,7 @@ public class BookingService implements IBookingService {
     }
 
 
-    @Scheduled(cron = "* * * * * *")
+    @Scheduled(cron = "0 * * * * *")
     public void sendSessionReminders() {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime sessionStartTime = now.plusMinutes(15);
